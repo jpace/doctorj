@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>doctorj</title><meta name="generator" content="DocBook XSL Stylesheets V1.58.1"><link rel="home" href="index.html" title="doctorj"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">doctorj</th></tr></table><hr></div><div class="refentry" lang="en"><a name="doctorj.1"></a><div class="titlepage"></div><div class="refnamediv"><a name="name"></a><h2>Name</h2><p>doctorj &#8212; Javadoc analyzer and spell-checker</p></div><div class="refsynopsisdiv"><a name="synopsis"></a><h2>Synopsis</h2><div class="cmdsynopsis"><p><tt>doctorj</tt>  [<tt>--emacs</tt>] [<tt>--warning</tt><i><tt>=LEVEL</tt></i>] [<tt>--tabwidth</tt><i><tt>=NUM</tt></i>] [<tt>--dictionaries</tt><i><tt>=LIST</tt></i>] [<tt>--verbose</tt>] {<i><tt>FILE...</tt></i>}</p></div></div><div class="refsect1" lang="en"><h2>Description</h2><p>doctorj is an application to analyze
+    Javadoc comments against Java code, verifying its integrity and format. It
+    also spell-checks Javadoc comments.</p></div><div class="refsect1" lang="en"><h2>Options</h2><div class="variablelist"><dl><dt><span class="term"><tt>--emacs</tt></span></dt><dd><p>Whether to list violations in Emacs form, i.e., a single
+                line of the form:</p><p><tt>8:48:9:4: An error occurred on this line.</tt>
+                </p><p>By default, violations are displayed in &#8220;long
+                form&#8221;, showing the context.</p></dd><dt><span class="term"><tt>--warning</tt><i><tt>=LEVEL</tt></i></span></dt><dd><p>Sets the warning level, which by default is -1, meaning
+                that only errors are reported. A warning level of 0 means that
+                Javadoc for public or abstract items (classes, interfaces,
+                methods, constructors, and fields) will be checked. A warning
+                level of 1 will result in the addition of checking of
+                protected-access items; 2 is for package-access items, and 3
+                will check all items.</p></dd><dt><span class="term"><tt>--tabwidth</tt><i><tt>=NUM</tt></i></span></dt><dd><p>Sets the number of spaces to use for alignment with tabs. 
+                By default, this value is 4.</p></dd><dt><span class="term"><tt>--dictionaries</tt><i><tt>=LIST</tt></i></span></dt><dd><p>Sets the dictionaries (word lists) to use for
+                spell-checking. <i><tt>LIST</tt></i> is a
+                comma-delimited string of paths to the word list files. By
+                default, doctorj uses the word list
+                at <tt>/usr/share/doctorj/words.LOCALE</tt>, where
+                <i><tt>LOCALE</tt></i> is of the standard Java form. 
+                doctorj is distributed with three
+                word lists: words.en_CA (Canadian English), words.en_UK (United
+                Kingdom English), and words.en_US (United States
+                English).</p></dd><dt><span class="term"><tt>--verbose</tt></span></dt><dd><p>Produces debugging output. Note that this signficantly
+                impedes performance.</p></dd><dt><span class="term"><tt>FILE</tt></span></dt><dd><p>Specifies the files to check. If the argument specified is
+                a directory, all files ending in &#8220;.java&#8221; under that
+                directory will be analyzed.</p></dd></dl></div></div><div class="refsect1" lang="en"><h2>Examples</h2><p>To check a single file:
+    </p><pre class="screen">% doctorj String.java</pre><p>To check multiple files:
+    </p><pre class="screen">% doctorj String.java StringBuffer.java Object.java</pre><p>To check all files below a directory:
+    </p><pre class="screen">% doctorj /proj/app/src</pre><p>To run at the maximum warning level:
+    </p><pre class="screen">% doctorj --warning=4 .</pre><p>To specify a different dictionary:
+    </p><pre class="screen">% doctorj --dictionaries=/usr/share/dict/words .</pre></div><div class="refsect1" lang="en"><h2>Configuration</h2><p><tt>$HOME/.doctorjrc</tt></p><p>The run-control file, of the form:
+          </p><pre class="screen">
+emacs: true
+warning: 4
+tabwidth: 8
+dictionaries: /usr/share/dict/words,/home/me/etc/terms
+verbose: false
+         </pre><p>
+    </p><p>Dictionary (word list) files contain one word per line, for example:</p><p>
+        </p><pre class="screen">
+adaxial
+cepaceous
+sabaton
+vespiaries
+        </pre><p>
+    </p></div><div class="refsect1" lang="en"><h2>Author</h2><p>Jeff Pace<tt>&lt;<a href="mailto:jpace@incava.org">jpace@incava.org</a>&gt;</tt></p><p>The DoctorJ web site is at
+        <a href="http://www.doctorj.org" target="_top">http://www.doctorj.org</a>.
+    </p></div><div class="refsect1" lang="en"><h2>Bugs</h2><p>Bugs and issues should be reported at the SourceForge.net project site:
+        <a href="http://www.sf.net/projects/doctorj" target="_top">http://www.sf.net/projects/doctorj</a>
+    </p></div><div class="refsect1" lang="en"><h2>See Also</h2><p>
+        java(1),
+
+        javadoc(1)
+    </p></div><div class="refsect1" lang="en"><h2>Copyright</h2><p>Copyright (c) 2002, Jeff Pace.</p><p>All Rights Reserved. This module is free software. It may be used,
+    redistributed and/or modified under the terms of the <a href="http://www.gnu.org/licenses/lgpl.html" target="_top">GNU Lesser General Public
+    License</a></p></div></div><div class="navfooter"><hr></div></body></html>

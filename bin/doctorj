@@ -1,0 +1,37 @@
+#!/bin/sh -f
+
+# java must be in path
+
+DRJ_PROPERTIES=""
+
+if [ -n "$EMACS" ]; then
+   DRJ_PROPERTIES="-Ddoctorj.emacs=true $DRJ_PROPERTIES"
+fi
+
+# if this is in /usr/bin, jar file is expected as /usr/share/doctorj/doctorj.jar
+
+if [ "$0" = "bash" -o "$0" = "sh" ]
+then
+    # Note: the file name itself is not available, since the sourced file name
+    # gets lost during sourcing. so we won't be able to find the jar file.
+    # Also, we only need to check for sh and bash, since this is invalid syntax
+    # for csh/tcsh, and zsh actually sets $0 "correctly".
+
+    echo "ERROR: do not source this file"
+    echo "usage: doctorj args"
+else
+    batchfile="$0"
+    batchdir=`dirname $batchfile`
+    prefix=`dirname $batchdir`
+    jarfile=$prefix/share/doctorj/doctorj.jar
+    
+    if [ -n "$CLASSPATH" ]; then
+       CLASSPATH="${jarfile}:$CLASSPATH"
+    else
+       CLASSPATH="${jarfile}"
+    fi
+    
+    DRJ_PROPERTIES="-Ddoctorj.dir=$prefix/share/doctorj $DRJ_PROPERTIES"
+    
+    java -cp $CLASSPATH -Xmx512m $DRJ_PROPERTIES org.incava.doctorj.DoctorJ "$@"
+fi

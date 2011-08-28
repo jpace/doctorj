@@ -1,0 +1,432 @@
+<?xml version="1.0"?>
+
+<project name="DoctorJ" default="compile" basedir=".">
+
+    <property name="projname"          value="doctorj"               />
+    <property name="version"           value="5.1.2"                 />
+  
+    <property name="debug"             value="true"                  />
+    <property name="deprecation"       value="false"                 />
+    <property name="optimize"          value="true"                  />
+  
+    <property name="basedir"           value="."                     />
+  
+    <property name="src.dir"           value="${basedir}"            />
+    <property name="lib.dir"           value="lib"                   />
+    <property name="docs.dir"          value="docs"                  />
+    <property name="test.dir"          value="${basedir}/test"       />
+  
+    <property name="build.dir"         value="${basedir}"            />
+    <property name="build.classes"     value="${build.dir}/classes"  />
+    <property name="build.lib"         value="${build.dir}/lib"      />
+    <property name="build.javadocs"    value="${build.dir}/javadocs" />
+
+    <!-- the top directory, equivalent to DESTDIR                -->
+    <property name="destdir"           value="/"                     />
+
+    <property name="prefix"            value="/usr"                  />
+    <property name="mandir"            value="${prefix}/share/man"   />
+    <property name="sharedir"          value="${prefix}/share"       />
+    <property name="bindir"            value="${prefix}/bin"         />
+  
+    <path id="classpath">
+        <pathelement location="${build.classes}" />
+    </path>
+  
+    <path id="test-classpath">
+        <path refid="classpath" />
+        <pathelement location="${test.dir}/classes" />
+        <pathelement location="${build.lib}/junit.jar" />
+    </path>
+
+    <target name="compile" 
+            depends=""
+            description="--> compiles the core code">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${build.classes}"/>
+      
+        <javac srcdir="${src.dir}"
+               destdir="${build.classes}"
+               debug="${debug}"
+               deprecation="${deprecation}"
+               includes="org/**/*.java,net/**/*.java,tr/**/*.java"
+               optimize="${optimize}" >
+            <classpath refid="classpath" />
+        </javac>
+    </target>
+  
+    <target name="compile-tests" 
+            depends="compile"
+            description="--> compiles the tests">
+        <mkdir dir="${build.dir}"        />
+        <mkdir dir="${build.classes}"    />
+        <mkdir dir="${test.dir}/classes" />
+      
+        <javac srcdir="${test.dir}"
+               destdir="${test.dir}/classes"
+               debug="${debug}"
+               deprecation="${deprecation}"
+               optimize="${optimize}" >
+            <classpath refid="classpath" />
+        </javac>
+    </target>
+  
+    <target name="remake" 
+            depends="clean,compile"
+            description="--> rebuild the application">
+    </target>
+  
+    <target name="clean" 
+            depends=""
+            description="--> removes compiled code">
+        <delete>
+            <fileset dir="${basedir}" includes="**/*.class" /> 
+        </delete>
+    </target>
+
+    <target name="jarfile" 
+            depends="compile"
+            description="--> builds the .jar file">
+        <mkdir dir="share"/>
+        <mkdir dir="share/doctorj"/>
+        <jar destfile="share/doctorj/doctorj.jar"
+             basedir="classes" 
+             includes="org/incava/**/*.class,tr/**/*.class,net/sourceforge/pmd/ast/**/*.class"
+            >
+            <manifest>
+                <attribute name="Main-Class" value="org.incava.doctorj.DoctorJ" />
+            </manifest>
+        </jar>
+    </target>
+
+    <patternset id="dist.files">
+        <include name="build.xml"                     />
+        <include name="AUTHORS"                       />
+        <include name="ChangeLog"                     />
+        <include name="COPYING"                       />
+        <include name="INSTALL"                       />
+        <include name="NEWS"                          />
+        <include name="README"                        />
+        <include name="bin/${projname}"               />
+        <include name="doc/${projname}.1"             />
+        <include name="${projname}.spec"              />
+        <include name="net/sourceforge/pmd/**/*.java" />
+        <include name="org/incava/**/*.java"          />
+        <include name="tr/**/*.java"                  />
+        <include name="org/**/*.jj*"                  />
+        <include name="test/org/**/*.java"            />
+        <include name="etc/words.*"                   />
+    </patternset>
+
+    <target name="tarball" 
+            depends="jarfile, manpage"
+            description="--> builds the distribution tarball">
+        <property name="tarball" value="${build.dir}/${projname}-${version}.tar" />
+        <tar tarfile="${tarball}">
+            <tarfileset dir="${src.dir}" prefix="${projname}-${version}">
+                <patternset refid="dist.files" />
+            </tarfileset>
+        </tar>
+        <gzip zipfile="${tarball}.gz" src="${tarball}" />
+        <delete file="${tarball}" />
+    </target>
+
+    <target name="zipfile" 
+            depends="jarfile, manpage"
+            description="--> builds the distribution tarball">
+        <property name="zipfile" value="${build.dir}/${projname}-${version}.zip" />
+        <zip zipfile="${zipfile}">
+            <zipfileset dir="${src.dir}" prefix="${projname}-${version}">
+                <patternset refid="dist.files" />
+            </zipfileset>
+        </zip>
+    </target>
+  
+    <target name="dist" 
+            depends="tarball, zipfile"
+            description="--> builds the distribution files">
+    </target>
+  
+    <target name="manpage" 
+            description="--> builds the man page from the XML source">
+        <exec dir="." executable="xmlto">
+            <arg value="-o"/>
+            <arg value="doc"/>
+            <arg value="man"/>
+            <arg value="doc/${projname}.xml"/>
+        </exec>
+    </target>
+  
+    <target name="doc" 
+            description="--> builds the javadoc for everything">
+        <javadoc
+            destdir="doc/api"
+             author="true"
+             version="true"
+             use="true"
+             windowtitle="DoctorJ API">
+            <fileset dir="." defaultexcludes="yes">
+                <include name="org/incava/**"/>
+                <exclude name="test/org/incava/**"/>
+            </fileset>
+        </javadoc>
+    </target>
+
+    <target name="install" 
+            depends="jarfile"
+            description="--> installs the program">
+        <mkdir dir="${destdir}${bindir}"           />
+	<mkdir dir="${destdir}${sharedir}/doctorj" />
+	<mkdir dir="${destdir}${mandir}/man1"      />
+
+        <!-- can't use the copy task, since permissions are not retained -->
+	<exec executable="cp">
+            <arg value="bin/doctorj"           />
+            <arg value="${destdir}${bindir}" />
+        </exec>
+
+	<copy todir="${destdir}${sharedir}/doctorj">
+            <fileset dir="etc">
+                <include name="words.*" />
+            </fileset>
+	</copy>
+
+	<copy file="share/doctorj/doctorj.jar" todir="${destdir}${sharedir}/doctorj" />
+       	<copy file="doc/doctorj.1"             todir="${destdir}${mandir}/man1"    />
+    </target>
+  
+    <target name="uninstall" 
+            description="--> uninstalls the program">
+	<delete file="${destdir}${bindir}/doctorj"               />
+       	<delete file="${destdir}${sharedir}/doctorj/doctorj.jar" />
+       	<delete dir="${destdir}${sharedir}/doctorj"              />
+       	<delete file="${destdir}${mandir}/man1/doctorj.1"        />
+    </target>
+  
+    <target name="run-test" 
+            depends="compile-tests"
+            description="--> runs a unit test">
+        <junit printsummary="no" haltonfailure="yes" fork="yes" filtertrace="true" showoutput="no" maxmemory="512m">
+            <classpath refid="test-classpath" />
+            <formatter type="plain" usefile="false" />
+            <test name="${classname}" />
+            <sysproperty key="qualog.verbose" value="true" />
+        </junit>
+    </target>
+  
+    <target name="tests" 
+            depends="compile-tests"
+            description="--> runs all tests">
+        <junit printsummary="yes" haltonfailure="yes" fork="yes" filtertrace="true" showoutput="no" maxmemory="512m">
+            <classpath refid="test-classpath" />
+            <formatter type="plain" usefile="false" />
+            <batchtest fork="yes">
+                <fileset dir="test">
+                    <include name="**/Test*.java"/>
+                    <exclude name="**/Tester.java"/>
+                </fileset>
+            </batchtest>
+            <sysproperty key="verbose" value="false" />
+        </junit>
+    </target>
+
+    <target name="run-ast-dump-commented" 
+            depends="compile"
+            description="--> runs the AST dump">
+        <java classname="org.incava.java.ASTDumper" fork="true">
+            <classpath refid="classpath" />
+            <arg value="--dump" />
+            <arg value="testfiles/Commented.java" />
+        </java>
+    </target>
+  
+    <target name="run-ast-dump-tiny" 
+            depends="compile"
+            description="--> runs the AST dump">
+        <java classname="org.incava.java.ASTDumper" fork="true">
+            <classpath refid="classpath" />
+            <arg value="--dump" />
+            <arg value="testfiles/Tiny.java" />
+        </java>
+    </target>
+  
+    <target name="run" 
+            depends="compile"
+            description="--> runs DoctorJ">
+        <property name="filename" value="testfiles/Tiny.java"/>
+        <java classname="org.incava.doctorj.DoctorJ" fork="true">
+            <classpath refid="classpath" />
+            <arg value="${filename}" />
+         </java>
+    </target>
+  
+    <!-- unit tests -->
+  
+    <target name="test-spell-checker" 
+            description="--> runs the test of the spell checker">
+        <antcall target="run-test"><param name="classname" value="org.incava.text.TestSpellChecker"/></antcall>
+    </target>
+  
+    <target name="test-nocase-spell-checker" 
+            description="--> runs the test of the spell checker">
+        <antcall target="run-test"><param name="classname" value="org.incava.text.TestNoCaseSpellChecker"/></antcall>
+    </target>
+  
+    <target name="test-javadoc-parser" 
+            description="--> runs the test of the Javadoc parser">
+        <antcall target="run-test"><param name="classname" value="org.incava.javadoc.TestJavadocParser"/></antcall>
+    </target>
+  
+    <target name="test-javadoc-node" 
+            description="--> runs the test of the Javadoc Node">
+        <antcall target="run-test"><param name="classname" value="org.incava.javadoc.TestJavadocNode"/></antcall>
+    </target>
+  
+    <target name="test-javadoc-tagged-node" 
+            description="--> runs the test of the Javadoc Tagged Node">
+        <antcall target="run-test"><param name="classname" value="org.incava.javadoc.TestJavadocTaggedNode"/></antcall>
+    </target>
+  
+    <target name="test-violation" 
+            description="--> runs the test of the violations">
+        <antcall target="run-test"><param name="classname" value="org.incava.analysis.TestViolation"/></antcall>
+    </target>
+  
+    <target name="test-report" 
+            description="--> runs the test of the report">
+        <antcall target="run-test"><param name="classname" value="org.incava.analysis.TestReport"/></antcall>
+    </target>
+  
+    <target name="test-terse-report" 
+            description="--> runs the test of the terse report">
+        <antcall target="run-test"><param name="classname" value="org.incava.analysis.TestTerseReport"/></antcall>
+    </target>
+  
+    <target name="test-context-report" 
+            description="--> runs the test of the context report">
+        <antcall target="run-test"><param name="classname" value="org.incava.analysis.TestContextReport"/></antcall>
+    </target>
+  
+    <target name="test-collect" 
+            description="--> runs the test of the Collect class">
+        <antcall target="run-test"><param name="classname" value="org.incava.util.TestCollect"/></antcall>
+    </target>
+  
+    <!-- jagol unit tests -->
+  
+    <target name="test-jagol-option" 
+            description="--> runs the test of the jagol option">
+        <antcall target="run-test"><param name="classname" value="org.incava.jagol.TestOption"/></antcall>
+    </target>
+  
+    <target name="test-jagol-integer-option" 
+            description="--> runs the test of the jagol integer option">
+        <antcall target="run-test"><param name="classname" value="org.incava.jagol.TestIntegerOption"/></antcall>
+    </target>
+  
+    <target name="test-jagol-nonboolean-option" 
+            description="--> runs the test of the jagol nonboolean option">
+        <antcall target="run-test"><param name="classname" value="org.incava.jagol.TestNonBooleanOption"/></antcall>
+    </target>
+  
+    <target name="test-jagol-double-option" 
+            description="--> runs the test of the jagol double option">
+        <antcall target="run-test"><param name="classname" value="org.incava.jagol.TestDoubleOption"/></antcall>
+    </target>
+  
+    <target name="test-jagol-float-option" 
+            description="--> runs the test of the jagol float option">
+        <antcall target="run-test"><param name="classname" value="org.incava.jagol.TestFloatOption"/></antcall>
+    </target>
+  
+    <target name="test-jagol-string-option" 
+            description="--> runs the test of the jagol string option">
+        <antcall target="run-test"><param name="classname" value="org.incava.jagol.TestStringOption"/></antcall>
+    </target>
+  
+    <target name="test-jagol-boolean-option" 
+            description="--> runs the test of the jagol boolean option">
+        <antcall target="run-test"><param name="classname" value="org.incava.jagol.TestBooleanOption"/></antcall>
+    </target>
+  
+    <target name="test-jagol-list-option" 
+            description="--> runs the test of the jagol list option">
+        <antcall target="run-test"><param name="classname" value="org.incava.jagol.TestListOption"/></antcall>
+    </target>
+  
+    <target name="test-jagol-option-set" 
+            description="--> runs the test of the jagol option set">
+        <antcall target="run-test"><param name="classname" value="org.incava.jagol.TestOptionSet"/></antcall>
+    </target>
+  
+    <!-- javadoc analysis unit tests -->
+  
+    <target name="run-javadoc-test" 
+            description="--> runs a Javadoc test">
+        <antcall target="run-test"><param name="classname" value="org.incava.doctorj.Test${classname}"/></antcall>
+    </target>
+  
+    <target name="test-comment-spell-check">
+        <antcall target="run-javadoc-test"><param name="classname" value="CommentSpellCheck"/></antcall>
+    </target>
+
+    <target name="test-exception-doc-analyzer">
+        <antcall target="run-javadoc-test"><param name="classname" value="ExceptionDocAnalyzer"/></antcall>
+    </target>
+  
+    <target name="test-item-doc-analyzer">
+        <antcall target="run-javadoc-test"><param name="classname" value="ItemDocAnalyzer"/></antcall>
+    </target>
+  
+    <target name="test-parameter-doc-analyzer">
+        <antcall target="run-javadoc-test"><param name="classname" value="ParameterDocAnalyzer"/></antcall>
+    </target>
+
+    <target name="test-function-doc-analyzer">
+        <antcall target="run-javadoc-test"><param name="classname" value="FunctionDocAnalyzer"/></antcall>
+    </target>
+
+    <target name="test-method-doc-analyzer">
+        <antcall target="run-javadoc-test"><param name="classname" value="MethodDocAnalyzer"/></antcall>
+    </target>
+
+    <target name="test-ctor-doc-analyzer">
+        <antcall target="run-javadoc-test"><param name="classname" value="MethodDocAnalyzer"/></antcall>
+    </target>
+
+    <target name="test-field-doc-analyzer">
+        <antcall target="run-javadoc-test"><param name="classname" value="FieldDocAnalyzer"/></antcall>
+    </target>
+
+    <target name="test-type-doc-analyzer">
+        <antcall target="run-javadoc-test"><param name="classname" value="TypeDocAnalyzer"/></antcall>
+    </target>
+
+    <target name="test-class-doc-analyzer">
+        <antcall target="run-javadoc-test"><param name="classname" value="ClassDocAnalyzer"/></antcall>
+    </target>
+
+    <target name="test-interface-doc-analyzer">
+        <antcall target="run-javadoc-test"><param name="classname" value="InterfaceDocAnalyzer"/></antcall>
+    </target>
+
+    <target name="test-options">
+        <antcall target="run-javadoc-test"><param name="classname" value="Options"/></antcall>
+    </target>
+
+    <target name="test-jagol" 
+            depends="compile-tests"
+            description="--> runs all Jagol tests">
+        <junit printsummary="yes" haltonfailure="yes" fork="yes" filtertrace="true" showoutput="no" maxmemory="512m">
+            <classpath refid="test-classpath" />
+            <formatter type="plain" usefile="false" />
+            <batchtest fork="yes">
+                <fileset dir="test">
+                    <include name="org/incava/jagol/**/Test*.java"/>
+                </fileset>
+            </batchtest>
+            <sysproperty key="verbose" value="false" />
+        </junit>
+    </target>
+  
+</project>

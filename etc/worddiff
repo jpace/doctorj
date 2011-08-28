@@ -1,0 +1,11 @@
+#!/usr/bin/ruby -w
+# -*- ruby -*-
+
+theirs = IO.readlines(ARGV.shift || "/usr/share/dict/words")
+mine   = IO.readlines(ARGV.shift || "/home/jpace/proj/doctorjj/etc/words.en_US")
+
+mine.reject! { |x| x.index(/\'s$/) }
+
+diff = (mine - theirs).select { |x| x.index(/^[a-z]/) && x.length > 3 }
+
+puts diff
