@@ -26,11 +26,6 @@ public class JavadocAnalyzer extends JavaParserVisitorAdapter
         return null;
     }
 
-    public Object visit(ASTModifiers node, Object data) 
-    {
-        return visit((SimpleJavaNode)node, data);
-    }
-
     public Object visit(ASTExtendsList node, Object data) 
     {
         return visit((SimpleJavaNode)node, data);
@@ -199,11 +194,6 @@ public class JavadocAnalyzer extends JavaParserVisitorAdapter
         return visit((SimpleJavaNode)node, data);
     }
 
-    public Object visit(ASTEnumElement node, Object data) 
-    {
-        return visit((SimpleJavaNode)node, data);
-    }
-
     public Object visit(ASTAssertStatement node, Object data) 
     {
         return visit((SimpleJavaNode)node, data);
@@ -220,11 +210,6 @@ public class JavadocAnalyzer extends JavaParserVisitorAdapter
     }
 
     public Object visit(ASTTypeDeclaration node, Object data) 
-    {
-        return visit((SimpleJavaNode)node, data);
-    }
-
-    public Object visit(ASTMethodDeclarationLookahead node, Object data) 
     {
         return visit((SimpleJavaNode)node, data);
     }
@@ -406,11 +391,6 @@ public class JavadocAnalyzer extends JavaParserVisitorAdapter
     }
 
     public Object visit(ASTUnaryExpressionNotPlusMinus node, Object data) 
-    {
-        return visit((SimpleJavaNode)node, data);
-    }
-
-    public Object visit(ASTCastLookahead node, Object data) 
     {
         return visit((SimpleJavaNode)node, data);
     }
