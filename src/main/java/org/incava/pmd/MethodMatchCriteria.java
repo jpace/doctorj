@@ -1,31 +1,28 @@
-package org.incava.java;
+package org.incava.pmd;
 
 import java.util.*;
 import net.sourceforge.pmd.ast.*;
+import org.incava.java.MatchCriteria;
 
 
 /**
  * A criterion (some criteria) for matching nodes.
  */
-public class MethodMatchCriteria extends MatchCriteria
-{
-    private ASTMethodDeclaration meth;
+public class MethodMatchCriteria extends MatchCriteria {
+    
+    private final ASTMethodDeclaration meth;
 
     private String name = null;
 
     private ASTFormalParameters params = null;
     
-    public MethodMatchCriteria(ASTMethodDeclaration m)
-    {
+    public MethodMatchCriteria(ASTMethodDeclaration m) {
         meth = m;
     }
 
-    public double compare(MatchCriteria other)
-    {
+    public double compare(MatchCriteria other) {
         if (other instanceof MethodMatchCriteria) {
             MethodMatchCriteria mmother = (MethodMatchCriteria)other;
-            
-            // System.out.println("comparing " + hashCode() + " <=> " + other.hashCode());
             
             String aName = getName();
             String bName = mmother.getName();
@@ -44,23 +41,22 @@ public class MethodMatchCriteria extends MatchCriteria
             }
 
             return score;
-
         }
         else {
             return super.compare(other);
         }
     }
 
-    protected String getName()
-    {
+    protected String getName() {
+        // lazy evaluation
         if (name == null) {
             name = MethodUtil.getName(meth).image;
         }
         return name;
     }
 
-    protected ASTFormalParameters getParameters()
-    {
+    protected ASTFormalParameters getParameters() {
+        // lazy evaluation
         if (params == null) {
             params = MethodUtil.getParameters(meth);
         }

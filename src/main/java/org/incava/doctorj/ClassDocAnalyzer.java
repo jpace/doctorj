@@ -11,21 +11,18 @@ import org.incava.javadoc.*;
  */
 public class ClassDocAnalyzer extends TypeDocAnalyzer
 {
-    public ClassDocAnalyzer(Report r, ASTClassOrInterfaceDeclaration node)
-    {
+    public ClassDocAnalyzer(Report r, ASTClassOrInterfaceDeclaration node) {
         super(r, node);
     }
 
-    public String getItemType() 
-    {
+    public String getItemType() {
         return "class";
     }
 
     /**
      * Returns the valid tags, as strings, for classes.
      */
-    protected List getValidTags()
-    {
+    protected List getValidTags() {
         return JavadocTags.getValidClassTags();
     }
 

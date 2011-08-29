@@ -1,20 +1,18 @@
-package org.incava.java;
+package org.incava.pmd;
 
 import java.util.*;
 import net.sourceforge.pmd.ast.*;
-import org.incava.lang.StringExt;
+import org.incava.ijdk.lang.StringExt;
 
 
 /**
  * Miscellaneous routines for functions (ctors and methods).
  */
-public class FunctionUtil extends SimpleNodeUtil
-{
+public class FunctionUtil extends SimpleNodeUtil {
     /**
      * Returns the throws token, or null if none.
      */
-    public static Token getThrows(SimpleNode function)
-    {
+    public static Token getThrows(SimpleNode function) {
         Token tk = function.getFirstToken();
         while (true) {
             if (tk.kind == JavaParserConstants.THROWS) {
@@ -33,10 +31,9 @@ public class FunctionUtil extends SimpleNodeUtil
     /**
      * Returns the throws list, or null if none.
      */
-    public static ASTNameList getThrowsList(SimpleNode function)
-    {
-        List children = getChildren(function);
-        Iterator it = children.iterator();
+    public static ASTNameList getThrowsList(SimpleNode function) {
+        List<Object> children = getChildren(function);
+        Iterator<Object> it = children.iterator();
         while (it.hasNext()) {
             Object obj = it.next();
             if (obj instanceof Token && ((Token)obj).kind == JavaParserConstants.THROWS && it.hasNext()) {
@@ -47,10 +44,9 @@ public class FunctionUtil extends SimpleNodeUtil
         return null;
     }
 
-    protected static String toFullName(Token tk, ASTFormalParameters params)
-    {
-        List   types = ParameterUtil.getParameterTypes(params);
-        String args  = StringExt.join(types, ", ");
+    protected static String toFullName(Token tk, ASTFormalParameters params) {
+        List<String> types = ParameterUtil.getParameterTypes(params);
+        String       args  = StringExt.join(types, ", ");
         return tk.image + "(" + args + ")";
     }
     

@@ -12,18 +12,15 @@ class QlLevel implements Comparable
 {
     private Integer level = null;
     
-    public QlLevel(int level)
-    {
+    public QlLevel(int level) {
         this(new Integer(level));
     }
 
-    public QlLevel(Integer level)
-    {
+    public QlLevel(Integer level) {
         this.level = level;
     }
 
-    public int compareTo(Object other)
-    {
+    public int compareTo(Object other) {
         if (other instanceof QlLevel) {
             QlLevel qother = (QlLevel)other;
             return this.level.compareTo(qother.level);
@@ -33,13 +30,11 @@ class QlLevel implements Comparable
         }
     }
 
-    public boolean equals(Object other)
-    {
+    public boolean equals(Object other) {
         return compareTo(other) == 0;
     }
 
-    public String toString()
-    {
+    public String toString() {
         return level.toString();
     }
 

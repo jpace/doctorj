@@ -5,8 +5,8 @@ import net.sourceforge.pmd.ast.JavaParserConstants;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.Token;
 import org.incava.analysis.Report;
-import org.incava.java.SimpleNodeUtil;
 import org.incava.javadoc.*;
+import org.incava.pmd.SimpleNodeUtil;
 import org.incava.text.LineMapping;
 import org.incava.text.Location;
 
@@ -40,15 +40,13 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer
 
     private SimpleNode _node;
     
-    public ItemDocAnalyzer(Report r, SimpleNode node)
-    {
+    public ItemDocAnalyzer(Report r, SimpleNode node) {
         super(r);
         
         _node = node;
     }
 
-    public static void addDictionary(String dictName)
-    {
+    public static void addDictionary(String dictName) {
         spellChecker.addDictionary(dictName);
     }
 
@@ -57,12 +55,11 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer
      * the whitespace immediately preceding this node. Other nodes might be
      * nested under the node with the preceding Javadoc.
      */
-    protected JavadocNode getJavadoc()
-    {
-        SimpleNode  sn      = getEnclosingNode();
+    protected JavadocNode getJavadoc() {
+        SimpleNode  sn = getEnclosingNode();
         JavadocNode javadoc = null;
-        Token       first   = sn.getFirstToken();
-        Token       st      = first.specialToken;
+        Token       first = sn.getFirstToken();
+        Token       st = first.specialToken;
         
         while (javadoc == null && st != null) {
             javadoc = JavadocNode.parse(st.image, st.beginLine, st.beginColumn);
@@ -81,8 +78,7 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer
      * Runs the analysis. Should be invoked by either the constructors of
      * concrete, final subclasses, or by the client.
      */
-    public void run()
-    {
+    public void run() {
         SimpleNode  encNode = getEnclosingNode();
         JavadocNode javadoc = getJavadoc();
         
@@ -123,8 +119,7 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer
      */
     protected abstract void addUndocumentedViolation(String desc);
 
-    protected void checkJavadoc(JavadocNode javadoc)
-    {
+    protected void checkJavadoc(JavadocNode javadoc) {
         // check for short summary sentence and spell check the description.
 
         SimpleNode encNode = getEnclosingNode();
@@ -137,8 +132,8 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer
             else {
                 String descStr = desc.text;
                 // tr.Ace.log("desc: '" + descStr + "'");
-                int    dotPos  = descStr.indexOf('.');
-                int    len     = descStr.length();
+                int    dotPos = descStr.indexOf('.');
+                int    len = descStr.length();
                 
                 // tr.Ace.log("dotPos: " + dotPos);
 
@@ -149,20 +144,20 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer
 
                 if (dotPos == -1) {
                     LineMapping lines = new LineMapping(descStr, desc.start.line, desc.start.column);
-                    Location    end   = lines.getLocation(descStr.length() - 1);
+                    Location    end = lines.getLocation(descStr.length() - 1);
                     addViolation(MSG_SUMMARY_SENTENCE_DOES_NOT_END_WITH_PERIOD, desc.start, end);
                 }
                 else {
                     String summarySentence = descStr.substring(0, dotPos + 1);
                     tr.Ace.log("summary: '" + summarySentence + "'");
-                    int    nSpaces         = 0;
+                    int    nSpaces = 0;
                     int    spacePos        = -1;
                     while ((spacePos = summarySentence.indexOf(' ', spacePos + 1)) != -1) {
                         ++nSpaces;
                     }
                     if (nSpaces < 3) {
                         LineMapping lines = new LineMapping(descStr, desc.start.line, desc.start.column);
-                        Location    end   = lines.getLocation(dotPos);
+                        Location    end = lines.getLocation(dotPos);
                         addViolation(MSG_SUMMARY_SENTENCE_TOO_SHORT, desc.start, end);
                     }
                 }
@@ -179,7 +174,7 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer
             int previousOrderIndex = -1;
             JavadocTaggedNode[] taggedComments = javadoc.getTaggedComments();
             for (int ti = 0; ti < taggedComments.length; ++ti) {
-                JavadocTag tag   = taggedComments[ti].getTag();
+                JavadocTag tag = taggedComments[ti].getTag();
                 int        index = JavadocTags.getIndex(tag.text);
                 tr.Ace.log("index of '" + tag.text + "': " + index);
                 if (index < previousOrderIndex) {
@@ -196,7 +191,7 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer
         // check for proper tags for this type of item
         if (isCheckable(encNode, CHKLVL_VALID_TAGS)) {
             tr.Ace.log("checking for valid tags");
-            List                validTags      = getValidTags();
+            List                validTags = getValidTags();
             JavadocTaggedNode[] taggedComments = javadoc.getTaggedComments();
             for (int ti = 0; ti < taggedComments.length; ++ti) {
                 JavadocTag tag = taggedComments[ti].getTag();
@@ -231,8 +226,7 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer
         }
     }
 
-    protected void checkForTagDescription(JavadocTaggedNode taggedNode, String msg)
-    {
+    protected void checkForTagDescription(JavadocTaggedNode taggedNode, String msg) {
         JavadocElement desc = taggedNode.getDescription();
         if (desc == null) {
             JavadocTag tag = taggedNode.getTag();
@@ -240,8 +234,7 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer
         }
     }
 
-    protected SimpleNode getNode()
-    {
+    protected SimpleNode getNode() {
         return _node;
     }
 

@@ -4,8 +4,8 @@ import java.util.Iterator;
 import java.util.List;
 import net.sourceforge.pmd.ast.*;
 import org.incava.analysis.Report;
-import org.incava.java.SimpleNodeUtil;
 import org.incava.javadoc.*;
+import org.incava.pmd.SimpleNodeUtil;
 
 
 /**
@@ -15,23 +15,21 @@ public abstract class FunctionDocAnalyzer extends ItemDocAnalyzer
 {
     public final static String MSG_SERIALDATA_WITHOUT_DESCRIPTION = "@serialData without description";
     
-    public FunctionDocAnalyzer(Report r, SimpleNode node)
-    {
+    public FunctionDocAnalyzer(Report r, SimpleNode node) {
         super(r, node);
     }
 
-    protected void checkJavadoc(JavadocNode javadoc)
-    {
+    protected void checkJavadoc(JavadocNode javadoc) {
         super.checkJavadoc(javadoc);
 
-        SimpleNode encNode  = getEnclosingNode();
+        SimpleNode encNode = getEnclosingNode();
         int        chkLevel = SimpleNodeUtil.getLevel(encNode);
 
         ExceptionDocAnalyzer eda = new ExceptionDocAnalyzer(getReport(), javadoc, getNode(), chkLevel);
         eda.run();
 
         ASTFormalParameters  params = getParameterList();
-        ParameterDocAnalyzer pda    = new ParameterDocAnalyzer(getReport(), javadoc, getNode(), params, chkLevel);
+        ParameterDocAnalyzer pda = new ParameterDocAnalyzer(getReport(), javadoc, getNode(), params, chkLevel);
         pda.run();
 
         if (javadoc == null) {

@@ -9,17 +9,15 @@ import java.util.*;
  */
 public abstract class NonBooleanOption extends Option
 {
-    public NonBooleanOption(String longName, String description)
-    {
+    public NonBooleanOption(String longName, String description) {
         super(longName, description);
     }
 
     /**
-     * Sets from a list of command-line arguments. Returns whether this option
+     * Sets from a list of command - line arguments. Returns whether this option
      * could be set from the current head of the list.
      */
-    public boolean set(String arg, List args) throws OptionException
-    {
+    public boolean set(String arg, List<? extends Object> args) throws OptionException {
         // String arg = (String)args.get(0);
 
         tr.Ace.log("considering: " + arg);

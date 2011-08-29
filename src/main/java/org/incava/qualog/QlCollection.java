@@ -7,8 +7,7 @@ import java.util.*;
 /**
  * Wraps Collections for output.
  */
-public class QlCollection
-{
+public class QlCollection {
     public static boolean stack(QlLevel level, 
                                 ANSIColor[] msgColors,
                                 String name,
@@ -16,8 +15,7 @@ public class QlCollection
                                 ANSIColor fileColor,
                                 ANSIColor classColor,
                                 ANSIColor methodColor,
-                                int numFrames)
-    {
+                                int numFrames) {
         Object[] ary = c.toArray();
         return QlObjectArray.stack(level, msgColors, name, ary, fileColor, classColor, methodColor, numFrames);
     }

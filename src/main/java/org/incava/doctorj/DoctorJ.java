@@ -5,7 +5,7 @@ import java.util.*;
 import net.sourceforge.pmd.ast.*;
 import org.incava.analysis.*;
 import org.incava.io.Find;
-import org.incava.java.SimpleNodeUtil;
+import org.incava.pmd.SimpleNodeUtil;
 import org.incava.util.TimedEvent;
 import org.incava.util.TimedEventSet;
 
@@ -28,8 +28,7 @@ public class DoctorJ
 
     private int _nFiles;
 
-    public DoctorJ(String[] args)
-    {
+    public DoctorJ(String[] args) {
         tr.Ace.set(true, 25, 4, 20, 25);
         tr.Ace.setOutput(tr.Ace.VERBOSE, tr.Ace.LEVEL4);
         tr.Ace.setOutput(tr.Ace.QUIET,   tr.Ace.LEVEL2);
@@ -37,7 +36,7 @@ public class DoctorJ
         _exitValue = 0;
         _nFiles = 0;
 
-        Options  opts  = Options.get();
+        Options  opts = Options.get();
         String[] names = opts.process(args);
 
         tr.Ace.log("args", args);
@@ -68,13 +67,11 @@ public class DoctorJ
         }
     }
 
-    public int getExitValue()
-    {
+    public int getExitValue() {
         return _exitValue;
     }
 
-    protected void process(String name)
-    {
+    protected void process(String name) {
         File fd = new File(name);
         if (fd.exists()) {
             if (fd.isDirectory()) {
@@ -105,8 +102,7 @@ public class DoctorJ
         }
     }
     
-    protected void processFile(String fileName)
-    {
+    protected void processFile(String fileName) {
         ++_nFiles;
 
         if (initParser(fileName)) {
@@ -117,8 +113,7 @@ public class DoctorJ
         }
     }
 
-    protected boolean initParser(String fileName)
-    {
+    protected boolean initParser(String fileName) {
         tr.Ace.log("fileName", fileName);
 
         TimedEvent init = new TimedEvent(_totalInit);
@@ -173,13 +168,12 @@ public class DoctorJ
         }
     }
 
-    protected ASTCompilationUnit parse(String fileName)
-    {
+    protected ASTCompilationUnit parse(String fileName) {
         tr.Ace.log("running parser");
             
         try {
             TimedEvent         parse = new TimedEvent(_totalParse);
-            ASTCompilationUnit cu    = _parser.CompilationUnit();
+            ASTCompilationUnit cu = _parser.CompilationUnit();
             parse.end();
 
             tr.Ace.log("parse: " + parse.duration);
@@ -194,8 +188,7 @@ public class DoctorJ
         }
     }
 
-    protected void analyze(ASTCompilationUnit cu)
-    {
+    protected void analyze(ASTCompilationUnit cu) {
         TimedEvent analysis = new TimedEvent(_totalAnalysis);
         cu.jjtAccept(_analyzer, null);
 
@@ -205,8 +198,7 @@ public class DoctorJ
         tr.Ace.log("analysis: " + analysis.duration);
     }
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         tr.Ace.setVerbose(false);
         
         DoctorJ drj = new DoctorJ(args);

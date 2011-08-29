@@ -7,8 +7,7 @@ import java.util.*;
 /**
  * Wraps Java maps for output.
  */
-public class QlMap
-{
+public class QlMap {
     public static boolean stack(QlLevel level, 
                                 ANSIColor[] msgColors,
                                 String name,
@@ -16,8 +15,7 @@ public class QlMap
                                 ANSIColor fileColor,
                                 ANSIColor classColor,
                                 ANSIColor methodColor,
-                                int numFrames)
-    {
+                                int numFrames) {
         Set keySet = map.keySet();
         Object[] keys = keySet.toArray();
         

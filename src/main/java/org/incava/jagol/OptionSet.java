@@ -7,61 +7,56 @@ import java.util.*;
 /**
  * A group of options.
  */
-public class OptionSet
-{
-    private List options = new ArrayList();
+public class OptionSet {
+    private final List<Option> options;
 
-    private List rcFiles = new ArrayList();
+    private final List<String> rcFileNames;
 
-    private String appName;
+    private final String appName;
     
-    private String description;
+    private final String description;
     
-    public OptionSet(String appName, String description)
-    {
+    public OptionSet(String appName, String description) {
         this.appName = appName;
         this.description = description;
+        this.options = new ArrayList<Option>();
+        this.rcFileNames = new ArrayList<String>();
     }
     
     /**
      * Returns the application name.
      */
-    public String getAppName()
-    {
+    public String getAppName() {
         return appName;
     }
 
     /**
      * Returns the description.
      */
-    public String getDescription()
-    {
+    public String getDescription() {
         return description;
     }
 
     /**
      * Adds an options to this set.
      */
-    public void add(Option opt)
-    {
+    public void add(Option opt) {
         options.add(opt);
     }
 
     /**
      * Adds a run control file to be processed.
      */
-    public void addRunControlFile(String name)
-    {
+    public void addRunControlFile(String name) {
         tr.Ace.log("adding rc file: " + name);
-        rcFiles.add(name);
+        rcFileNames.add(name);
     }
 
     /**
      * Processes the run control files and command line arguments. Returns the
      * arguments that were not consumed by option processing.
      */
-    public String[] process(String[] args)
-    {
+    public String[] process(String[] args) {
         tr.Ace.log("args: " + args);
 
         processRunControlFiles();
@@ -72,12 +67,9 @@ public class OptionSet
     /**
      * Processes the run control files, if any.
      */
-    protected void processRunControlFiles()
-    {
+    protected void processRunControlFiles() {
         tr.Ace.log("");
-        Iterator it = rcFiles.iterator();
-        while (it.hasNext()) {
-            String rcFileName = (String)it.next();
+        for (String rcFileName : rcFileNames) {
             tr.Ace.log("processing: " + rcFileName);
             try {
                 Properties props = new Properties();
@@ -95,10 +87,11 @@ public class OptionSet
                     String key   = (String)pit.next();
                     String value = (String)props.get(key);
                     tr.Ace.log(key + " => " + value);
-                    Iterator oit = options.iterator();
+                    
+                    Iterator<Option> oit = options.iterator();
                     boolean processed = false;
                     while (!processed && oit.hasNext()) {
-                        Option opt = (Option)oit.next();
+                        Option opt = oit.next();
                         tr.Ace.log("option: " + opt.getLongName());
                         if (opt.getLongName().equals(key)) {
                             tr.Ace.log("option matches: " + opt);
@@ -125,19 +118,15 @@ public class OptionSet
      * Processes the command line arguments. Returns the arguments that were not
      * consumed by option processing.
      */
-    protected String[] processCommandLine(String[] args)
-    {
+    protected String[] processCommandLine(String[] args) {
         tr.Ace.log("args: " + args);
         
-        List argList = new ArrayList();
-        for (int i = 0; i < args.length; ++i) {
-            argList.add(args[i]);
-        }
+        List<String> argList = new ArrayList<String>(Arrays.asList(args));
 
         tr.Ace.log("arg list: " + argList);
 
-        while (argList.size() > 0) {
-            String arg = (String)argList.get(0);
+        while (!argList.isEmpty()) {
+            String arg = argList.get(0);
             
             tr.Ace.log("arg: " + arg);
             
@@ -149,10 +138,10 @@ public class OptionSet
                 tr.Ace.log("got leading dash");
                 argList.remove(0);
                 
-                Iterator oit = options.iterator();
+                Iterator<Option> oit = options.iterator();
                 boolean processed = false;
                 while (!processed && oit.hasNext()) {
-                    Option opt = (Option)oit.next();
+                    Option opt = oit.next();
                     tr.Ace.log("option: " + opt);
                     try {
                         processed = opt.set(arg, argList);
@@ -169,7 +158,7 @@ public class OptionSet
                     if (arg.equals("--help") || arg.equals("-h")) {
                         showUsage();
                     }
-                    else if (rcFiles.size() > 0 && arg.equals("--help-config")) {
+                    else if (!rcFileNames.isEmpty() && arg.equals("--help - config")) {
                         showConfig();
                     }
                     else {
@@ -184,7 +173,7 @@ public class OptionSet
             }
         }
 
-        String[] unprocessed = (String[])argList.toArray(new String[0]);
+        String[] unprocessed = argList.toArray(new String[0]);
         
         tr.Ace.log("args", args);
         tr.Ace.log("unprocessed", unprocessed);
@@ -192,8 +181,7 @@ public class OptionSet
         return unprocessed;
     }
 
-    protected void showUsage()
-    {
+    protected void showUsage() {
         tr.Ace.log("generating help");
 
         System.out.println("Usage: " + appName + " [options] file...");
@@ -203,11 +191,9 @@ public class OptionSet
 
         tr.Ace.log("options: " + options);
 
-        List tags = new ArrayList();
+        List<String> tags = new ArrayList<String>();
 
-        Iterator it = options.iterator();
-        while (it.hasNext()) {
-            Option opt = (Option)it.next();
+        for (Option opt : options) {
             tr.Ace.log("opt: " + opt);
             StringBuffer buf = new StringBuffer("  ");
 
@@ -224,46 +210,37 @@ public class OptionSet
         }
                         
         int widest = -1;
-        Iterator tit = tags.iterator();
-        while (tit.hasNext()) {
-            String tag = (String)tit.next();
+        for (String tag : tags) {
             widest = Math.max(tag.length(), widest);
         }
 
-        it = options.iterator();
-        tit = tags.iterator();
-        while (it.hasNext()) {
-            Option opt = (Option)it.next();
-            String tag = (String)tit.next();
+        for (int idx = 0; idx < options.size(); ++idx) {
+            Option opt = options.get(idx);
+            String tag = tags.get(idx);
             tr.Ace.log("opt: " + opt);
 
             System.out.print(tag);
-            for (int i = tag.length(); i < widest + 2; ++i) {
+            for (int ti = tag.length(); ti < widest + 2; ++ti) {
                 System.out.print(" ");
             }
 
             System.out.println(opt.getDescription());
         }
 
-        if (rcFiles.size() > 0) {
-            System.out.println("For an example configure file, run --help-config");
+        if (!rcFileNames.isEmpty()) {
+            System.out.println("For an example configure file, run --help - config");
             System.out.println();
-            System.out.println("Configuration File" + (rcFiles.size() > 1 ? "s" : "") + ":");
-            Iterator rit = rcFiles.iterator();
-            while (rit.hasNext()) {
-                String rcFileName = (String)rit.next();
+            System.out.println("Configuration File" + (rcFileNames.size() > 1 ? "s" : "") + ":");
+            for (String rcFileName : rcFileNames) {
                 System.out.println("    " + rcFileName);
             }
         }
     }
 
-    protected void showConfig()
-    {
+    protected void showConfig() {
         tr.Ace.log("generating config");
 
-        Iterator it = options.iterator();
-        while (it.hasNext()) {
-            Option opt = (Option)it.next();
+        for (Option opt : options) {
             System.out.println("# " + opt.getDescription());
             System.out.println(opt.getLongName() + " = " + opt.toString());
             System.out.println();

@@ -25,8 +25,7 @@ public class JavadocTags
 
         boolean isFieldTag;
 
-        public TagDescription(String tag, int index, boolean isTypeTag, boolean isCtorTag, boolean isMethodTag, boolean isFieldTag)
-        {
+        public TagDescription(String tag, int index, boolean isTypeTag, boolean isCtorTag, boolean isMethodTag, boolean isFieldTag) {
              this.tag = tag;
              this.index = index;
              this.isTypeTag = isTypeTag;
@@ -81,24 +80,21 @@ public class JavadocTags
         add(new TagDescription(DEPRECATED,  8,   true,    true,  true,  true));
     }
 
-    public static void add(TagDescription td)
-    {
+    public static void add(TagDescription td) {
         tags.put(td.tag, td);
     }
 
-    public static int getIndex(String tag)
-    {
+    public static int getIndex(String tag) {
         if (tags.containsKey(tag)) {
             TagDescription td = (TagDescription)tags.get(tag);
             return td.index;
         }
         else {
-            return -1;
+            return - 1;
         }
     }
 
-    public static List getTagsAtIndex(int index)
-    {
+    public static List getTagsAtIndex(int index) {
         Iterator it = tags.keySet().iterator();
         List list = new ArrayList();
         while (it.hasNext()) {
@@ -113,47 +109,40 @@ public class JavadocTags
 
     static abstract class TagCollect extends Collect 
     {
-        public TagCollect(Collection c) 
-        {
+        public TagCollect(Collection c) {
             super(c);
         }
         
-        public Object block(Object obj)
-        {
+        public Object block(Object obj) {
             return ((TagDescription)obj).tag; 
         }
     }
     
-    public static List getValidConstructorTags()
-    {
+    public static List getValidConstructorTags() {
         return new TagCollect(tags.values()) {
                 public boolean where(Object obj) { return ((TagDescription)obj).isCtorTag; }
             };
     }
 
-    public static List getValidMethodTags()
-    {
+    public static List getValidMethodTags() {
         return new TagCollect(tags.values()) {
                 public boolean where(Object obj) { return ((TagDescription)obj).isMethodTag; }
             };
     }
 
-    public static List getValidFieldTags()
-    {
+    public static List getValidFieldTags() {
         return new TagCollect(tags.values()) {
                 public boolean where(Object obj) { return ((TagDescription)obj).isFieldTag; }
             };
     }
 
-    public static List getValidInterfaceTags()
-    {
+    public static List getValidInterfaceTags() {
         return new TagCollect(tags.values()) {
                 public boolean where(Object obj) { return ((TagDescription)obj).isTypeTag; }
             };
     }
 
-    public static List getValidClassTags()
-    {
+    public static List getValidClassTags() {
         return getValidInterfaceTags();
     }
 }

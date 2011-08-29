@@ -3,8 +3,7 @@ package org.incava.qualog;
 import java.util.*;
 
 
-public class QlTimedPeriod
-{
+public class QlTimedPeriod {
     String _fileName;
 
     String _className;
@@ -17,8 +16,7 @@ public class QlTimedPeriod
 
     long _start;
 
-    public QlTimedPeriod(String fileName, String className, String methodName, int lineNumber, String message)
-    {
+    public QlTimedPeriod(String fileName, String className, String methodName, int lineNumber, String message) {
         _fileName   = fileName;
         _className  = className;
         _methodName = methodName;
@@ -27,33 +25,27 @@ public class QlTimedPeriod
         _start      = System.currentTimeMillis();
     }
 
-    public String getFileName()
-    {
+    public String getFileName() {
         return _fileName;
     }
 
-    public String getClassName()
-    {
+    public String getClassName() {
         return _className;
     }
     
-    public String getMethodName()
-    {
+    public String getMethodName() {
         return _methodName;
     }
 
-    public int getLineNumber()
-    {
+    public int getLineNumber() {
         return _lineNumber;
     }
 
-    public String getMessage()
-    {
+    public String getMessage() {
         return _message;
     }
 
-    public long getStartTime()
-    {
+    public long getStartTime() {
         return _start;
     }
 

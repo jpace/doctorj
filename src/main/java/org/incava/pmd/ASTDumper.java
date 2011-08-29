@@ -1,14 +1,13 @@
-package org.incava.java;
+
+package org.incava.pmd;
 
 import java.io.*;
 import java.util.*;
 import net.sourceforge.pmd.ast.*;
 
 
-public class ASTDumper
-{
-    public static void main(String[] args)
-    {
+public class ASTDumper {
+    public static void main(String[] args) {
         long totalInitTime  = 0;
         long totalParseTime = 0;
         long totalDumpTime  = 0;

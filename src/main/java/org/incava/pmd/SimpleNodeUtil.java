@@ -1,4 +1,4 @@
-package org.incava.java;
+package org.incava.pmd;
 
 import java.util.*;
 import net.sourceforge.pmd.ast.JavaParserConstants;
@@ -7,15 +7,13 @@ import net.sourceforge.pmd.ast.Token;
 
 
 /**
- * Miscellaneous routines for the SimpleNode.
+ * Miscellaneous functions for SimpleNode.
  */
-public class SimpleNodeUtil
-{
+public class SimpleNodeUtil {
     /**
      * Returns the token images for the node.
      */
-    public static String toString(SimpleNode node)
-    {
+    public static String toString(SimpleNode node) {
         Token tk = node.getFirstToken();
         Token last = node.getLastToken();
         String str = tk.image;
@@ -29,57 +27,29 @@ public class SimpleNodeUtil
     /**
      * Returns whether the node has any children.
      */
-    public static boolean hasChildren(SimpleNode node)
-    {
+    public static boolean hasChildren(SimpleNode node) {
         return node.jjtGetNumChildren() > 0;
     }
 
     /**
      * Returns the parent node.
      */
-    public static SimpleNode getParent(SimpleNode node)
-    {
+    public static SimpleNode getParent(SimpleNode node) {
         return (SimpleNode)node.jjtGetParent();
     }
 
     /**
      * Returns a list of children, both nodes and tokens.
      */
-    public static List getChildren(SimpleNode node)
-    {
-        List list = new ArrayList();
-        
-        Token t = new Token();
-        t.next = node.getFirstToken();
-        
-        int nChildren = node.jjtGetNumChildren();
-        for (int ord = 0; ord < nChildren; ++ord) {
-            SimpleNode n = (SimpleNode)node.jjtGetChild(ord);
-            while (true) {
-                t = t.next;
-                if (t == n.getFirstToken()) {
-                    break;
-                }
-                list.add(t);
-            }
-            list.add(n);
-            t = n.getLastToken();
-        }
-
-        while (t != node.getLastToken()) {
-            t = t.next;
-            list.add(t);
-        }
-
-        return list;
+    public static List<Object> getChildren(SimpleNode node) {
+        return getChildren(node, true, true);
     }
 
     /**
      * Returns a list of children, optionally nodes and tokens.
      */
-    public static List getChildren(SimpleNode node, boolean getNodes, boolean getTokens) 
-    {
-        List list = new ArrayList();
+    public static List<Object> getChildren(SimpleNode node, boolean getNodes, boolean getTokens) {
+        List<Object> list = new ArrayList<Object>();
         
         Token t = new Token();
         t.next = node.getFirstToken();
@@ -112,13 +82,11 @@ public class SimpleNodeUtil
         return list;
     }
 
-    public static SimpleNode findChild(SimpleNode parent, Class childType)
-    {
+    public static SimpleNode findChild(SimpleNode parent, Class childType) {
         return findChild(parent, childType, 0);
     }
 
-    public static SimpleNode findChild(SimpleNode parent, Class childType, int index)
-    {
+    public static SimpleNode findChild(SimpleNode parent, Class childType, int index) {
         if (parent != null) {
             int nChildren = parent.jjtGetNumChildren();
             if (index >= 0 && index < nChildren) {
@@ -148,20 +116,15 @@ public class SimpleNodeUtil
     /**
      * Returns a list of child tokens, non-hierarchically.
      */
-    public static List getChildrenSerially(SimpleNode node) 
-    {
-        return getChildrenSerially(node, null);
+    public static List<Token> getChildrenSerially(SimpleNode node) {
+        return getChildrenSerially(node, new ArrayList<Token>());
     }
 
     /**
      * Returns a list of child tokens, non-hierarchically.
      */
-    public static List getChildrenSerially(SimpleNode node, List list) 
-    {
-        List children = list;
-        if (children == null) {
-            children = new ArrayList();
-        }
+    public static List<Token> getChildrenSerially(SimpleNode node, List<Token> list) {
+        List<Token> children = list;
         
         Token t = new Token();
         t.next = node.getFirstToken();
@@ -189,9 +152,8 @@ public class SimpleNodeUtil
         return children;
     }
 
-    public static SimpleNode[] findChildren(SimpleNode parent, Class childType)
-    {
-        List kids = new ArrayList();
+    public static SimpleNode[] findChildren(SimpleNode parent, Class childType) {
+        List<SimpleNode> kids = new ArrayList<SimpleNode>();
         int nChildren = parent == null ? 0 : parent.jjtGetNumChildren();
         for (int i = 0; i < nChildren; ++i) {
             SimpleNode child = (SimpleNode)parent.jjtGetChild(i);
@@ -201,7 +163,7 @@ public class SimpleNodeUtil
         }
 
         if (childType == null) {
-            return (SimpleNode[])kids.toArray(new SimpleNode[0]);
+            return kids.toArray(new SimpleNode[kids.size()]);
         }
         else {
             int size = kids.size();
@@ -214,19 +176,31 @@ public class SimpleNodeUtil
     /**
      * Returns all children of the node.
      */
-    public static SimpleNode[] findChildren(SimpleNode parent)
-    {
+    public static SimpleNode[] findChildren(SimpleNode parent) {
         return findChildren(parent, null);
+    }
+
+    public static List<SimpleNode> findDescendants(SimpleNode parent, Class childType) {
+        List<SimpleNode> kids = new ArrayList<SimpleNode>();
+        int nChildren = parent == null ? 0 : parent.jjtGetNumChildren();
+        for (int i = 0; i < nChildren; ++i) {
+            SimpleNode child = (SimpleNode)parent.jjtGetChild(i);
+            if (childType == null || child.getClass().equals(childType)) {
+                kids.add(child);
+            }
+            kids.addAll(findDescendants(child, childType));
+        }
+
+        return kids;
     }
 
     /**
      * Returns the tokens for a node.
      */
-    public static List getTokens(SimpleNode node)
-    {
+    public static List<Token> getTokens(SimpleNode node) {
         // tr.Ace.log("node: " + node);
 
-        List tokens = new ArrayList();
+        List<Token> tokens = new ArrayList<Token>();
         Token tk = new Token();
         tk.next = node.getFirstToken();
 
@@ -242,12 +216,10 @@ public class SimpleNodeUtil
         return tokens;
     }
 
-    public static Token findToken(SimpleNode node, int tokenType)
-    {
-        List childTokens = getChildren(node, false, true);
-        Iterator it = childTokens.iterator();
-        while (it.hasNext()) {
-            Token tk = (Token)it.next();
+    public static Token findToken(SimpleNode node, int tokenType) {
+        List<Object> childTokens = getChildren(node, false, true);
+        for (Object obj : childTokens) {
+            Token tk = (Token)obj;
             if (tk.kind == tokenType) {
                 return tk;
             }
@@ -259,8 +231,7 @@ public class SimpleNodeUtil
      * Returns whether the node has a matching token, occurring prior to any
      * non-tokens (i.e., before any child nodes).
      */
-    public static boolean hasLeadingToken(SimpleNode node, int tokenType)
-    {
+    public static boolean hasLeadingToken(SimpleNode node, int tokenType) {
         return getLeadingToken(node, tokenType) != null;
     }
 
@@ -268,8 +239,7 @@ public class SimpleNodeUtil
      * Returns whether the node has a matching token, occurring prior to any
      * non-tokens (i.e., before any child nodes).
      */
-    public static Token getLeadingToken(SimpleNode node, int tokenType)
-    {
+    public static Token getLeadingToken(SimpleNode node, int tokenType) {
         if (node.jjtGetNumChildren() > 0) {
             SimpleNode n = (SimpleNode)node.jjtGetChild(0);
 
@@ -293,9 +263,8 @@ public class SimpleNodeUtil
     /**
      * Returns the tokens preceding the first child of the node.
      */
-    public static List getLeadingTokens(SimpleNode node)
-    {
-        List list = new ArrayList();
+    public static List<Token> getLeadingTokens(SimpleNode node) {
+        List<Token> list = new ArrayList<Token>();
         
         if (node.jjtGetNumChildren() > 0) {
             SimpleNode n = (SimpleNode)node.jjtGetChild(0);
@@ -317,32 +286,30 @@ public class SimpleNodeUtil
         return list;
     }
 
-    public static void print(SimpleNode node)
-    {
+    public static void print(SimpleNode node) {
         print(node, "");
     }
 
-    public static void print(SimpleNode node, String prefix)
-    {
+    public static void print(SimpleNode node, String prefix) {
         Token first = node.getFirstToken();
         Token last  = node.getLastToken();
 
         tr.Ace.log(prefix + "<" + node.toString() + ">" + getLocation(first, last));
     }
 
-    public static void dump(SimpleNode node, String prefix) 
-    {
+    public static void dump(SimpleNode node) {
+        dump(node, "", false);
+    }
+
+    public static void dump(SimpleNode node, String prefix) {
         dump(node, prefix, false);
     }
 
-    public static void dump(SimpleNode node, String prefix, boolean showWhitespace) 
-    {
+    public static void dump(SimpleNode node, String prefix, boolean showWhitespace) {
         print(node, prefix);
 
-        List children = getChildren(node);
-        Iterator it = children.iterator();
-        while (it.hasNext()) {
-            Object obj = it.next();
+        List<Object> children = getChildren(node);
+        for (Object obj : children) {
             if (obj instanceof Token) {
                 Token tk = (Token)obj;
                 
@@ -370,8 +337,7 @@ public class SimpleNodeUtil
         }
     }  
 
-    protected static String getLocation(Token t1, Token t2)
-    {
+    protected static String getLocation(Token t1, Token t2) {
         return "[" + t1.beginLine + ":" + t1.beginColumn + ":" + t2.endLine + ":" + t2.endColumn + "]";
     }
 
@@ -379,12 +345,9 @@ public class SimpleNodeUtil
      * Returns a numeric "level" for the node. Zero is public or abstract, one
      * is protected, two is package, and three is private.
      */
-    public static int getLevel(SimpleNode node)
-    {
-        List tokens = getLeadingTokens(node);
-        Iterator tit = tokens.iterator();
-        while (tit.hasNext()) {
-            Token t = (Token)tit.next();
+    public static int getLevel(SimpleNode node) {
+        List<Token> tokens = getLeadingTokens(node);
+        for (Token t : tokens) {
             switch (t.kind) {
                 case JavaParserConstants.PUBLIC:
                     // fallthrough

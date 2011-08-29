@@ -3,16 +3,16 @@ package org.incava.doctorj;
 import java.util.List;
 import net.sourceforge.pmd.ast.*;
 import org.incava.analysis.Report;
-import org.incava.java.FieldUtil;
-import org.incava.java.SimpleNodeUtil;
 import org.incava.javadoc.*;
+import org.incava.pmd.FieldUtil;
+import org.incava.pmd.SimpleNodeUtil;
 
 
 /**
  * Analyzes Javadoc and code for fields.
  */
-public class FieldDocAnalyzer extends ItemDocAnalyzer
-{
+public class FieldDocAnalyzer extends ItemDocAnalyzer {
+
     public final static String MSG_SERIALFIELD_WITHOUT_NAME_TYPE_AND_DESCRIPTION = "@serialField without field name, type, and description.";
 
     public final static String MSG_SERIALFIELD_WITHOUT_TYPE_AND_DESCRIPTION = "@serialField without field type and description.";
@@ -21,20 +21,17 @@ public class FieldDocAnalyzer extends ItemDocAnalyzer
     
     private ASTFieldDeclaration _field;
     
-    public FieldDocAnalyzer(Report r, ASTFieldDeclaration field)
-    {
+    public FieldDocAnalyzer(Report r, ASTFieldDeclaration field) {
         super(r, field);
         
         _field = field;
     }
 
-    public String getItemType() 
-    {
+    public String getItemType() {
         return "field";
     }
     
-    protected void checkJavadoc(JavadocNode javadoc)
-    {
+    protected void checkJavadoc(JavadocNode javadoc) {
         super.checkJavadoc(javadoc);
 
         SimpleNode encNode = getEnclosingNode();
@@ -48,7 +45,7 @@ public class FieldDocAnalyzer extends ItemDocAnalyzer
                 tr.Ace.log("checking tag: " + tag);
                 if (tag.text.equals(JavadocTags.SERIALFIELD)) {
 
-                    // expecting: field-name field-type field-description
+                    // expecting: field - name field - type field - description
                     JavadocElement desc = jtn.getDescription();
                     if (desc == null) {
                         addViolation(MSG_SERIALFIELD_WITHOUT_NAME_TYPE_AND_DESCRIPTION, tag.start, tag.end);
@@ -86,8 +83,7 @@ public class FieldDocAnalyzer extends ItemDocAnalyzer
     /**
      * Returns the valid tags, as strings, for fields.
      */
-    protected List getValidTags()
-    {
+    protected List getValidTags() {
         return JavadocTags.getValidFieldTags();
     }
 
@@ -95,20 +91,18 @@ public class FieldDocAnalyzer extends ItemDocAnalyzer
      * Adds a violation for a field, with the violation pointing to the field
      * name.
      */
-    protected void addUndocumentedViolation(String desc)
-    {
+    protected void addUndocumentedViolation(String desc) {
         // reference the list of variables declared in this field.
 
         ASTVariableDeclarator[] vds = FieldUtil.getVariableDeclarators(_field);
 
         Token begin = vds[0].getFirstToken();
-        Token end   = vds[vds.length - 1].getFirstToken();
+        Token end = vds[vds.length - 1].getFirstToken();
 
         addViolation(desc, begin, end);
     }
 
-    protected SimpleNode getEnclosingNode()
-    {
+    protected SimpleNode getEnclosingNode() {
         return SimpleNodeUtil.getParent(_field);
     }
 

@@ -6,17 +6,17 @@ import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.Token;
 import org.incava.analysis.Report;
-import org.incava.java.ClassUtil;
-import org.incava.java.SimpleNodeUtil;
 import org.incava.javadoc.*;
+import org.incava.pmd.ClassUtil;
+import org.incava.pmd.SimpleNodeUtil;
 
 
 /**
  * Analyzes Javadoc and code for a type, which is a class (concrete or abstract)
  * or an interface.
  */
-public abstract class TypeDocAnalyzer extends ItemDocAnalyzer
-{
+public abstract class TypeDocAnalyzer extends ItemDocAnalyzer {
+
     /**
      * The message for an author without a name.
      */
@@ -40,8 +40,7 @@ public abstract class TypeDocAnalyzer extends ItemDocAnalyzer
     /**
      * Creates an analyzer, but does not yet run.
      */
-    public TypeDocAnalyzer(Report r, ASTClassOrInterfaceDeclaration decl)
-    {
+    public TypeDocAnalyzer(Report r, ASTClassOrInterfaceDeclaration decl) {
         super(r, decl);
         
         _decl = decl;
@@ -50,8 +49,7 @@ public abstract class TypeDocAnalyzer extends ItemDocAnalyzer
     /**
      * Checks the Javadoc against that expected by a type.
      */
-    protected void checkJavadoc(JavadocNode javadoc)
-    {
+    protected void checkJavadoc(JavadocNode javadoc) {
         super.checkJavadoc(javadoc);
 
         if (javadoc != null && isCheckable(getEnclosingNode(), CHKLVL_TAG_CONTENT)) {
@@ -76,14 +74,12 @@ public abstract class TypeDocAnalyzer extends ItemDocAnalyzer
     /**
      * Adds a violation, for something that is not documented.
      */
-    protected void addUndocumentedViolation(String desc)
-    {
+    protected void addUndocumentedViolation(String desc) {
         Token nameTk = ClassUtil.getName(_decl);
         addViolation(desc, nameTk);
     }
 
-    protected SimpleNode getEnclosingNode()
-    {
+    protected SimpleNode getEnclosingNode() {
         return SimpleNodeUtil.getParent(_decl);
     }
 

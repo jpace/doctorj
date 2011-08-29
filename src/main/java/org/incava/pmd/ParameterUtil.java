@@ -1,4 +1,4 @@
-package org.incava.java;
+package org.incava.pmd;
 
 import java.util.*;
 import net.sourceforge.pmd.ast.*;
@@ -7,17 +7,15 @@ import net.sourceforge.pmd.ast.*;
 /**
  * Miscellaneous routines for parameters.
  */
-public class ParameterUtil extends SimpleNodeUtil
-{
-    public static ASTFormalParameter[] getParameters(ASTFormalParameters params)
-    {
+public class ParameterUtil extends SimpleNodeUtil {
+
+    public static ASTFormalParameter[] getParameters(ASTFormalParameters params) {
         return (ASTFormalParameter[])findChildren(params, ASTFormalParameter.class);
     }
 
-    public static Token[] getParameterNames(ASTFormalParameters params)
-    {
+    public static Token[] getParameterNames(ASTFormalParameters params) {
         ASTFormalParameter[] fps = getParameters(params);
-        List names = new ArrayList();
+        List<Token> names = new ArrayList<Token>();
         
         for (int pi = 0; pi < fps.length; ++pi) {
             ASTFormalParameter fp = fps[pi];
@@ -25,57 +23,47 @@ public class ParameterUtil extends SimpleNodeUtil
             names.add(name);
         }
 
-        return (Token[])names.toArray(new Token[0]);
+        return names.toArray(new Token[0]);
     }
 
-    public static ASTFormalParameter getParameter(ASTFormalParameters params, int index)
-    {
+    public static ASTFormalParameter getParameter(ASTFormalParameters params, int index) {
         return (ASTFormalParameter)findChild(params, ASTFormalParameter.class, index);
     }
 
-    public static Token getParameterName(ASTFormalParameters params, int index)
-    {
+    public static Token getParameterName(ASTFormalParameters params, int index) {
         ASTFormalParameter param = getParameter(params, index);
         return getParameterName(param);
     }
 
-    public static String getParameterType(ASTFormalParameters params, int index)
-    {
+    public static String getParameterType(ASTFormalParameters params, int index) {
         ASTFormalParameter param = getParameter(params, index);
         return getParameterType(param);
     }
 
-    public static List getParameterTypes(ASTFormalParameters params)
-    {
-        List types   = new ArrayList();
+    public static List<String> getParameterTypes(ASTFormalParameters params) {
+        List<String> types = new ArrayList<String>();
         int  nParams = params.jjtGetNumChildren();
         for (int i = 0; i < nParams; ++i) {
             ASTFormalParameter param = (ASTFormalParameter)params.jjtGetChild(i);
-            String             type  = getParameterType(param);
+            String             type  = new Parameter(param).getType();
             types.add(type);
         }
         return types;
     }
 
-    public static List getParameterList(ASTFormalParameters params)
-    {
-        List paramList = new ArrayList();
-        int  nParams   = params.jjtGetNumChildren();
-
+    public static List<Parameter> getParameterList(ASTFormalParameters params) {
+        List<Parameter> paramList = new ArrayList<Parameter>();
+        int nParams = params.jjtGetNumChildren();
+        
         for (int i = 0; i < nParams; ++i) {
             ASTFormalParameter param  = getParameter(params, i);
-            String             name   = getParameterName(param).image;
-            String             type   = getParameterType(param);
-            // tr.Ace.log("type: " + type + "; name: " + name);
-            Object[]           values = new Object[] { param, type, name };
-            paramList.add(values);
+            paramList.add(new Parameter(param));
         }
 
         return paramList;
     }
 
-    public static Token getParameterName(ASTFormalParameter param)
-    {
+    public static Token getParameterName(ASTFormalParameter param) {
         if (param == null) {
             return null;
         }
@@ -85,8 +73,7 @@ public class ParameterUtil extends SimpleNodeUtil
         }
     }
 
-    public static String getParameterType(ASTFormalParameter param)
-    {
+    public static String getParameterType(ASTFormalParameter param) {
         if (param == null) {
             return null;
         }
@@ -119,25 +106,21 @@ public class ParameterUtil extends SimpleNodeUtil
         }
     }
 
-    public static int[] getMatch(List aParameters, int aIndex, List bParameters)
-    {
+    public static int[] getMatch(List<Parameter> aParameters, int aIndex, List<Parameter> bParameters) {
         int typeMatch = -1;
         int nameMatch = -1;
         
-        Object[] aValues = (Object[])aParameters.get(aIndex);
+        Parameter ap = aParameters.get(aIndex);
 
         for (int bi = 0; bi < bParameters.size(); ++bi) {
-            Object[] bValues = (Object[])bParameters.get(bi);
+            Parameter bp = bParameters.get(bi);
 
-            if (bValues == null) {
-                // tr.Ace.log("already consumed");
-            }
-            else {
-                if (aValues[1].equals(bValues[1])) {
+            if (bp != null) {
+                if (ap.getType().equals(bp.getType())) {
                     typeMatch = bi;
                 }
 
-                if (aValues[2].equals(bValues[2])) {
+                if (ap.getName().equals(bp.getName())) {
                     nameMatch = bi;
                 }
 
@@ -157,8 +140,10 @@ public class ParameterUtil extends SimpleNodeUtil
         if (bestMatch >= 0) {
             // make sure there isn't an exact match for this somewhere else in
             // aParameters
-            Object[] bValues = (Object[])bParameters.get(bestMatch);
-            int aMatch = getExactMatch(aParameters, bValues);
+            Parameter bp = bParameters.get(bestMatch);
+
+            int aMatch = getExactMatch(aParameters, bp);
+
             if (aMatch >= 0) {
                 return new int[] { -1, -1 };
             }
@@ -173,8 +158,7 @@ public class ParameterUtil extends SimpleNodeUtil
         }
     }
 
-    public static double getMatchScore(ASTFormalParameters a, ASTFormalParameters b) 
-    {
+    public static double getMatchScore(ASTFormalParameters a, ASTFormalParameters b) {
         double score;
         
         if (a.jjtGetNumChildren() == 0 && b.jjtGetNumChildren() == 0) {
@@ -187,8 +171,8 @@ public class ParameterUtil extends SimpleNodeUtil
             // (int[], double, String) <=> (String) ==> 33% (1 of 3 params)
             // (int[], double) <=> (String) ==> 0 (0 of 3)
 
-            List aParamTypes = ParameterUtil.getParameterTypes(a);
-            List bParamTypes = ParameterUtil.getParameterTypes(b);
+            List<String> aParamTypes = getParameterTypes(a);
+            List<String> bParamTypes = getParameterTypes(b);
 
             int aSize = aParamTypes.size();
             int bSize = bParamTypes.size();
@@ -229,12 +213,11 @@ public class ParameterUtil extends SimpleNodeUtil
     /**
      * Returns 0 for exact match, +1 for misordered match, -1 for no match.
      */
-    protected static int getListMatch(List aList, int aIndex, List bList)
-    {
+    protected static int getListMatch(List<String> aList, int aIndex, List<String> bList) {
         int    aSize = aList.size();
         int    bSize = bList.size();
-        String aStr  = aIndex < aSize ? (String)aList.get(aIndex) : null;
-        String bStr  = aIndex < bSize ? (String)bList.get(aIndex) : null;
+        String aStr  = aIndex < aSize ? aList.get(aIndex) : null;
+        String bStr  = aIndex < bSize ? bList.get(aIndex) : null;
         
         if (aStr == null) {
             return -1;
@@ -246,7 +229,7 @@ public class ParameterUtil extends SimpleNodeUtil
         }
         else {
             for (int bi = 0; bi < bSize; ++bi) {
-                bStr = (String)bList.get(bi);
+                bStr = bList.get(bi);
                 if (aStr.equals(bStr)) {
                     aList.set(aIndex, null);
                     bList.set(bi, null);
@@ -257,15 +240,14 @@ public class ParameterUtil extends SimpleNodeUtil
         }
     }
 
-    protected static int getExactMatch(List parameters, Object[] values)
-    {
-        for (int i = 0; i < parameters.size(); ++i) {
-            Object[] pv = (Object[])parameters.get(i);
-            if (pv == null) {
-                // tr.Ace.log("null parameters");
+    protected static int getExactMatch(List<Parameter> parameters, Parameter other) {
+        int idx = 0;
+        for (Parameter param : parameters) {
+            if (param != null && param.getType().equals(other.getType()) && param.getName().equals(other.getName())) {
+                return idx;
             }
-            else if (pv[1].equals(values[1]) && pv[2].equals(values[2])) {
-                return i;
+            else {
+                ++idx;
             }
         }
         return -1;

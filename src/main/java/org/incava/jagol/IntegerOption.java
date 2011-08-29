@@ -11,13 +11,11 @@ public class IntegerOption extends NonBooleanOption
 {
     private Integer value;
     
-    public IntegerOption(String longName, String description)
-    {
+    public IntegerOption(String longName, String description) {
         this(longName, description, null);
     }
 
-    public IntegerOption(String longName, String description, Integer value)
-    {
+    public IntegerOption(String longName, String description, Integer value) {
         super(longName, description);
         this.value = value;
     }
@@ -25,16 +23,14 @@ public class IntegerOption extends NonBooleanOption
     /**
      * Returns the value. This is null if not set.
      */
-    public Integer getValue()
-    {
+    public Integer getValue() {
         return value;
     }
 
     /**
      * Sets the value.
      */
-    public void setValue(Integer value)
-    {
+    public void setValue(Integer value) {
         this.value = value;
     }
 
@@ -51,13 +47,11 @@ public class IntegerOption extends NonBooleanOption
         }
     }
 
-    public String toString()
-    {
+    public String toString() {
         return value == null ? "" : value.toString();
     }
 
-    protected String getType()
-    {
+    protected String getType() {
         return "integer";
     }
 

@@ -3,8 +3,8 @@ package org.incava.analysis;
 import java.io.*;
 import java.util.*;
 import net.sourceforge.pmd.ast.Token;
-import org.incava.lang.StringExt;
-import org.incava.util.ANSI;
+import org.incava.ijdk.lang.StringExt;
+import org.incava.ijdk.util.ANSI;
 
 
 /**
@@ -19,7 +19,7 @@ public class ContextReport extends Report
     public static int tabWidth = 4;
 
     /**
-     * The end-of-line character/sequence for this OS.
+     * The end - of - line character/sequence for this OS.
      */
     private final static String EOLN = System.getProperty("line.separator");
 
@@ -45,8 +45,7 @@ public class ContextReport extends Report
      *
      * @param writer The writer associated with this report.
      */
-    public ContextReport(Writer writer)
-    {
+    public ContextReport(Writer writer) {
         super(writer);
     }
 
@@ -55,8 +54,7 @@ public class ContextReport extends Report
      *
      * @param os The output stream associated with this report.
      */
-    public ContextReport(OutputStream os)
-    {
+    public ContextReport(OutputStream os) {
         super(os);
     }
 
@@ -66,8 +64,7 @@ public class ContextReport extends Report
      * @param writer The writer associated with this report.
      * @param source The source code to which this report applies.
      */
-    public ContextReport(Writer writer, String source)
-    {
+    public ContextReport(Writer writer, String source) {
         super(writer, source);
     }
 
@@ -77,8 +74,7 @@ public class ContextReport extends Report
      * @param writer The writer associated with this report.
      * @param file The file, containing source code, to which this report applies.
      */
-    public ContextReport(Writer writer, File file)
-    {
+    public ContextReport(Writer writer, File file) {
         super(writer, file);
     }
 
@@ -88,8 +84,7 @@ public class ContextReport extends Report
      * @param os The output stream associated with this report.
      * @param source The source code to which this report applies.
      */
-    public ContextReport(OutputStream os, String source)
-    {
+    public ContextReport(OutputStream os, String source) {
         super(os, source);
     }
 
@@ -99,8 +94,7 @@ public class ContextReport extends Report
      * @param os The output stream associated with this report.
      * @param file The file, containing source code, to which this report applies.
      */
-    public ContextReport(OutputStream os, File file)
-    {
+    public ContextReport(OutputStream os, File file) {
         super(os, file);
     }
     
@@ -110,8 +104,7 @@ public class ContextReport extends Report
      *
      * @param file The file associated with the set of violations.
      */
-    public void reset(File file)
-    {
+    public void reset(File file) {
         super.reset(file);
         wroteFileName = false;
         contents = null;
@@ -130,8 +123,7 @@ public class ContextReport extends Report
      *
      * @param source The source code associated with the set of violations.
      */
-    public void reset(String source)
-    {
+    public void reset(String source) {
         super.reset(source);
         wroteFileName = false;
         contents = null;
@@ -145,8 +137,7 @@ public class ContextReport extends Report
      *
      * @param violation The violation to represent as a string.
      */
-    protected String toString(Violation violation)
-    {
+    protected String toString(Violation violation) {
         StringBuffer buf = new StringBuffer();
         if (!wroteFileName) {
             buf.append("In " + ANSI.BOLD + ANSI.REVERSE + fileName + ANSI.RESET + ":" + EOLN + EOLN);
@@ -158,7 +149,7 @@ public class ContextReport extends Report
                 
             try {
                 List           cont = new ArrayList();
-                BufferedReader br   = new BufferedReader(sourceReader);
+                BufferedReader br = new BufferedReader(sourceReader);
                 
                 String line = br.readLine();
                 while (line != null) {
@@ -179,10 +170,10 @@ public class ContextReport extends Report
 
         tr.Ace.log("writing: " + violation);
 
-        int beginLine   = violation.getBeginLine()   - 1;
-        int endLine     = violation.getEndLine()     - 1;
+        int beginLine = violation.getBeginLine()   - 1;
+        int endLine = violation.getEndLine()     - 1;
         int beginColumn = violation.getBeginColumn() - 1;
-        int endColumn   = violation.getEndColumn()   - 1;
+        int endColumn = violation.getEndColumn()   - 1;
         
         if (beginLine == endLine) {
             writeLine(buf, beginLine);
@@ -211,8 +202,7 @@ public class ContextReport extends Report
      * @param column The column to indent to.
      * @param ch The character with which to replace spaces and tabs.
      */
-    protected void indent(StringBuffer buf, int line, int column, char ch) 
-    {
+    protected void indent(StringBuffer buf, int line, int column, char ch) {
         buf.append("        ");
 
         // move it over for the column, replacing tabs with spaces
@@ -228,8 +218,7 @@ public class ContextReport extends Report
      * @param line The current line number.
      * @param column The column to mark to/from.
      */
-    protected void markToEndOfLine(StringBuffer buf, int line, int column)
-    {
+    protected void markToEndOfLine(StringBuffer buf, int line, int column) {
         indent(buf, line, column, ' ');
         
         int len = contents[line].length();
@@ -249,8 +238,7 @@ public class ContextReport extends Report
      * @param line The current line number.
      * @param column The column to mark to.
      */
-    protected void markToStartPosition(StringBuffer buf, int line, int column)
-    {
+    protected void markToStartPosition(StringBuffer buf, int line, int column) {
         indent(buf, line, column, '-');
 
         buf.append('>');
@@ -267,8 +255,7 @@ public class ContextReport extends Report
      * @param beginColumn The column to mark from.
      * @param endColumn The column to mark to.
      */
-    protected void underline(StringBuffer buf, int line, int beginColumn, int endColumn)
-    {
+    protected void underline(StringBuffer buf, int line, int beginColumn, int endColumn) {
         indent(buf, line, beginColumn, ' ');
         
         if (beginColumn == endColumn) {
@@ -285,14 +272,13 @@ public class ContextReport extends Report
     }
 
     /**
-     * Writes the given line, adding the line number, right-aligned. Appends the
-     * end-of-line character/sequence.
+     * Writes the given line, adding the line number, right - aligned. Appends the
+     * end - of - line character/sequence.
      *
      * @param buf The buffer to be written to.
      * @param line The current line number.
      */
-    protected void writeLine(StringBuffer buf, int line)
-    {
+    protected void writeLine(StringBuffer buf, int line) {
         StringBuffer lnBuf = new StringBuffer("" + (1 + line));
         while (lnBuf.length() < 6) {
             lnBuf.insert(0, ' ');

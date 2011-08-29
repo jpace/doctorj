@@ -11,21 +11,18 @@ import org.incava.javadoc.*;
  */
 public class InterfaceDocAnalyzer extends TypeDocAnalyzer
 {
-    public InterfaceDocAnalyzer(Report r, ASTClassOrInterfaceDeclaration node)
-    {
+    public InterfaceDocAnalyzer(Report r, ASTClassOrInterfaceDeclaration node) {
         super(r, node);
     }
 
-    public String getItemType() 
-    {
+    public String getItemType() {
         return "interface";
     }
 
     /**
      * Returns the valid tags, as strings, for interfaces.
      */
-    protected List getValidTags()
-    {
+    protected List getValidTags() {
         return JavadocTags.getValidInterfaceTags();
     }
 

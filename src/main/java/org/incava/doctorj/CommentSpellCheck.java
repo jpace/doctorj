@@ -10,8 +10,7 @@ public class CommentSpellCheck
 {
     public static CommentSpellCheck instance = null;
 
-    public static CommentSpellCheck getInstance()
-    {
+    public static CommentSpellCheck getInstance() {
         if (instance == null) {
             instance = new CommentSpellCheck();
         }
@@ -37,32 +36,28 @@ public class CommentSpellCheck
      */
     private int _pos;
     
-    protected CommentSpellCheck()
-    {
+    protected CommentSpellCheck() {
         _checker = new NoCaseSpellChecker();
         _canCheck = false;
     }
 
-    public boolean addDictionary(String dictionary)
-    {
+    public boolean addDictionary(String dictionary) {
         _canCheck = _checker.addDictionary(dictionary) || _canCheck;
         return _canCheck;
     }
 
-    public void addWord(String word)
-    {
+    public void addWord(String word) {
         _checker.addWord(word);
         _canCheck = true;
     }
 
-    public void check(String description)
-    {
+    public void check(String description) {
         if (_canCheck) {
             // tr.Ace.log("checking '" + description + "'");
 
             _desc = description;
-            _len  = _desc.length();
-            _pos  = 0;
+            _len = _desc.length();
+            _pos = 0;
     
             while (_pos < _len) {
                 skipToWord();
@@ -80,8 +75,7 @@ public class CommentSpellCheck
         }
     }
 
-    protected void skipSection(String section)
-    {
+    protected void skipSection(String section) {
         // tr.Ace.log("section: " + section);
         if (consume("<" + section + ">")) {
             // tr.Ace.log("got section: " + section);
@@ -89,30 +83,26 @@ public class CommentSpellCheck
         }
     }
     
-    protected void skipLink()
-    {
+    protected void skipLink() {
         if (consume("{@link")) {
             consumeTo("}");
         }
     }
 
-    protected void skipBlanks()
-    {
+    protected void skipBlanks() {
         while (_pos + 2 < _len && _desc.charAt(_pos) != '<' && !_desc.substring(_pos, _pos + 2).equals("{@") && !Character.isLetterOrDigit(_desc.charAt(_pos))) {
             ++_pos;
         }
     }
     
-    protected void skipToWord()
-    {
+    protected void skipToWord() {
         skipSection("code");
         skipSection("pre");
         skipLink();
         consume("&nbsp;");
     }
 
-    protected void checkWord(String word, int position)
-    {
+    protected void checkWord(String word, int position) {
         // tr.Ace.log("checking word '" + word + "' at position " + position);
 
         Map nearMatches = new TreeMap();
@@ -122,8 +112,7 @@ public class CommentSpellCheck
         }
     }
 
-    protected void wordMisspelled(String word, int position, Map nearMatches)
-    {
+    protected void wordMisspelled(String word, int position, Map nearMatches) {
         int nPrinted = 0;
         final int printGoal = 15;
         for (int i = 0; nPrinted < printGoal && i < 4; ++i) { // 4 == max edit distance
@@ -142,8 +131,7 @@ public class CommentSpellCheck
         }
     }
 
-    protected boolean consume(String what)
-    {
+    protected boolean consume(String what) {
         skipBlanks();
         if (_pos + what.length() < _len && _desc.substring(_pos).startsWith(what)) {
             _pos += what.length();
@@ -154,16 +142,14 @@ public class CommentSpellCheck
         }
     }
 
-    protected void consumeTo(String what)
-    {
+    protected void consumeTo(String what) {
         int _len = _desc.length();
         while (_pos < _len && _pos + what.length() < _len && !_desc.substring(_pos).startsWith(what)) {
             ++_pos;
         }
     }
 
-    protected void checkCurrentWord()
-    {
+    protected void checkCurrentWord() {
         StringBuffer word = new StringBuffer();
         word.append(_desc.charAt(_pos));
         
@@ -227,8 +213,7 @@ public class CommentSpellCheck
         }
     }
 
-    protected void skipThroughWord()
-    {
+    protected void skipThroughWord() {
         ++_pos;
         while (_pos < _len && !Character.isWhitespace(_desc.charAt(_pos))) {
             ++_pos;

@@ -3,27 +3,22 @@ package org.incava.qualog;
 import java.util.*;
 
 
-public class QlTimer
-{
-    private List periods = null;
+public class QlTimer {
+    private final List<QlTimedPeriod> periods;
 
-    public QlTimer()
-    {
-        periods = new ArrayList();
+    public QlTimer() {
+        periods = new ArrayList<QlTimedPeriod>();
     }
 
-    public boolean start()
-    {
+    public boolean start() {
         return start(null);
     }
 
-    public boolean end()
-    {
+    public boolean end() {
         return end(null);        
     }
 
-    public boolean start(String msg)
-    {
+    public boolean start(String msg) {
         StackTraceElement ste = getFrame();
 
         String className  = ste.getClassName();
@@ -37,8 +32,7 @@ public class QlTimer
         return true;
     }
 
-    public boolean end(String msg)
-    {
+    public boolean end(String msg) {
         long endTime = System.currentTimeMillis();
 
         StackTraceElement ste = getFrame();
@@ -51,11 +45,10 @@ public class QlTimer
         String fileName      = ste.getFileName();
         int    bestMatchIdx  = -1;
         int    bestMatchness = -1;
-
-        Iterator it = periods.iterator();
-        for (int idx = 0; it.hasNext(); ++idx) {
-            Object        obj       = it.next();
-            QlTimedPeriod qtp       = (QlTimedPeriod)obj;
+        
+        Iterator<QlTimedPeriod> pit = periods.iterator();
+        for (int idx = 0; pit.hasNext(); ++idx) {
+            QlTimedPeriod qtp       = pit.next();
             int           matchness = 0;
             
             matchness += qtp.getMessage() != null && msg.equals(qtp.getMessage()) ? 1 : 0;
@@ -74,7 +67,7 @@ public class QlTimer
         // System.out.println("best match idx: " + bestMatchIdx);
 
         if (bestMatchIdx >= 0) {
-            QlTimedPeriod qtp     = (QlTimedPeriod)periods.remove(bestMatchIdx);
+            QlTimedPeriod qtp     = periods.remove(bestMatchIdx);
             long          elapsed = endTime - qtp.getStartTime();
             StringBuffer  buf     = new StringBuffer();
 
@@ -108,8 +101,7 @@ public class QlTimer
         return true;
     }
 
-    protected StackTraceElement getFrame()
-    {
+    protected StackTraceElement getFrame() {
         StackTraceElement[] stack = (new Exception("")).getStackTrace();
         int                 stIdx = Qualog.findStackStart(stack);
         StackTraceElement   ste   = stack[stIdx];
@@ -117,8 +109,7 @@ public class QlTimer
         return ste;
     }
 
-    public String format(long duration)
-    {
+    public String format(long duration) {
         StringBuffer buf = new StringBuffer();
         if (duration < 10000) {
             buf.append(Long.toString(duration));

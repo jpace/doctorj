@@ -7,18 +7,17 @@ import java.util.*;
 /**
  * Wraps Iterators for output.
  */
-public class QlIterator
-{
-    public static boolean stack(QlLevel level, 
-                                ANSIColor[] msgColors,
-                                String name,
-                                Iterator it,
-                                ANSIColor fileColor,
-                                ANSIColor classColor,
-                                ANSIColor methodColor,
-                                int numFrames)
-    {
-        Collection ary = new ArrayList();
+public class QlIterator {
+
+    public static <T> boolean stack(QlLevel level, 
+                                    ANSIColor[] msgColors,
+                                    String name,
+                                    Iterator<T> it,
+                                    ANSIColor fileColor,
+                                    ANSIColor classColor,
+                                    ANSIColor methodColor,
+                                    int numFrames) {
+        Collection<T> ary = new ArrayList<T>();
         while (it.hasNext()) {
             ary.add(it.next());
         }

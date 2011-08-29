@@ -7,17 +7,14 @@ import java.util.*;
 /**
  * Represents an option that is an boolean.
  */
-public class BooleanOption extends Option
-{
+public class BooleanOption extends Option {
     private Boolean value;
     
-    public BooleanOption(String longName, String description)
-    {
+    public BooleanOption(String longName, String description) {
         this(longName, description, null);
     }
 
-    public BooleanOption(String longName, String description, Boolean value)
-    {
+    public BooleanOption(String longName, String description, Boolean value) {
         super(longName, description);
         this.value = value;
     }
@@ -25,24 +22,21 @@ public class BooleanOption extends Option
     /**
      * Returns the value. This is null if it has not been set.
      */
-    public Boolean getValue()
-    {
+    public Boolean getValue() {
         return value;
     }
 
     /**
      * Sets the value.
      */
-    public void setValue(Boolean value)
-    {
+    public void setValue(Boolean value) {
         this.value = value;
     }
 
     /**
      * Sets the value from the string, for a boolean type.
      */
-    public void setValue(String value) throws InvalidTypeException
-    {
+    public void setValue(String value) throws InvalidTypeException {
         tr.Ace.log("value: '" + value + "'");
         String lcvalue = value.toLowerCase();
         if (lcvalue.equals("yes") || lcvalue.equals("true")) {
@@ -57,11 +51,10 @@ public class BooleanOption extends Option
     }
 
     /**
-     * Sets from a list of command-line arguments. Returns whether this option
+     * Sets from a list of command - line arguments. Returns whether this option
      * could be set from the current head of the list.
      */
-    public boolean set(String arg, List args) throws OptionException
-    {
+    public boolean set(String arg, List<? extends Object> args) throws OptionException {
         tr.Ace.log("arg: " + arg + "; args: " + args);
         
         if (arg.equals("--" + longName)) {
@@ -82,8 +75,7 @@ public class BooleanOption extends Option
         return true;
     }
 
-    public String toString()
-    {
+    public String toString() {
         return value == null ? "" : value.toString();
     }
 

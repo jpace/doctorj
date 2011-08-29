@@ -1,4 +1,4 @@
-package org.incava.java;
+package org.incava.pmd;
 
 import java.io.*;
 import java.util.*;
@@ -8,8 +8,7 @@ import net.sourceforge.pmd.ast.*;
 /**
  * Miscellaneous routines for Items.
  */
-public class ItemUtil extends SimpleNodeUtil
-{
+public class ItemUtil extends SimpleNodeUtil {
     protected static final int[] ACCESSES = new int[] {
         JavaParserConstants.PUBLIC,
         JavaParserConstants.PROTECTED,
@@ -19,8 +18,7 @@ public class ItemUtil extends SimpleNodeUtil
     /**
      * Returns the access type, as a string. "package" is the default.
      */
-    public static String getAccessString(SimpleNode node)
-    {
+    public static String getAccessString(SimpleNode node) {
         Token tk = getAccess(node);
         return tk == null ? "package" : tk.image;
     }
@@ -28,8 +26,7 @@ public class ItemUtil extends SimpleNodeUtil
     /**
      * Returns the access type, as a token.
      */
-    public static Token getAccess(SimpleNode node)
-    {
+    public static Token getAccess(SimpleNode node) {
         for (int ai = 0; ai < ACCESSES.length; ++ai) {
             int   acc = ACCESSES[ai];
             Token tk  = getLeadingToken(node, acc);

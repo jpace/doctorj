@@ -13,7 +13,7 @@ public class Violation implements Comparable
 {
     /**
      * The message for this violation. This should be only one line, because it
-     * is used in single-line reports.
+     * is used in single - line reports.
      */
     private String _message;
    
@@ -46,13 +46,12 @@ public class Violation implements Comparable
      * @param endLine     The line where the violation ends.
      * @param endColumn   The column where the violation ends.
      */
-    public Violation(String message, int beginLine, int beginColumn, int endLine, int endColumn)
-    {
-        _message     = message;
-        _beginLine   = beginLine;
+    public Violation(String message, int beginLine, int beginColumn, int endLine, int endColumn) {
+        _message = message;
+        _beginLine = beginLine;
         _beginColumn = beginColumn;
-        _endLine     = endLine;
-        _endColumn   = endColumn;
+        _endLine = endLine;
+        _endColumn = endColumn;
 
         tr.Ace.log("[" + _beginLine + ":" + _beginColumn + " .. " + _endLine + ":" + _endColumn + "] (" + _message + ")");
     }
@@ -64,8 +63,7 @@ public class Violation implements Comparable
      * @param beginToken  The token where the violation begins.
      * @param endToken    The token where the violation ends.
      */
-    public Violation(String message, Token beginToken, Token endToken)
-    {
+    public Violation(String message, Token beginToken, Token endToken) {
         this(message, beginToken.beginLine, beginToken.beginColumn, endToken.endLine, endToken.endColumn);
     }
 
@@ -77,49 +75,43 @@ public class Violation implements Comparable
      * @param message The message applying to this violation.
      * @param token   The token to which the violation applies.
      */
-    public Violation(String message, Token token)
-    {
+    public Violation(String message, Token token) {
         this(message, token.beginLine, token.beginColumn, token.beginLine, token.beginColumn + token.image.length() - 1);
     }
 
     /**
      * Returns the message for this violation. This should be only one line,
-     * because it is used in single-line reports.
+     * because it is used in single - line reports.
      */
-    public String getMessage()
-    {
+    public String getMessage() {
         return _message;
     }
    
     /**
      * Returns the line where the violation starts.
      */
-    public int getBeginLine()
-    {
+    public int getBeginLine() {
         return _beginLine;
     }
 
     /**
      * Returns the column where the violation starts.
      */
-    public int getBeginColumn()
-    {
+    public int getBeginColumn() {
         return _beginColumn;
     }
 
     /**
      * Returns the line where the violation ends.
      */
-    public int getEndLine()
-    {
+    public int getEndLine() {
         return _endLine;
     }
 
     /**
      * Returns the column where the violation ends.
      */
-    public int getEndColumn()
-    {
+    public int getEndColumn() {
         return _endColumn;
     }
 
@@ -128,10 +120,9 @@ public class Violation implements Comparable
      * their beginning locations, then their end locations.
      *
      * @param obj The violation to compare this to.
-     * @return -1, 0, or 1, for less than, equivalent to, or greater than.
+     * @return - 1, 0, or 1, for less than, equivalent to, or greater than.
      */
-    public int compareTo(Object obj)
-    {
+    public int compareTo(Object obj) {
         if (equals(obj)) {
             return 0;
         }
@@ -162,13 +153,12 @@ public class Violation implements Comparable
      * @param obj The violation to compare this to.
      * @return Whether the other violation is equal to this one.
      */
-    public boolean equals(Object obj)
-    {
+    public boolean equals(Object obj) {
         Violation v = (Violation)obj;
-        return (_beginLine   == v.getBeginLine()   &&
+        return (_beginLine == v.getBeginLine()   &&
                 _beginColumn == v.getBeginColumn() &&
-                _endLine     == v.getEndLine()     &&
-                _endColumn   == v.getEndColumn());
+                _endLine == v.getEndLine()     &&
+                _endColumn == v.getEndColumn());
     }
 
     /**
@@ -176,8 +166,7 @@ public class Violation implements Comparable
      *
      * @return This violation, as a string.
      */
-    public String toString()
-    {
+    public String toString() {
         return "[" + _beginLine + ":" + _beginColumn + " .. " + _endLine + ":" + _endColumn + "] (" + _message + ")";
     }
 

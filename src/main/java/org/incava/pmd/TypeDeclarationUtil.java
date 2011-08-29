@@ -1,28 +1,26 @@
-package org.incava.java;
+package org.incava.pmd;
 
 import java.util.*;
 import net.sourceforge.pmd.ast.*;
-import org.incava.util.ReverseComparator;
+import org.incava.ijdk.lang.*;
+import org.incava.ijdk.util.*;
 
 
 /**
  * Miscellaneous routines for type declarations.
  */
-public class TypeDeclarationUtil extends SimpleNodeUtil
-{
-    public static Token getName(ASTTypeDeclaration typeDecl)
-    {
+public class TypeDeclarationUtil extends SimpleNodeUtil {
+
+    public static Token getName(ASTTypeDeclaration typeDecl) {
         ASTClassOrInterfaceDeclaration cidecl = (ASTClassOrInterfaceDeclaration)findChild(typeDecl, ASTClassOrInterfaceDeclaration.class);
         return cidecl == null ? null : cidecl.getFirstToken().next;
     }
 
-    public static ASTClassOrInterfaceDeclaration getType(ASTTypeDeclaration typeDecl)
-    {
+    public static ASTClassOrInterfaceDeclaration getType(ASTTypeDeclaration typeDecl) {
         return (ASTClassOrInterfaceDeclaration)SimpleNodeUtil.findChild(typeDecl, ASTClassOrInterfaceDeclaration.class);
     }
 
-    public static ASTTypeDeclaration findTypeDeclaration(String name, ASTTypeDeclaration[] types)
-    {
+    public static ASTTypeDeclaration findTypeDeclaration(String name, ASTTypeDeclaration[] types) {
         for (int i = 0; i < types.length; ++i) {
             ASTTypeDeclaration type      = types[i];
             Token              otherName = getName(type);
@@ -40,8 +38,7 @@ public class TypeDeclarationUtil extends SimpleNodeUtil
      * Returns a list of all methods, fields, constructors, and inner classes
      * and interfaces.
      */
-    public static ASTClassOrInterfaceBodyDeclaration[] getDeclarations(ASTTypeDeclaration tdecl)
-    {
+    public static ASTClassOrInterfaceBodyDeclaration[] getDeclarations(ASTTypeDeclaration tdecl) {
         ASTClassOrInterfaceDeclaration cidecl = (ASTClassOrInterfaceDeclaration)findChild(tdecl, ASTClassOrInterfaceDeclaration.class);
         return getDeclarations(cidecl);
     }
@@ -50,8 +47,7 @@ public class TypeDeclarationUtil extends SimpleNodeUtil
      * Returns a list of all methods, fields, constructors, and inner classes
      * and interfaces.
      */
-    public static ASTClassOrInterfaceBodyDeclaration[] getDeclarations(ASTClassOrInterfaceDeclaration coid)
-    {
+    public static ASTClassOrInterfaceBodyDeclaration[] getDeclarations(ASTClassOrInterfaceDeclaration coid) {
         ASTClassOrInterfaceBody body = (ASTClassOrInterfaceBody)findChild(coid, ASTClassOrInterfaceBody.class);
         return (ASTClassOrInterfaceBodyDeclaration[])findChildren(body, ASTClassOrInterfaceBodyDeclaration.class);
     }
@@ -60,56 +56,63 @@ public class TypeDeclarationUtil extends SimpleNodeUtil
      * Returns the real declaration, which is a method, field, constructor, or
      * inner class or interface.
      */
-    public static SimpleNode getDeclaration(ASTClassOrInterfaceBodyDeclaration bdecl)
-    {
+    public static SimpleNode getDeclaration(ASTClassOrInterfaceBodyDeclaration bdecl) {
         return hasChildren(bdecl) ? findChild(bdecl, null) : null;
     }
 
-    public static TreeMap matchDeclarations(ASTClassOrInterfaceBodyDeclaration[] aDecls, ASTClassOrInterfaceBodyDeclaration[] bDecls)
-    {
+    /**
+     * Returns the real declaration, which is a method, field, constructor, or
+     * inner class or interface.
+     */
+    public static SimpleNode getDeclaration(ASTClassOrInterfaceBodyDeclaration bdecl, Class<? extends SimpleNode> cls) {
+        return hasChildren(bdecl) ? findChild(bdecl, cls) : null;
+    }
+
+    public static Map<Double, List<Pair<SimpleNode, SimpleNode>>> matchDeclarations(ASTClassOrInterfaceBodyDeclaration[] aDecls, 
+                                                                                    ASTClassOrInterfaceBodyDeclaration[] bDecls, 
+                                                                                    MethodUtil methodUtil) {
+        
         // keys (scores) maintained in reversed order:
-        TreeMap byScore = new TreeMap(new ReverseComparator());
+        TreeMap<Double, List<Pair<SimpleNode, SimpleNode>>> byScore = new TreeMap<Double, List<Pair<SimpleNode, SimpleNode>>>(new ReverseComparator<Double>());
 
         // map b by declaration types
 
-        tr.Ace.log("aDecls", aDecls);
-        tr.Ace.log("bDecls", bDecls);
-
-        for (int ai = 0; ai < aDecls.length; ++ai) {
-            ASTClassOrInterfaceBodyDeclaration aNode = aDecls[ai];
-            SimpleNode an     = getDeclaration(aNode);
-            List       scores = new ArrayList();
-
-            for (int bi = 0; bi < bDecls.length; ++bi) {
-                ASTClassOrInterfaceBodyDeclaration bNode = bDecls[bi];
-
-                double     score = getMatchScore(aNode, bNode);
+        for (ASTClassOrInterfaceBodyDeclaration aDecl : aDecls) {
+            for (ASTClassOrInterfaceBodyDeclaration bDecl : bDecls) {
+                double score = getMatchScore(aDecl, bDecl, methodUtil);
                 if (score > 0.0) {
                     Double dScore  = new Double(score);
-                    List   atScore = (List)byScore.get(dScore);
+                    List<Pair<SimpleNode, SimpleNode>> atScore = byScore.get(dScore);
                     if (atScore == null) {
-                        atScore = new ArrayList();
+                        atScore = new ArrayList<Pair<SimpleNode, SimpleNode>>();
                         byScore.put(dScore, atScore);
                     }
-                    atScore.add(new Object[] { aNode, bNode });
+                    atScore.add(Pair.create((SimpleNode)aDecl, (SimpleNode)bDecl));
                 }
             }
         }
 
-        List     aSeen  = new ArrayList();
-        List     bSeen  = new ArrayList();
-        Set      scores = byScore.keySet();
-        Iterator sit    = scores.iterator();
+        if (true) {
+            return byScore;
+        }
+
+        // The nonsense below purges values with worse scores. But this also
+        // means that it removes elements with the same scores.
+
+        List<SimpleNode> aSeen  = new ArrayList<SimpleNode>();
+        List<SimpleNode> bSeen  = new ArrayList<SimpleNode>();
+
+        Iterator<Double> sit = byScore.keySet().iterator();
 
         while (sit.hasNext()) {
-            Double   dScore  = (Double)sit.next();
-            List     atScore = (List)byScore.get(dScore);
-            Iterator vit     = atScore.iterator();
+            Double             dScore  = sit.next();
+            List<Pair<SimpleNode, SimpleNode>>     atScore = byScore.get(dScore);
+            Iterator<Pair<SimpleNode, SimpleNode>> vit     = atScore.iterator();
 
             while (vit.hasNext()) {
-                Object[]   values = (Object[])vit.next();
-                SimpleNode a      = (SimpleNode)values[0];
-                SimpleNode b      = (SimpleNode)values[1];
+                Pair<SimpleNode, SimpleNode>   values = vit.next();
+                SimpleNode a      = values.getFirst();
+                SimpleNode b      = values.getSecond();
 
                 if (aSeen.contains(a)) {
                     // a already seen
@@ -126,7 +129,7 @@ public class TypeDeclarationUtil extends SimpleNodeUtil
                 }
             }
             
-            if (atScore.size() == 0) {
+            if (atScore.isEmpty()) {
                 // remove the empty list
                 sit.remove();
             }
@@ -135,8 +138,7 @@ public class TypeDeclarationUtil extends SimpleNodeUtil
         return byScore;
     }
 
-    public static double getMatchScore(ASTClassOrInterfaceBodyDeclaration aDecl, ASTClassOrInterfaceBodyDeclaration bDecl)
-    {
+    public static double getMatchScore(ASTClassOrInterfaceBodyDeclaration aDecl, ASTClassOrInterfaceBodyDeclaration bDecl, MethodUtil methodUtil) {
         SimpleNode a = getDeclaration(aDecl);
         SimpleNode b = getDeclaration(bDecl);
 
@@ -149,11 +151,16 @@ public class TypeDeclarationUtil extends SimpleNodeUtil
         }
         else if (a.getClass().equals(b.getClass())) {
             if (a instanceof ASTMethodDeclaration) {
-                score = MethodUtil.getMatchScore((ASTMethodDeclaration)a, (ASTMethodDeclaration)b);
+                if (methodUtil == null) {
+                    methodUtil = new MethodUtil();
+                }
+                score = methodUtil.getMatchScore((ASTMethodDeclaration)a, (ASTMethodDeclaration)b);
             }
             else if (a instanceof ASTFieldDeclaration) {
-                // compare by name
-                score = FieldUtil.getMatchScore((ASTFieldDeclaration)a, (ASTFieldDeclaration)b);
+                ASTFieldDeclaration afd = (ASTFieldDeclaration)a;
+                ASTFieldDeclaration bfd = (ASTFieldDeclaration)b;
+                
+                score = FieldUtil.getMatchScore(afd, bfd);
             }
             else if (a instanceof ASTConstructorDeclaration) {
                 score = CtorUtil.getMatchScore((ASTConstructorDeclaration)a, (ASTConstructorDeclaration)b);

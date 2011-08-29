@@ -11,13 +11,11 @@ public class FloatOption extends NonBooleanOption
 {
     private Float value;
     
-    public FloatOption(String longName, String description)
-    {
+    public FloatOption(String longName, String description) {
         this(longName, description, null);
     }
 
-    public FloatOption(String longName, String description, Float value)
-    {
+    public FloatOption(String longName, String description, Float value) {
         super(longName, description);
         this.value = value;
     }
@@ -25,16 +23,14 @@ public class FloatOption extends NonBooleanOption
     /**
      * Returns the value. This is null if not set.
      */
-    public Float getValue()
-    {
+    public Float getValue() {
         return value;
     }
 
     /**
      * Sets the value.
      */
-    public void setValue(Float value)
-    {
+    public void setValue(Float value) {
         this.value = value;
     }
 
@@ -52,13 +48,11 @@ public class FloatOption extends NonBooleanOption
         }
     }
 
-    public String toString()
-    {
+    public String toString() {
         return value == null ? "" : value.toString();
     }
 
-    protected String getType()
-    {
+    protected String getType() {
         return "float";
     }
 

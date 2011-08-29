@@ -1,4 +1,4 @@
-package org.incava.java;
+package org.incava.pmd;
 
 import java.util.*;
 import net.sourceforge.pmd.ast.*;
@@ -7,8 +7,7 @@ import net.sourceforge.pmd.ast.*;
 /**
  * Miscellaneous routines for interfaces.
  */
-public class InterfaceUtil extends ClassUtil
-{
+public class InterfaceUtil extends ClassUtil {
 
 }
 

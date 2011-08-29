@@ -6,8 +6,8 @@ import java.util.*;
 /**
  * Provides constants that produce colorized output on ANSI terminals.
  */
-public class ANSIColor
-{
+public class ANSIColor {
+
     public final static ANSIColor NONE = new ANSIColor(0);
     public final static ANSIColor RESET = new ANSIColor(0);
     public final static ANSIColor BOLD = new ANSIColor(1);
@@ -35,15 +35,13 @@ public class ANSIColor
 
     private String str;
 
-    public ANSIColor(int n)
-    {
+    public ANSIColor(int n) {
         // this behavior changed in Java 1.4.2-01, so this is a char, not a
         // byte.
         str = "" + (char)27 + "[" + n + "m";
     }
 
-    public String toString()
-    {
+    public String toString() {
         return str;
     }
 

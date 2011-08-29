@@ -7,8 +7,7 @@ import java.util.*;
 /**
  * Wraps C-style arrays for output.
  */
-public class QlObjectArray
-{
+public class QlObjectArray {
     public static boolean stack(QlLevel level, 
                                 ANSIColor[] msgColors,
                                 String name,
@@ -16,8 +15,7 @@ public class QlObjectArray
                                 ANSIColor fileColor,
                                 ANSIColor classColor,
                                 ANSIColor methodColor,
-                                int numFrames)
-    {
+                                int numFrames) {
         if (ary.length == 0) {
             return Qualog.stack(level, msgColors, name, "()", fileColor, classColor, methodColor, numFrames);
         }

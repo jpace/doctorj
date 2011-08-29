@@ -3,8 +3,8 @@ package org.incava.doctorj;
 import java.io.*;
 import java.util.*;
 import org.incava.analysis.ContextReport;
+import org.incava.ijdk.lang.StringExt;
 import org.incava.jagol.*;
-import org.incava.lang.StringExt;
 
 
 /**
@@ -31,9 +31,9 @@ public class Options extends OptionSet
     public static int warningLevel = DEFAULT_WARNING_LEVEL;
 
     /**
-     * Whether to use single-line (emacs) or multi-line (non-emacs) output
+     * Whether to use single - line (emacs) or multi - line (non - emacs) output
      * format. The emacs form is most suitable for IDEs, which expect
-     * single-line output.
+     * single - line output.
      */
     public static boolean emacsOutput = false;
 
@@ -58,32 +58,32 @@ public class Options extends OptionSet
     private IntegerOption _warningOpt;
 
     /**
-     * Option to set warning level to the equivalent of --level=0.
+     * Option to set warning level to the equivalent of --level = 0.
      */
     private BooleanOption _errorsOpt;
 
 //     /**
-//      * Option to set warning level to the equivalent of --level=1.
+//      * Option to set warning level to the equivalent of --level = 1.
 //      */
 //     private BooleanOption _publicOpt;
 
 //     /**
-//      * Option to set warning level to the equivalent of --level=2.
+//      * Option to set warning level to the equivalent of --level = 2.
 //      */
 //     private BooleanOption _protectedOpt;
 
 //     /**
-//      * Option to set warning level to the equivalent of --level=3.
+//      * Option to set warning level to the equivalent of --level = 3.
 //      */
 //     private BooleanOption _packageOpt;
 
 //     /**
-//      * Option to set warning level to the equivalent of --level=4.
+//      * Option to set warning level to the equivalent of --level = 4.
 //      */
 //     private BooleanOption _privateOpt;
 
 //     /**
-//      * Option to set warning level to the equivalent of --level=max.
+//      * Option to set warning level to the equivalent of --level = max.
 //      */
 //     private BooleanOption _pedanticOpt;
 
@@ -103,7 +103,7 @@ public class Options extends OptionSet
     private BooleanOption _verboseOpt;
 
     /**
-     * The list of word-list (dictionary) files.
+     * The list of word - list (dictionary) files.
      */
     private ListOption _dictOpt;
 
@@ -119,16 +119,14 @@ public class Options extends OptionSet
 
     private static Options instance = null;
 
-    public static Options get()
-    {
+    public static Options get() {
         if (instance == null) {
             instance = new Options();
         }
         return instance;
     }
 
-    protected Options()
-    {
+    protected Options() {
         super("doctorj", "Analyzes and validates Java and Javadoc");
 
         // use the doctorj.* equivalent property for each option.
@@ -163,7 +161,7 @@ public class Options extends OptionSet
             verbose = new Boolean(verboseProperty);
         }
 
-        List   wordLists = new ArrayList();
+        List<String> wordLists = new ArrayList<String>();
         String dirProperty = System.getProperty("doctorj.dir");
         tr.Ace.log("dirProperty: " + dirProperty);
         
@@ -182,29 +180,29 @@ public class Options extends OptionSet
         
         if (dictProperty != null) {
             List     list = StringExt.listify(dictProperty);
-            Iterator it   = list.iterator();
+            Iterator it = list.iterator();
             while (it.hasNext()) {
                 String s = (String)it.next();
                 wordLists.add(s);
             }
         }
         
-        add(_emacsOpt     = new BooleanOption("emacs",     "whether to list violations in Emacs form (single line)",                 emacs));
-        add(_levelOpt     = new IntegerOption("level",     "the level of warnings to be output, with 0 being to check only errors",  lvl));
-        add(_warningOpt   = new IntegerOption("warning",   "same as --level",                                                        lvl));
+        add(_emacsOpt = new BooleanOption("emacs",     "whether to list violations in Emacs form (single line)",                 emacs));
+        add(_levelOpt = new IntegerOption("level",     "the level of warnings to be output, with 0 being to check only errors",  lvl));
+        add(_warningOpt = new IntegerOption("warning",   "same as --level",                                                        lvl));
 
-//         add(_errorsOpt    = new BooleanOption("errors",    "report only errors; equivalent to warning level of 0"));
-//         add(_publicOpt    = new BooleanOption("public",    "public methods; equivalent to warning level of 1"));
+//         add(_errorsOpt = new BooleanOption("errors",    "report only errors; equivalent to warning level of 0"));
+//         add(_publicOpt = new BooleanOption("public",    "public methods; equivalent to warning level of 1"));
 //         add(_protectedOpt = new BooleanOption("protected", "protected methods; equivalent to warning level of 2"));
-//         add(_packageOpt   = new BooleanOption("package",   "package methods; equivalent to warning level of 3"));
-//         add(_privateOpt   = new BooleanOption("private",   "private methods; warning level of 4"));
-//         add(_pedanticOpt  = new BooleanOption("pedantic",  "warning level at max"));
+//         add(_packageOpt = new BooleanOption("package",   "package methods; equivalent to warning level of 3"));
+//         add(_privateOpt = new BooleanOption("private",   "private methods; warning level of 4"));
+//         add(_pedanticOpt = new BooleanOption("pedantic",  "warning level at max"));
 
         add(_tabWidthOpt = new IntegerOption("tabwidth",  "the number of spaces to treat tabs equal to",                            tabWidth));
-        add(_dictOpt     = new ListOption("dictionaries", "the list of dictionary (word list) files",                               wordLists));
-        add(_verboseOpt  = new BooleanOption("verbose",   "whether to run in verbose mode (for debugging)",                         verbose));
-        add(_versionOpt  = new BooleanOption("version",   "Displays the version"));
-        add(_sourceOpt   = new StringOption("source",     "the Java source version; either 1.3, 1.4 (the default), or 1.5",         source));
+        add(_dictOpt = new ListOption("dictionaries", "the list of dictionary (word list) files",                               wordLists));
+        add(_verboseOpt = new BooleanOption("verbose",   "whether to run in verbose mode (for debugging)",                         verbose));
+        add(_versionOpt = new BooleanOption("version",   "Displays the version"));
+        add(_sourceOpt = new StringOption("source",     "the Java source version; either 1.3, 1.4 (the default), or 1.5",         source));
         _versionOpt.setShortName('v');
         
         addRunControlFile("/etc/doctorj.conf");
@@ -216,8 +214,7 @@ public class Options extends OptionSet
      * static variables. Returns the arguments that were not consumed by option
      * processing.
      */
-    public String[] process(String[] args)
-    {
+    public String[] process(String[] args) {
         tr.Ace.log("args: " + args);
         String[] unprocessed = super.process(args);
 

@@ -5,6 +5,7 @@ import java.util.List;
 import net.sourceforge.pmd.ast.*;
 import org.incava.analysis.Report;
 import org.incava.java.*;
+import org.incava.pmd.*;
 import org.incava.javadoc.*;
 
 
@@ -21,28 +22,24 @@ public class MethodDocAnalyzer extends FunctionDocAnalyzer
     
     private ASTMethodDeclaration _method;
     
-    public MethodDocAnalyzer(Report r, ASTMethodDeclaration method)
-    {
+    public MethodDocAnalyzer(Report r, ASTMethodDeclaration method) {
         super(r, method);
         
         _method = method;
     }
 
-    public String getItemType() 
-    {
+    public String getItemType() {
         return "method";
     }
 
     /**
      * Returns the parent node, which is the enclosing declaration.
      */
-    protected SimpleNode getEnclosingNode()
-    {
+    protected SimpleNode getEnclosingNode() {
         return SimpleNodeUtil.getParent(_method);
     }
 
-    protected void checkJavadoc(JavadocNode javadoc)
-    {
+    protected void checkJavadoc(JavadocNode javadoc) {
         tr.Ace.log("javadoc: " + javadoc);
 
         super.checkJavadoc(javadoc);
@@ -56,7 +53,7 @@ public class MethodDocAnalyzer extends FunctionDocAnalyzer
                 
                 if (tag.text.equals(JavadocTags.RETURN)) {
                     ASTResultType resType = (ASTResultType)SimpleNodeUtil.findChild(_method, ASTResultType.class);
-                    Token         resTkn  = resType.getFirstToken();
+                    Token         resTkn = resType.getFirstToken();
                     
                     if (resTkn.kind == JavaParserConstants.VOID) {
                         addViolation(MSG_RETURN_FOR_VOID_METHOD, tag.start, tag.end);
@@ -84,16 +81,14 @@ public class MethodDocAnalyzer extends FunctionDocAnalyzer
     /**
      * Returns the parameter list for the method.
      */
-    protected ASTFormalParameters getParameterList()
-    {
+    protected ASTFormalParameters getParameterList() {
         return MethodUtil.getParameters(_method);
     }
 
     /**
      * Returns the valid tags, as strings, for methods.
      */
-    protected List getValidTags()
-    {
+    protected List getValidTags() {
         return JavadocTags.getValidMethodTags();
     }
 
@@ -101,8 +96,7 @@ public class MethodDocAnalyzer extends FunctionDocAnalyzer
      * Adds a violation for a method, with the violation pointing to the method
      * name.
      */
-    protected void addUndocumentedViolation(String desc)
-    {
+    protected void addUndocumentedViolation(String desc) {
         Token nameTk = MethodUtil.getName(_method);
         addViolation(desc, nameTk);
     }

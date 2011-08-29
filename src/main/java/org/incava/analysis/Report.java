@@ -33,8 +33,7 @@ public abstract class Report
      *
      * @param writer The writer associated with this report.
      */
-    public Report(Writer writer)
-    {
+    public Report(Writer writer) {
         this.writer = writer;
     }
 
@@ -43,8 +42,7 @@ public abstract class Report
      *
      * @param os The output stream associated with this report.
      */
-    public Report(OutputStream os)
-    {
+    public Report(OutputStream os) {
         this(new OutputStreamWriter(os));
     }
 
@@ -54,8 +52,7 @@ public abstract class Report
      * @param writer The writer associated with this report.
      * @param source The source code to which this report applies.
      */
-    public Report(Writer writer, String source)
-    {
+    public Report(Writer writer, String source) {
         this(writer);
 
         reset(source);
@@ -67,8 +64,7 @@ public abstract class Report
      * @param writer The writer associated with this report.
      * @param file The file, containing source code, to which this report applies.
      */
-    public Report(Writer writer, File file)
-    {
+    public Report(Writer writer, File file) {
         this(writer);
         
         reset(file);
@@ -80,8 +76,7 @@ public abstract class Report
      * @param os The output stream associated with this report.
      * @param source The source code to which this report applies.
      */
-    public Report(OutputStream os, String source)
-    {
+    public Report(OutputStream os, String source) {
         this(os);
         
         reset(source);
@@ -93,8 +88,7 @@ public abstract class Report
      * @param os The output stream associated with this report.
      * @param file The file, containing source code, to which this report applies.
      */
-    public Report(OutputStream os, File file)
-    {
+    public Report(OutputStream os, File file) {
         this(os);
         
         reset(file);
@@ -106,8 +100,7 @@ public abstract class Report
      *
      * @param file The file associated with the set of violations.
      */
-    public void reset(File file)
-    {
+    public void reset(File file) {
         tr.Ace.log("file", file);
         
         try {
@@ -123,8 +116,7 @@ public abstract class Report
      *
      * @param source The source code associated with the set of violations.
      */
-    public void reset(String source)
-    {
+    public void reset(String source) {
         tr.Ace.log("source", source);
         
         fileName = "-";
@@ -133,8 +125,7 @@ public abstract class Report
     /**
      * Writes all violations, and clears the list.
      */
-    public void flush()
-    {
+    public void flush() {
         try {
             tr.Ace.stack("flushing");
             
@@ -161,8 +152,7 @@ public abstract class Report
      *
      * @param v The violation being added.
      */
-    public void addViolation(Violation v)
-    {
+    public void addViolation(Violation v) {
         tr.Ace.stack("v", v);
         violations.add(v);
     }
@@ -170,8 +160,7 @@ public abstract class Report
     /**
      * Exists only for testing.
      */
-    public Set getViolations()
-    {
+    public Set getViolations() {
         return violations;
     }
     
@@ -188,8 +177,7 @@ public abstract class Report
      *
      * @param str The string to be written.
      */
-    protected void write(String str)
-    {
+    protected void write(String str) {
         tr.Ace.log("str", str);
         try {
             writer.write(str);

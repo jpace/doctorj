@@ -3,8 +3,8 @@ package org.incava.doctorj;
 import java.util.*;
 import net.sourceforge.pmd.ast.*;
 import org.incava.analysis.Report;
-import org.incava.java.*;
 import org.incava.javadoc.*;
+import org.incava.pmd.*;
 import org.incava.text.SpellChecker;
 
 
@@ -116,19 +116,17 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
      * @param javadoc  The javadoc for the function. Should not be null.
      * @param function The constructor or method.
      */
-    public ExceptionDocAnalyzer(Report report, JavadocNode javadoc, SimpleNode function, int nodeLevel)
-    {
+    public ExceptionDocAnalyzer(Report report, JavadocNode javadoc, SimpleNode function, int nodeLevel) {
         super(report);
 
-        _javadoc    = javadoc;
+        _javadoc = javadoc;
         _throwsList = FunctionUtil.getThrowsList(function);
-        _function   = function;
-        _nodeLevel  = nodeLevel;
-        _importMap  = null;
+        _function = function;
+        _nodeLevel = nodeLevel;
+        _importMap = null;
     }
     
-    public void run()
-    {
+    public void run() {
         // foreach @throws / @exception tag:
         //  - check for target
         //  - check for description
@@ -136,7 +134,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
         //  - in alphabetical order
 
         boolean alphabeticalReported = false;
-        String  previousException    = null;
+        String  previousException = null;
         
         SimpleNode node = _function;
         while (node != null && !(node instanceof ASTCompilationUnit)) {
@@ -166,8 +164,8 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
                     }
                     
                     String shortName = getShortName(tgt.text);
-                    String fullName  = tgt.text;
-                    Class  cls       = null;
+                    String fullName = tgt.text;
+                    Class  cls = null;
                     
                     if (fullName.indexOf('.') >= 0) {
                         cls = loadClass(fullName);
@@ -221,14 +219,13 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
         }            
     }
 
-    protected Map makeImportMap(ASTImportDeclaration[] imports)
-    {
+    protected Map makeImportMap(ASTImportDeclaration[] imports) {
         Map namesToImp = new HashMap();
 
         for (int ii = 0; ii < imports.length; ++ii) {
             ASTImportDeclaration imp = imports[ii];
             StringBuffer         buf = new StringBuffer();   
-            Token                tk  = imp.getFirstToken().next;
+            Token                tk = imp.getFirstToken().next;
             
             while (tk != null) {
                 if (tk == imp.getLastToken()) {
@@ -250,15 +247,13 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
      * Returns the short name of the class, e.g., Integer instead of
      * java.lang.Integer.
      */
-    protected String getShortName(String name)
-    {
+    protected String getShortName(String name) {
         int    lastDot = name.lastIndexOf('.');
-        String shName  = lastDot == -1 ? name : name.substring(lastDot + 1);
+        String shName = lastDot == -1 ? name : name.substring(lastDot + 1);
         return shName;
     }
 
-    protected String getExactMatch(String name)
-    {
+    protected String getExactMatch(String name) {
         Iterator iit = _importMap.keySet().iterator();
         while (iit.hasNext()) {
             String impName   = (String)iit.next();
@@ -274,8 +269,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
         return null;
     }
     
-    protected Class loadClass(String clsName)
-    {
+    protected Class loadClass(String clsName) {
         try {
             Class cls = Class.forName(clsName);
             return cls;
@@ -290,8 +284,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
      * Returns whether the given class is derived from Runtimeexception or
      * Error.
      */
-    protected boolean isRuntimeException(Class excClass)
-    {
+    protected boolean isRuntimeException(Class excClass) {
         if (excClass == null) {
             return false;
         }
@@ -307,8 +300,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
         }
     }
 
-    protected void checkAgainstCode(JavadocTag tag, JavadocElement tgt, String shortExcName, String fullExcName, Class excClass)
-    {
+    protected void checkAgainstCode(JavadocTag tag, JavadocElement tgt, String shortExcName, String fullExcName, Class excClass) {
         ASTName name = getMatchingException(shortExcName);
         if (name == null) {
             name = getClosestMatchingException(shortExcName);
@@ -325,7 +317,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
                 }
                 else {
                     // we don't report exceptions when we don't know if they're
-                    // run-time exceptions, or when they've already been
+                    // run - time exceptions, or when they've already been
                     // reported.
                 }
             }
@@ -340,12 +332,11 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
         }
     }
     
-    protected void reportUndocumentedExceptions()
-    {
+    protected void reportUndocumentedExceptions() {
         ASTName[] names = ThrowsUtil.getNames(_throwsList);
         
         for (int ni = 0; ni < names.length; ++ni) {
-            ASTName name      = names[ni];
+            ASTName name = names[ni];
 
             // by using the last token, we disregard the package:
             Token   nameToken = name.getLastToken();
@@ -362,8 +353,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
     /**
      * Returns the first name in the list that matches the given string.
      */
-    protected ASTName getMatchingException(String str)
-    {
+    protected ASTName getMatchingException(String str) {
         if (_throwsList == null) {
             return null;
         }
@@ -371,7 +361,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
             ASTName[] names = ThrowsUtil.getNames(_throwsList);
             
             for (int ni = 0; ni < names.length; ++ni) {
-                ASTName name      = names[ni];
+                ASTName name = names[ni];
                 // (again) by using the last token, we disregard the package:
                 Token   nameToken = name.getLastToken();
                 tr.Ace.log("considering name: " + name + " (" + nameToken + ")");
@@ -387,25 +377,24 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
     /**
      * Returns the name in the list that most closely matches the given string.
      */
-    protected ASTName getClosestMatchingException(String str)
-    {
+    protected ASTName getClosestMatchingException(String str) {
         if (_throwsList == null) {
             return null;
         }
         else {
             SpellChecker spellChecker = new SpellChecker();
             int          bestDistance = -1;
-            ASTName      bestName     = null;
-            ASTName[]    names        = ThrowsUtil.getNames(_throwsList);
+            ASTName      bestName = null;
+            ASTName[]    names = ThrowsUtil.getNames(_throwsList);
             
             for (int ni = 0; ni < names.length; ++ni) {
-                ASTName name      = names[ni];
+                ASTName name = names[ni];
                 Token   nameToken = name.getLastToken();
-                int     dist      = spellChecker.editDistance(nameToken.image, str);
+                int     dist = spellChecker.editDistance(nameToken.image, str);
             
                 if (dist >= 0 && dist <= SpellChecker.DEFAULT_MAX_DISTANCE && (bestDistance == -1 || dist < bestDistance)) {
                     bestDistance = dist;
-                    bestName     = name;
+                    bestName = name;
                 }
             }
 

@@ -4,8 +4,8 @@ import java.io.*;
 import java.util.*;
 import net.sourceforge.pmd.ast.*;
 import org.incava.analysis.*;
-import org.incava.java.ParameterUtil;
-import org.incava.java.SimpleNodeUtil;
+import org.incava.pmd.ParameterUtil;
+import org.incava.pmd.SimpleNodeUtil;
 import org.incava.javadoc.*;
 import org.incava.text.Location;
 import org.incava.text.SpellChecker;
@@ -98,8 +98,7 @@ public class ParameterDocAnalyzer extends DocAnalyzer
      * @param javadoc  The javadoc for the function. Should not be null.
      * @param function The constructor or method.
      */
-    public ParameterDocAnalyzer(Report report, JavadocNode javadoc, SimpleNode function, ASTFormalParameters parameterList, int nodeLevel)
-    {
+    public ParameterDocAnalyzer(Report report, JavadocNode javadoc, SimpleNode function, ASTFormalParameters parameterList, int nodeLevel) {
         super(report);
 
         _javadoc = javadoc;
@@ -111,8 +110,7 @@ public class ParameterDocAnalyzer extends DocAnalyzer
     /**
      * Analyzes the Javadoc for the parameter list.
      */
-    public void run()
-    {
+    public void run() {
         tr.Ace.log("function", _function);
 
         // foreach @throws / @parameter tag:
@@ -121,7 +119,7 @@ public class ParameterDocAnalyzer extends DocAnalyzer
         //  - in order as in code
 
         boolean misorderedReported = false;
-        int     parameterIndex     = 0;
+        int     parameterIndex = 0;
             
         JavadocTaggedNode[] taggedComments = _javadoc.getTaggedComments();
         for (int ti = 0; ti < taggedComments.length; ++ti) {
@@ -162,7 +160,7 @@ public class ParameterDocAnalyzer extends DocAnalyzer
                     }
 
                     String tgtStr = tgt.text;
-                    int    index  = getMatchingParameter(tgtStr);
+                    int    index = getMatchingParameter(tgtStr);
                     
                     tr.Ace.log("matching parameter: " + index);
 
@@ -211,8 +209,7 @@ public class ParameterDocAnalyzer extends DocAnalyzer
         }
     }
 
-    protected void addDocumentedParameter(int index, Location start, Location end)
-    {
+    protected void addDocumentedParameter(int index, Location start, Location end) {
         if (_documentedParameters.size() > 0 && ((Integer)_documentedParameters.get(_documentedParameters.size() - 1)).intValue() > index) {
             addViolation(MSG_PARAMETER_NOT_IN_CODE_ORDER, start, end);
         }
@@ -226,8 +223,7 @@ public class ParameterDocAnalyzer extends DocAnalyzer
         }
     }
     
-    protected void reportUndocumentedParameters()
-    {
+    protected void reportUndocumentedParameters() {
         ASTFormalParameter[] params = ParameterUtil.getParameters(_parameterList);
         
         for (int ni = 0; ni < params.length; ++ni) {
@@ -243,8 +239,7 @@ public class ParameterDocAnalyzer extends DocAnalyzer
     /**
      * Returns the first param in the list whose name matches the given string.
      */
-    protected int getMatchingParameter(String str)
-    {
+    protected int getMatchingParameter(String str) {
         ASTFormalParameter[] params = ParameterUtil.getParameters(_parameterList);
         
         for (int ni = 0; ni < params.length; ++ni) {
@@ -256,35 +251,34 @@ public class ParameterDocAnalyzer extends DocAnalyzer
             }
         }
 
-        return -1;
+        return - 1;
     }
 
     /**
      * Returns the first param in the list whose name most closely matches the
      * given string.
      */
-    protected int getClosestMatchingParameter(String str)
-    {
+    protected int getClosestMatchingParameter(String str) {
         if (_parameterList == null) {
-            return -1;
+            return - 1;
         }
         else {
             SpellChecker         spellChecker = new SpellChecker();
             int                  bestDistance = -1;
             int                  bestIndex    = -1;
-            ASTFormalParameter[] params       = ParameterUtil.getParameters(_parameterList);
+            ASTFormalParameter[] params = ParameterUtil.getParameters(_parameterList);
         
             for (int ni = 0; ni < params.length; ++ni) {
                 tr.Ace.log("parameter", params[ni]);
-                ASTFormalParameter param  = params[ni];
+                ASTFormalParameter param = params[ni];
                 Token              nameTk = ParameterUtil.getParameterName(param);
-                int                dist   = spellChecker.editDistance(nameTk.image, str);
+                int                dist = spellChecker.editDistance(nameTk.image, str);
 
                 // tr.Ace.log("edit distance(param: '" + paramTkn.image + "', str: '" + str + "'): " + dist);
             
                 if (dist >= 0 && dist <= SpellChecker.DEFAULT_MAX_DISTANCE && (bestDistance == -1 || dist < bestDistance)) {
                     bestDistance = dist;
-                    bestIndex    = ni;
+                    bestIndex = ni;
                 }
             }
 

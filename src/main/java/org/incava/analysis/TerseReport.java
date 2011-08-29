@@ -15,8 +15,7 @@ public class TerseReport extends Report
      *
      * @param writer The writer associated with this report.
      */
-    public TerseReport(Writer writer)
-    {
+    public TerseReport(Writer writer) {
         super(writer);
     }
 
@@ -25,8 +24,7 @@ public class TerseReport extends Report
      *
      * @param os The output stream associated with this report.
      */
-    public TerseReport(OutputStream os)
-    {
+    public TerseReport(OutputStream os) {
         super(os);
     }
 
@@ -36,8 +34,7 @@ public class TerseReport extends Report
      * @param writer The writer associated with this report.
      * @param source The source code to which this report applies.
      */
-    public TerseReport(Writer writer, String source)
-    {
+    public TerseReport(Writer writer, String source) {
         super(writer, source);
     }
 
@@ -47,8 +44,7 @@ public class TerseReport extends Report
      * @param writer The writer associated with this report.
      * @param file The file, containing source code, to which this report applies.
      */
-    public TerseReport(Writer writer, File file)
-    {
+    public TerseReport(Writer writer, File file) {
         super(writer, file);
     }
 
@@ -58,8 +54,7 @@ public class TerseReport extends Report
      * @param os The output stream associated with this report.
      * @param source The source code to which this report applies.
      */
-    public TerseReport(OutputStream os, String source)
-    {
+    public TerseReport(OutputStream os, String source) {
         super(os, source);
     }
 
@@ -69,23 +64,21 @@ public class TerseReport extends Report
      * @param os The output stream associated with this report.
      * @param file The file, containing source code, to which this report applies.
      */
-    public TerseReport(OutputStream os, File file)
-    {
+    public TerseReport(OutputStream os, File file) {
         super(os, file);
     }
 
     /**
-     * Returns the given violation, in single-line format. For example:
+     * Returns the given violation, in single - line format. For example:
      *
      * <pre>
      *     TerseReport.java:77:22:77:29: Undocumented protected method
      * </pre>
      *
-     * @param violation The violation to represent as a single-line violation.
-     * @return The violation, in single-line format.
+     * @param violation The violation to represent as a single - line violation.
+     * @return The violation, in single - line format.
      */
-    protected String toString(Violation violation)
-    {
+    protected String toString(Violation violation) {
         return (fileName + ":" + 
                 violation.getBeginLine() + ":" + violation.getBeginColumn() + ":" + 
                 violation.getEndLine()   + ":" + violation.getEndColumn()   + ": " + 

@@ -11,8 +11,7 @@ import java.util.*;
  *
  * @see org.incava.qualog.Qualog
  */
-public class QlWriter
-{
+public class QlWriter {
     public static final int NO_OUTPUT = 0;
 
     public static final int QUIET = 1;
@@ -32,34 +31,34 @@ public class QlWriter
     public boolean showFiles = true;
 
     public boolean showClasses = true;
-    
-    public PrintWriter out = new PrintWriter(System.out, true);
 
-    public List packagesSkipped = new ArrayList(Arrays.asList(
-                                                    new String[] {
-                                                        "org.incava.qualog",
-                                                    }));
-    
-    public List classesSkipped = new ArrayList(Arrays.asList(
-                                                   new String[] {
-                                                       "tr.Ace"
-                                                   }));
-    
-    public List methodsSkipped = new ArrayList(Arrays.asList(
-                                                   new String[] {
-                                                   }));
+    // this writes to stdout even in Gradle and Ant, which redirect stdout.
 
+    public PrintWriter out = new PrintWriter(new PrintStream(new FileOutputStream(FileDescriptor.out)), true);
+    
+    public List<String> packagesSkipped = new ArrayList<String>(Arrays.asList(
+                                                                    new String[] {
+                                                                        "org.incava.qualog",
+                                                                    }));
+    
+    public List<String> classesSkipped = new ArrayList<String>(Arrays.asList(
+                                                                   new String[] {
+                                                                       "tr.Ace"
+                                                                   }));
+    
+    public List<String> methodsSkipped = new ArrayList<String>(Arrays.asList(
+                                                                   new String[] {
+                                                                   }));
+    
     private int outputType = NO_OUTPUT;
 
-    private Map packageColors = new HashMap();
+    private Map<String, ANSIColor> packageColors = new HashMap<String, ANSIColor>();
 
-    private Map classColors = new HashMap();
+    private Map<String, ANSIColor> classColors = new HashMap<String, ANSIColor>();
 
-    private Map methodColors = new HashMap();
+    private Map<String, ANSIColor> methodColors = new HashMap<String, ANSIColor>();
 
-    private Map fileColors = new HashMap();
-
-    private Map levelColors = new HashMap();
+    private Map<String, ANSIColor> fileColors = new HashMap<String, ANSIColor>();
 
     private StackTraceElement prevStackElement = null;
     
@@ -71,7 +70,7 @@ public class QlWriter
 
     private QlLevel level = Qualog.LEVEL9;
 
-    private List filters = new ArrayList();
+    private List<QlFilter> filters = new ArrayList<QlFilter>();
 
     private boolean useColor = true;
 
@@ -80,42 +79,34 @@ public class QlWriter
      *
      * @see org.incava.qualog.QlFilter
      */
-    public void addFilter(QlFilter filter)
-    {
+    public void addFilter(QlFilter filter) {
         filters.add(filter);
     }
 
-    public void setDisabled(Class cls)
-    {
+    public void setDisabled(Class cls) {
         addFilter(new QlClassFilter(cls, null));
     }
 
-    public void setClassColor(String className, ANSIColor color)
-    {
+    public void setClassColor(String className, ANSIColor color) {
         classColors.put(className, color);
     }
 
-    public void setPackageColor(String pkg, ANSIColor color)
-    {
+    public void setPackageColor(String pkg, ANSIColor color) {
     }
 
-    public void setMethodColor(String className, String methodName, ANSIColor color)
-    {
+    public void setMethodColor(String className, String methodName, ANSIColor color) {
         methodColors.put(className + "#" + methodName, color);
     }
 
-    public void clearClassColor(String className)
-    {
+    public void clearClassColor(String className) {
         classColors.remove(className);
     }
 
-    public void setFileColor(String fileName, ANSIColor color)
-    {
+    public void setFileColor(String fileName, ANSIColor color) {
         fileColors.put(fileName, color);
     }
 
-    public void set(boolean columns, int fileWidth, int lineWidth, int classWidth, int functionWidth)
-    {
+    public void set(boolean columns, int fileWidth, int lineWidth, int classWidth, int functionWidth) {
         this.columns = columns;
         this.fileWidth = fileWidth;
         this.lineWidth = lineWidth;
@@ -126,52 +117,44 @@ public class QlWriter
     /**
      * Sets the output type and level. Either verbose or quiet can be enabled.
      */
-    public void setOutput(int type, QlLevel level)
-    {
+    public void setOutput(int type, QlLevel level) {
         this.outputType = type;
         this.level      = level;
     }
 
-    public boolean verbose()
-    {
+    public boolean verbose() {
         return outputType == VERBOSE;
     }
 
-    public void setColumns(boolean cols)
-    {
+    public void setColumns(boolean cols) {
         columns = cols;
     }
 
-    public void addClassSkipped(Class cls)
-    {
+    public void addClassSkipped(Class cls) {
         addClassSkipped(cls.getName());
     }
     
-    public void addClassSkipped(String clsName)
-    {
+    public void addClassSkipped(String clsName) {
         classesSkipped.add(clsName);
     }
 
     /**
      * Resets parameters to their defaults.
      */
-    public void clear()
-    {
-        packageColors       = new HashMap();
-        classColors         = new HashMap();
-        methodColors        = new HashMap();
-        fileColors          = new HashMap();
-        levelColors         = new HashMap();
-        prevStackElement    = null;
-        prevThread          = null;
-        prevDisplayedClass  = null;
+    public void clear() {
+        packageColors = new HashMap<String, ANSIColor>();
+        classColors = new HashMap<String, ANSIColor>();
+        methodColors = new HashMap<String, ANSIColor>();
+        fileColors = new HashMap<String, ANSIColor>();
+        prevStackElement = null;
+        prevThread = null;
+        prevDisplayedClass = null;
         prevDisplayedMethod = null;
-        level               = Qualog.LEVEL9;
-        filters             = new ArrayList();
+        level = Qualog.LEVEL9;
+        filters = new ArrayList<QlFilter>();
     }
 
-    public void reset()
-    {
+    public void reset() {
         prevThread       = Thread.currentThread();
         prevStackElement = null;
     }
@@ -183,8 +166,7 @@ public class QlWriter
                          ANSIColor fileColor,
                          ANSIColor classColor,
                          ANSIColor methodColor,
-                         int numFrames)
-    {
+                         int numFrames) {
         if (isLoggable(level)) {
             String nm = name == null ? "" : name;
         
@@ -197,11 +179,11 @@ public class QlWriter
                 return QlCollection.stack(level, msgColors, nm, c, fileColor, classColor, methodColor, numFrames);
             }
             else if (obj instanceof Iterator) {
-                Iterator it = (Iterator)obj;
+                Iterator<?> it = (Iterator<?>)obj;
                 return QlIterator.stack(level, msgColors, nm, it, fileColor, classColor, methodColor, numFrames);
             }
             else if (obj instanceof Enumeration) {
-                Enumeration en = (Enumeration)obj;
+                Enumeration<?> en = (Enumeration<?>)obj;
                 return QlEnumeration.stack(level, msgColors, nm, en, fileColor, classColor, methodColor, numFrames);
             }
             else if (obj instanceof Object[]) {
@@ -269,16 +251,13 @@ public class QlWriter
         }
     }
 
-    public boolean isSkipped(StackTraceElement ste)
-    {
+    public boolean isSkipped(StackTraceElement ste) {
         String className = ste.getClassName();
         if (classesSkipped.contains(className) || methodsSkipped.contains(ste.getMethodName())) {
             return true;
         }
         else {
-            Iterator pit = packagesSkipped.iterator();
-            while (pit.hasNext()) {
-                String pkgName = (String)pit.next();
+            for (String pkgName : packagesSkipped) {
                 if (className.startsWith(pkgName)) {
                     return true;
                 }
@@ -287,8 +266,7 @@ public class QlWriter
         return false;
     }
 
-    public boolean isLoggable(QlLevel level)
-    {
+    public boolean isLoggable(QlLevel level) {
         return outputType != NO_OUTPUT && this.level != null && this.level.compareTo(level) >= 0;
     }
 
@@ -298,8 +276,7 @@ public class QlWriter
      * displayed. Returns -1 if the end of the stack is reached and no logging
      * should occur.
      */
-    public synchronized int findStackStart(StackTraceElement[] stack)
-    {
+    public synchronized int findStackStart(StackTraceElement[] stack) {
         for (int fi = 0; fi < stack.length; ++fi) {
             if (!isSkipped(stack[fi])) {
                 return fi;
@@ -315,9 +292,9 @@ public class QlWriter
                                       ANSIColor fileColor,
                                       ANSIColor classColor,
                                       ANSIColor methodColor,
-                                      int numFrames)
-    {
-        if (isLoggable(lvl)) {
+                                      int numFrames) {
+        if (outputType != NO_OUTPUT && level != null && level.compareTo(lvl) >= 0) {
+
             if (outputType == QUIET) {
                 numFrames = 1;
             }
@@ -335,23 +312,21 @@ public class QlWriter
                 StackTraceElement stackElement = stack[fi];
                 String            className    = stackElement.getClassName();
                 String            methodName   = stackElement.getMethodName();
-                boolean           filtered     = false;
+                boolean           isLoggable   = true;
                 
                 if (framesShown == 0) {
-                    Iterator fit = filters.iterator();
-                    while (fit.hasNext()) {
-                        QlFilter filter   = (QlFilter)fit.next();
-                        int      lineNum  = stackElement.getLineNumber();
-                        String   fileName = stackElement.getFileName();
+                    for (QlFilter filter : filters) {
+                        int    lineNum  = stackElement.getLineNumber();
+                        String fileName = stackElement.getFileName();
                             
                         if (filter.isMatch(fileName, lineNum, className, methodName)) {
                             QlLevel flevel = filter.getLevel();
-                            filtered = filtered || flevel != null && level.compareTo(flevel) < 0;
+                            isLoggable = flevel != null && level.compareTo(flevel) >= 0;
                         }
                     }
                 }
 
-                if (filtered) {
+                if (!isLoggable) {
                     return true;
                 }
 
@@ -377,13 +352,11 @@ public class QlWriter
         return true;
     }
 
-    void setUseColor(boolean useColor)
-    {
+    void setUseColor(boolean useColor) {
         this.useColor = useColor;
     }
 
-    protected void outputFileName(StringBuffer buf, ANSIColor fileColor, StackTraceElement stackElement)
-    {
+    protected void outputFileName(StringBuffer buf, ANSIColor fileColor, StackTraceElement stackElement) {
         String fileName = stackElement.getFileName();
         
         buf.append("[");
@@ -403,7 +376,7 @@ public class QlWriter
 
         ANSIColor col = fileColor;
         if (col == null) {
-            col = (ANSIColor)fileColors.get(fileName);
+            col = fileColors.get(fileName);
         }
 
         if (columns) {
@@ -439,14 +412,13 @@ public class QlWriter
     protected void outputClassAndMethod(StringBuffer buf,
                                         ANSIColor classColor,
                                         ANSIColor methodColor,
-                                        StackTraceElement stackElement)
-    {
+                                        StackTraceElement stackElement) {
         buf.append("{");
 
         String className = stackElement.getClassName();
         
         if (classColor == null) {
-            classColor = (ANSIColor)classColors.get(className);
+            classColor = classColors.get(className);
         }
         
         boolean sameClass = prevStackElement != null && prevStackElement.getClassName().equals(className);
@@ -492,7 +464,7 @@ public class QlWriter
         String methodName = stackElement.getMethodName();
 
         if (methodColor == null) {
-            methodColor = (ANSIColor)methodColors.get(methodName);
+            methodColor = methodColors.get(methodName);
         }
         
         if (sameClass && prevStackElement != null && prevStackElement.getMethodName().equals(methodName)) {
@@ -530,8 +502,7 @@ public class QlWriter
                                  int framesShown,
                                  ANSIColor[] msgColor,
                                  String msg,
-                                 StackTraceElement stackElement)
-    {
+                                 StackTraceElement stackElement) {
         // remove ending EOLN
         if (framesShown > 0) {
             msg = "\"\"";
@@ -544,11 +515,11 @@ public class QlWriter
                 boolean hasColor = false;
                 if (msgColor == null || (msgColor.length > 0 && msgColor[0] == null)) {
                     ANSIColor col = null;
-                    col = (ANSIColor)methodColors.get(stackElement.getClassName() + "#" + stackElement.getMethodName());
+                    col = methodColors.get(stackElement.getClassName() + "#" + stackElement.getMethodName());
                     if (col == null) {
-                        col = (ANSIColor)classColors.get(stackElement.getClassName());
+                        col = classColors.get(stackElement.getClassName());
                         if (col == null) {
-                            col = (ANSIColor)fileColors.get(stackElement.getFileName());
+                            col = fileColors.get(stackElement.getFileName());
                         }
                     }
                     if (col != null) {
@@ -574,13 +545,11 @@ public class QlWriter
         buf.append(msg);
     }
     
-    protected StackTraceElement[] getStack(int depth)
-    {
+    protected StackTraceElement[] getStack(int depth) {
         return (new Exception("")).getStackTrace();
     }
 
-    protected String repeat(int len, char ch)
-    {
+    protected String repeat(int len, char ch) {
         StringBuffer buf = new StringBuffer();
         for (int i = 0; i < len; ++i) {
             buf.append(ch);
@@ -588,16 +557,14 @@ public class QlWriter
         return buf.toString();
     }
 
-    protected StringBuffer repeat(StringBuffer buf, int len, char ch)
-    {
+    protected StringBuffer repeat(StringBuffer buf, int len, char ch) {
         for (int i = 0; i < len; ++i) {
             buf.append(ch);
         }
         return buf;
     }
 
-    protected void appendPadded(StringBuffer buf, String str, int maxSize)
-    {
+    protected void appendPadded(StringBuffer buf, String str, int maxSize) {
         if (str.length() > maxSize) {
             buf.append(str.substring(0, maxSize - 1)).append("-");
         }
@@ -607,21 +574,21 @@ public class QlWriter
         }
     }
 
-    protected String objectToString(Object obj)
-    {
+    protected String objectToString(Object obj) {
         String str = null;
         if (obj == null) {
             str = "null";
         }
         else {
-            Class[] undecorated = new Class[] {
+            
+            Class<?>[] undecorated = new Class<?>[] {
                 String.class,
                 Number.class,
                 Character.class,
                 Boolean.class
             };
 
-            Class cls = obj.getClass();
+            Class<?> cls = obj.getClass();
 
             for (int ui = 0; ui < undecorated.length; ++ui) {
                 if (undecorated[ui].isAssignableFrom(cls)) {
