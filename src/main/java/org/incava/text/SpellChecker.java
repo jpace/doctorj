@@ -2,21 +2,26 @@ package org.incava.text;
 
 import java.io.*;
 import java.util.*;
+import org.incava.ijdk.util.MultiMap;
 import org.incava.io.FileExt;
 
 
 /**
  * Calculates the edit distance between two strings.
  */
-public class SpellChecker
-{
+public class SpellChecker {
+
     public static final int DEFAULT_MAX_DISTANCE = 4;
 
     protected static final int COMP_LEN = 20;
 
     protected static final int ARR_SIZE = COMP_LEN + 1;
 
-    private Map _words = new HashMap();
+    private final MultiMap<String, String> words;
+
+    public SpellChecker() {
+        words = new MultiMap<String, String>();
+    }
 
     /**
      * Computes the Levenstein edit distance between the two words, with a
@@ -103,17 +108,12 @@ public class SpellChecker
 
     public void addWord(String word) {
         String key = getKey(word);
-        List   atLtrs = (List)_words.get(key);
-        if (atLtrs == null) {
-            atLtrs = new ArrayList();
-            _words.put(key, atLtrs);
-        }
-        atLtrs.add(word);
+        this.words.put(key, word);
     }
 
     public boolean hasWord(String word) {
         String key = getKey(word);
-        List   atLtrs = (List)_words.get(key);
+        Collection<String> atLtrs = this.words.get(key);
         return atLtrs != null && atLtrs.contains(word);
     }
 
@@ -127,16 +127,13 @@ public class SpellChecker
             return true;
         }
         else if (nearMatches != null) {
-            char[] wordChars = word.toCharArray();
-            int    wordLen   = wordChars.length;
-            String key       = getKey(word);        
-            List   wds       = (List)_words.get(key);
+            char[]             wordChars = word.toCharArray();
+            int                wordLen   = wordChars.length;
+            String             key       = getKey(word);        
+            Collection<String> wds       = this.words.get(key);
 
             if (wds != null) {
-                Iterator wit = wds.iterator();
-                while (wit.hasNext()) {
-                    String w = (String)wit.next();
-
+                for (String w : wds) {
                     int ed = editDistance(word, w, maxEditDistance);
                     if (ed >= 0 && ed <= maxEditDistance) {
                         Integer eDist = new Integer(ed);

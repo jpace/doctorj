@@ -9,7 +9,9 @@ import java.util.*;
  * Converts from 0 - indexed string positions to line:column values. Lines and
  * columns are 1 - indexed, matching the Java parser.
  */
-public class LineMapping extends ArrayList {
+public class LineMapping extends ArrayList<LineMapping.PositionToLocation> {
+
+    private static final long serialVersionUID = 1;
 
     public class PositionToLocation {
         public final int position;
@@ -72,20 +74,15 @@ public class LineMapping extends ArrayList {
         // tr.Ace.log("parsing description");
         Location start = null;
         Location end = null;
-
-        // tr.Ace.log("position: " + startPos + ", " + endPos);
         
         // go backward
-        ListIterator lit = listIterator(size());
+        ListIterator<PositionToLocation> lit = listIterator(size());
         while ((start == null || end == null) && lit.hasPrevious()) {
-            PositionToLocation pl = (PositionToLocation)lit.previous();
-            // tr.Ace.log("considering position/location " + pl);
+            PositionToLocation pl = lit.previous();
             if (end == null && endPos >= pl.position) {
-                // tr.Ace.log("assigning end");
                 end = new Location(pl.line, pl.column + endPos - pl.position);
             }
             if (start == null && startPos >= pl.position) {
-                // tr.Ace.log("assigning start");
                 start = new Location(pl.line, pl.column + startPos - pl.position);
             }
         }
@@ -99,14 +96,11 @@ public class LineMapping extends ArrayList {
      */
     public Location getLocation(int pos) {
         Location location = null;
-
-        // tr.Ace.log("position: " + pos);
         
         // go backward
         ListIterator lit = listIterator(size());
         while (location == null && lit.hasPrevious()) {
             PositionToLocation pl = (PositionToLocation)lit.previous();
-            // tr.Ace.log("considering position/location " + pl);
             if (location == null && pos >= pl.position) {
                 // tr.Ace.log("creating location");
                 return new Location(pl.line, pl.column + pos - pl.position);
