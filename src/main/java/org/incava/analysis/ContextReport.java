@@ -11,8 +11,8 @@ import org.incava.ijdk.util.ANSI;
  * Reports errors in multiple lines, displaying the contextual code, and
  * denoting the code to which a violation applies.
  */
-public class ContextReport extends Report
-{
+public class ContextReport extends Report {
+    
     /**
      * The number of spaces a tab is equivalent to.
      */
@@ -148,8 +148,8 @@ public class ContextReport extends Report
             tr.Ace.log("opening reader for " + sourceReader);
                 
             try {
-                List           cont = new ArrayList();
-                BufferedReader br = new BufferedReader(sourceReader);
+                List<String>   cont = new ArrayList<String>();
+                BufferedReader br   = new BufferedReader(sourceReader);
                 
                 String line = br.readLine();
                 while (line != null) {
@@ -157,7 +157,7 @@ public class ContextReport extends Report
                     line = br.readLine();
                 }
 
-                contents = (String[])cont.toArray(new String[0]);
+                contents = cont.toArray(new String[cont.size()]);
 
                 for (int i = 0; i < contents.length; ++i) {
                     tr.Ace.log("contents[" + i + "]: " + contents[i]);

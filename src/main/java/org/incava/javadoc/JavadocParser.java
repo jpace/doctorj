@@ -9,41 +9,20 @@ import java.util.List;
  * Parses Javadoc into a list of points, which represent the locations of
  * description and tagged comments in a Javadoc comment block.
  */
-public class JavadocParser
-{
-    /**
-     * The current position.
-     */
-    private int pos;
-
-    /**
-     * The length of the Javadoc being parsed.
-     */
-    private int len;
-
-    /**
-     * The Javadoc being parsed.
-     */
-    private String text;
-
+public class JavadocParser {
+    
     /**
      * Parses the Javadoc in the text. Assumes a start line of 1 and a start
      * column of 1.
      */
-    public List parse(String text)
-    {
+    public List<Point> parse(String text) {
         return parse(text, 1, 1);
     }
 
-    public List parse(String text, int startLine, int startColumn)
-    {
-        // tr.Ace.log("text", "+" + text + "+");
-        
-        this.text = text;
-        
-        len = text.length();
-        ArrayList ary = new ArrayList();
-        pos = 0;
+    public List<Point> parse(String text, int startLine, int startColumn) {
+        int len = text.length();
+        List<Point> ary = new ArrayList<Point>();
+        int pos = 0;
 
         while (pos < len && Character.isWhitespace(text.charAt(pos))) {
             ++pos;
@@ -88,7 +67,7 @@ public class JavadocParser
 
                     Point desc = new Point(pos, -1);
 
-                    read(desc);
+                    pos = read(desc, text, pos, len);
                 
                     // tr.Ace.log("at end, pos: " + pos + "; desc pos   : " + desc);
 
@@ -102,7 +81,8 @@ public class JavadocParser
                     Point tag = new Point(pos, -1);
 
                     ++pos;
-                    read(tag);
+                    
+                    pos = read(tag, text, pos, len);
 
                     // tr.Ace.log("tag pos   : " + tag);
 
@@ -123,13 +103,9 @@ public class JavadocParser
     /**
      * Reads to the next Javadoc field, or to the end of the comment.
      */
-    protected void read(Point pt) 
-    {
-        // tr.Ace.log("pos: " + pos + ", len: " + len + ", text: " + text + ", pt: " + pt);
-        
+    protected int read(Point pt, String text, int pos, int len) {
         pt.y = pos;
         while (pos < len && (text.charAt(pos) != '@' || (pos >= 0 && text.charAt(pos - 1) == '{'))) {
-            // // tr.Ace.log("pos: " + pos);
             pt.y = pos;
 
             ++pos;
@@ -145,17 +121,15 @@ public class JavadocParser
                 continue;
             }
 
-            // tr.Ace.log("looking for next position");
-
             // now, we're at the start of a new line:
             while (pos < len && (Character.isWhitespace(text.charAt(pos)) || text.charAt(pos) == '*')) {
                 ++pos;
-                // tr.Ace.log("advanced pos: " + pos);
             }
         }
 
         ++pt.y;
-        // tr.Ace.log("at end -- pos : " + pos  + ", len: " + len + ", char: '" + text.charAt(pos) + "', text: " + text + ", pt: " + pt);
+
+        return pos;
     }
 
 }

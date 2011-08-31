@@ -8,22 +8,23 @@ import org.incava.text.LineMapping;
 import org.incava.text.Location;
 
 
-public class ItemCommentSpellCheck extends CommentSpellCheck
-{
+public class ItemCommentSpellCheck extends CommentSpellCheck {
+
     public final static int NUM_CLOSEST_MATCHES = 6;
 
-    private ItemDocAnalyzer _analyzer;
+    private ItemDocAnalyzer analyzer;
 
-    private JavadocElement _desc;
+    private JavadocElement desc;
 
-    private LineMapping _lines = null;
+    private LineMapping lines;
 
     public void check(ItemDocAnalyzer analyzer, JavadocElement desc) {
-        _analyzer = analyzer;
-        _desc = desc;
-        _lines = null;
+        this.analyzer = analyzer;
+        this.desc = desc;
+
+        this.lines = null;
         
-        super.check(_desc.text);
+        super.check(this.desc.text);
     }
     
     protected String makeMessage(String word, Map nearMatches) {
@@ -35,7 +36,7 @@ public class ItemCommentSpellCheck extends CommentSpellCheck
             buf.append("Closest matches: ");
             
             Iterator it = nearMatches.values().iterator();
-            List msgWords = new ArrayList();
+            List<String> msgWords = new ArrayList<String>();
             
             while (it.hasNext() && msgWords.size() < NUM_CLOSEST_MATCHES) {
                 List     matches = (List)it.next();
@@ -55,14 +56,14 @@ public class ItemCommentSpellCheck extends CommentSpellCheck
     protected void wordMisspelled(String word, int position, Map nearMatches) {
         tr.Ace.log("word", word);
 
-        if (_lines == null) {
-            _lines = new LineMapping(_desc.text, _desc.start.line, _desc.start.column);
+        if (this.lines == null) {
+            this.lines = new LineMapping(this.desc.text, this.desc.start.line, this.desc.start.column);
         }
         
-        Location start = _lines.getLocation(position);
-        Location end = _lines.getLocation(position + word.length() - 1);
+        Location start = this.lines.getLocation(position);
+        Location end   = this.lines.getLocation(position + word.length() - 1);
         String   msg = makeMessage(word, nearMatches);
         
-        _analyzer.addViolation(msg, start, end);
+        this.analyzer.addViolation(msg, start, end);
     }
 }

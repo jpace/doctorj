@@ -72,22 +72,22 @@ public class ParameterDocAnalyzer extends DocAnalyzer
     /**
      * The Javadoc block applicable to this parameter list.
      */
-    private JavadocNode _javadoc;
+    private final JavadocNode _javadoc;
 
     /**
      * The function containing the list of parameters.
      */
-    private SimpleNode _function;
+    private final SimpleNode _function;
 
     /**
      * The list of parameters in the code.
      */
-    private ASTFormalParameters _parameterList;
+    private final ASTFormalParameters _parameterList;
 
     /**
      * The list of parameters from the code, that were documented.
      */
-    private List _documentedParameters = new ArrayList();
+    private final List<Integer> _documentedParameters;
 
     private int _nodeLevel;
 
@@ -105,6 +105,7 @@ public class ParameterDocAnalyzer extends DocAnalyzer
         _function = function;
         _parameterList = parameterList;
         _nodeLevel = nodeLevel;
+        _documentedParameters = new ArrayList<Integer>();
     }
 
     /**
@@ -209,17 +210,24 @@ public class ParameterDocAnalyzer extends DocAnalyzer
         }
     }
 
+    /**
+     * Returns the last element in the list.
+     * $$$ todo: Move to IDJK/util/ListExt
+     */
+    public static <T> T last(List<T> list) {
+        return list.get(list.size() - 1);
+    }
+
     protected void addDocumentedParameter(int index, Location start, Location end) {
-        if (_documentedParameters.size() > 0 && ((Integer)_documentedParameters.get(_documentedParameters.size() - 1)).intValue() > index) {
+        if (_documentedParameters.size() > 0 && last(_documentedParameters) > index) {
             addViolation(MSG_PARAMETER_NOT_IN_CODE_ORDER, start, end);
         }
         
-        Integer i = new Integer(index);
-        if (_documentedParameters.contains(i)) {
+        if (_documentedParameters.contains(index)) {
             addViolation(MSG_PARAMETER_REPEATED, start, end);
         }
         else {
-            _documentedParameters.add(i);
+            _documentedParameters.add(index);
         }
     }
     

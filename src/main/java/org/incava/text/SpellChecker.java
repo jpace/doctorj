@@ -22,16 +22,14 @@ public class SpellChecker
      * Computes the Levenstein edit distance between the two words, with a
      * maximum of 3, at which point the distance is no longer computed.
      */
-    public int editDistance(String str1, String str2)
-    {
+    public int editDistance(String str1, String str2) {
         return editDistance(str1, str2, 3);
     }
 
     /**
      * Computes the Levenstein edit distance between the two words.
      */
-    public int editDistance(String str1, String str2, int maximum)
-    {
+    public int editDistance(String str1, String str2, int maximum) {
         int len1 = Math.min(str1.length(), COMP_LEN);
         int len2 = Math.min(str2.length(), COMP_LEN);
         
@@ -42,15 +40,14 @@ public class SpellChecker
         
         int diff = Math.abs(len1 - len2);
         if (diff > threshold) {
-            return -1 * diff;
+            return - 1 * diff;
         }
         else {
             return compare(str1, len1, str2, len2);
         }
     }
 
-    public boolean nearMatch(String str1, String str2)
-    {
+    public boolean nearMatch(String str1, String str2) {
         int edist = editDistance(str1, str2);
         
         // the edit distance is misleading for very short words, so it must be
@@ -61,12 +58,11 @@ public class SpellChecker
     /**
      * Adds the given dictionary. Returns whether it could be read and had content.
      */
-    public boolean addDictionary(String dictionary)
-    {
+    public boolean addDictionary(String dictionary) {
         tr.Ace.log("adding dictionary: " + dictionary);
 
         try {
-            BufferedReader br  = new BufferedReader(new FileReader(dictionary));
+            BufferedReader br = new BufferedReader(new FileReader(dictionary));
             
             while (true) {
                 String word = br.readLine();
@@ -85,8 +81,7 @@ public class SpellChecker
         }
     }
 
-    public String getKey(String word)
-    {
+    public String getKey(String word) {
         char[] chars = word.toCharArray();
         if (chars.length > 1) {
             char c0 = chars[0];
@@ -106,9 +101,8 @@ public class SpellChecker
         }
     }
 
-    public void addWord(String word)
-    {
-        String key    = getKey(word);
+    public void addWord(String word) {
+        String key = getKey(word);
         List   atLtrs = (List)_words.get(key);
         if (atLtrs == null) {
             atLtrs = new ArrayList();
@@ -117,18 +111,18 @@ public class SpellChecker
         atLtrs.add(word);
     }
 
-    public boolean hasWord(String word)
-    {
-        String key    = getKey(word);
+    public boolean hasWord(String word) {
+        String key = getKey(word);
         List   atLtrs = (List)_words.get(key);
         return atLtrs != null && atLtrs.contains(word);
     }
 
     /**
      * @param nearMatches a map from edit distances to matches.
+     * 
+     * $$$ todo replace nearMatches with MultiMap<Integer, String>
      */
-    public boolean isCorrect(String word, int maxEditDistance, Map nearMatches)
-    {
+    public boolean isCorrect(String word, int maxEditDistance, Map nearMatches) {
         if (hasWord(word)) {
             return true;
         }
@@ -145,7 +139,7 @@ public class SpellChecker
 
                     int ed = editDistance(word, w, maxEditDistance);
                     if (ed >= 0 && ed <= maxEditDistance) {
-                        Integer eDist   = new Integer(ed);
+                        Integer eDist = new Integer(ed);
                         List    matches = (List)nearMatches.get(eDist);
                         if (matches == null) {
                             matches = new ArrayList();
@@ -159,8 +153,7 @@ public class SpellChecker
         return false;
     }
     
-    public boolean isCorrect(String word, Map nearMatches)
-    {
+    public boolean isCorrect(String word, Map nearMatches) {
         return isCorrect(word, DEFAULT_MAX_DISTANCE, nearMatches);
     }
 
@@ -168,10 +161,9 @@ public class SpellChecker
      * Compares the two characters. English words should probably be case
      * insensitive; code should not.
      */
-    protected int compare(String str1, int len1, String str2, int len2)
-    {
+    protected int compare(String str1, int len1, String str2, int len2) {
         final int ADDITION = 1;
-        final int CHANGE   = 2;
+        final int CHANGE = 2;
         final int DELETION = 1;
 
         int[][] distance = new int[ARR_SIZE][ARR_SIZE];
@@ -193,8 +185,10 @@ public class SpellChecker
         return distance[len1][len2];
     }
 
-    protected static int min3(int x, int y, int z) 
-    {
+    /**
+     * $$$ todo move to idjk/lang/MathExt
+     */
+    protected static int min3(int x, int y, int z) {
         return (x < y) ? (x < z ? x : z) : (y < z ? y : z);
     }
 

@@ -6,35 +6,30 @@ import java.util.*;
 
 
 /**
- * Converts from 0-indexed string positions to line:column values. Lines and
- * columns are 1-indexed, matching the Java parser.
+ * Converts from 0 - indexed string positions to line:column values. Lines and
+ * columns are 1 - indexed, matching the Java parser.
  */
-public class LineMapping extends ArrayList
-{
-    public class PositionToLocation 
-    {
-        public int position;
+public class LineMapping extends ArrayList {
+
+    public class PositionToLocation {
+        public final int position;
         
-        public int line;
+        public final int line;
 
-        public int column;
+        public final int column;
 
-        public PositionToLocation(int position, int line, int column)
-        {
+        public PositionToLocation(int position, int line, int column) {
             this.position = position;
             this.line = line;
             this.column = column;
         }
 
-        public String toString()
-        {
+        public String toString() {
             return "{ position: " + position + " => { line: " + line + ", column: " + column + " } }";
         }
     }
 
-    public LineMapping(String text, int startLine, int startColumn)
-    {
-        // tr.Ace.log("position: " + 0 + " => { line: " + startLine + ", column: " + startColumn + " }");
+    public LineMapping(String text, int startLine, int startColumn) {
         add(new PositionToLocation(0, startLine, startColumn));
 
         int len = text.length();
@@ -59,29 +54,24 @@ public class LineMapping extends ArrayList
 
             ++line;
 
-            // tr.Ace.log("position: " + pos + " => { line: " + line + ", column: " + 1 + " }");
             add(new PositionToLocation(pos + 1, line, 1));
         }
-
-        // tr.Ace.log("line positions: " + this);
     }
 
     /**
      * Converts the string position to a line:column start and end location.
      */
-    public Location[] getLocations(Point pos)
-    {
+    public Location[] getLocations(Point pos) {
         return getLocations(pos.x, pos.y);
     }
 
     /**
      * Converts the string position to a line:column start and end location.
      */
-    public Location[] getLocations(int startPos, int endPos)
-    {
+    public Location[] getLocations(int startPos, int endPos) {
         // tr.Ace.log("parsing description");
         Location start = null;
-        Location end   = null;
+        Location end = null;
 
         // tr.Ace.log("position: " + startPos + ", " + endPos);
         
@@ -107,8 +97,7 @@ public class LineMapping extends ArrayList
     /**
      * Converts the string position to a line:column location.
      */
-    public Location getLocation(int pos)
-    {
+    public Location getLocation(int pos) {
         Location location = null;
 
         // tr.Ace.log("position: " + pos);

@@ -10,8 +10,8 @@ import net.sourceforge.pmd.ast.Token;
 /**
  * Reports errors (violations), in a format that is determined by the subclass.
  */
-public abstract class Report
-{
+public abstract class Report {
+    
     /**
      * The file to which this report currently applies. By default, this is '-',
      * denoting standard output.
@@ -26,7 +26,7 @@ public abstract class Report
     /**
      * The set of violations, which are maintained in sorted order.
      */
-    private Set violations = new TreeSet();
+    private Set<Violation> violations;
 
     /**
      * Creates a report for the given writer.
@@ -35,6 +35,8 @@ public abstract class Report
      */
     public Report(Writer writer) {
         this.writer = writer;
+        
+        this.violations = new TreeSet<Violation>();
     }
 
     /**
@@ -129,11 +131,8 @@ public abstract class Report
         try {
             tr.Ace.stack("flushing");
             
-            Iterator it = violations.iterator();
-            while (it.hasNext()) {
-                Object    obj = it.next();
-                Violation v   = (Violation)obj;
-                String    str = toString(v);
+            for (Violation v : this.violations) {
+                String str = toString(v);
                 tr.Ace.log("v", v);
                 tr.Ace.log("str", str);
                 writer.write(str);
@@ -144,7 +143,7 @@ public abstract class Report
         }
         catch (IOException ioe) {
         }
-        violations = new TreeSet();
+        this.violations = new TreeSet<Violation>();
     }
 
     /**
@@ -154,14 +153,14 @@ public abstract class Report
      */
     public void addViolation(Violation v) {
         tr.Ace.stack("v", v);
-        violations.add(v);
+        this.violations.add(v);
     }
 
     /**
      * Exists only for testing.
      */
-    public Set getViolations() {
-        return violations;
+    public Set<Violation> getViolations() {
+        return this.violations;
     }
     
     /**
