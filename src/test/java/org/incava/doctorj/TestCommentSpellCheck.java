@@ -3,6 +3,7 @@ package org.incava.doctorj;
 import java.io.*;
 import java.util.*;
 import junit.framework.TestCase;
+import org.incava.ijdk.util.MultiMap;
 
 
 public class TestCommentSpellCheck extends TestCase
@@ -32,19 +33,18 @@ public class TestCommentSpellCheck extends TestCase
 
         private List misspellings = new ArrayList();
 
-        public void check(String desc)
-        {
+        public void check(String desc) {
             misspellings = new ArrayList();
             super.check(desc);
         }
             
-        protected void wordMisspelled(String word, int position, Map nearMatches)
-        {
+        protected void wordMisspelled(String word, int position, MultiMap<Integer, String> nearMatches) {
             misspellings.add(new Misspelling(word, position, nearMatches));
         }
     }
 
     private static TestableCommentSpellCheck tcsc = new TestableCommentSpellCheck();
+    
     static {
         tcsc.addDictionary("/home/jpace/proj/doctorj/etc/words.en_US");
     }
@@ -52,12 +52,15 @@ public class TestCommentSpellCheck extends TestCase
     public TestCommentSpellCheck(String name)
     {
         super(name);
+
+        tr.Ace.setVerbose(true);
     }
 
     public void runSpellTest(String comment, int nMisspellings)
     {
+        tr.Ace.cyan("comment", comment);
         tcsc.check(comment);
-        tr.Ace.log("misspellings: " + tcsc.misspellings);
+        tr.Ace.cyan("misspellings: " + tcsc.misspellings);
         assertEquals(nMisspellings, tcsc.misspellings.size());
     }
 

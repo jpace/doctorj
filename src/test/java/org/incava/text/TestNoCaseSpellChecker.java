@@ -3,6 +3,7 @@ package org.incava.text;
 import java.io.*;
 import java.util.*;
 import junit.framework.TestCase;
+import org.incava.ijdk.util.MultiMap;
 
 
 public class TestNoCaseSpellChecker extends TestCase
@@ -60,7 +61,7 @@ public class TestNoCaseSpellChecker extends TestCase
         assertTrue(sc.hasWord("LogAritHM"));
         assertFalse(sc.hasWord("EuJiffEroUs")); // alas.
 
-        Map nearMatches = new TreeMap();
+        MultiMap<Integer, String> nearMatches = new MultiMap<Integer, String>();
         boolean isOK = sc.isCorrect("badd", nearMatches);
         tr.Ace.log("isOK: " + isOK);
         tr.Ace.log("nearMatches", nearMatches);

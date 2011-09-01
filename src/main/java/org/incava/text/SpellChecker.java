@@ -122,7 +122,7 @@ public class SpellChecker {
      * 
      * $$$ todo replace nearMatches with MultiMap<Integer, String>
      */
-    public boolean isCorrect(String word, int maxEditDistance, Map nearMatches) {
+    public boolean isCorrect(String word, int maxEditDistance, MultiMap<Integer, String> nearMatches) {
         if (hasWord(word)) {
             return true;
         }
@@ -136,13 +136,7 @@ public class SpellChecker {
                 for (String w : wds) {
                     int ed = editDistance(word, w, maxEditDistance);
                     if (ed >= 0 && ed <= maxEditDistance) {
-                        Integer eDist = new Integer(ed);
-                        List    matches = (List)nearMatches.get(eDist);
-                        if (matches == null) {
-                            matches = new ArrayList();
-                            nearMatches.put(eDist, matches);
-                        }
-                        matches.add(w);
+                        nearMatches.put(ed, w);
                     }
                 }
             }
@@ -150,7 +144,7 @@ public class SpellChecker {
         return false;
     }
     
-    public boolean isCorrect(String word, Map nearMatches) {
+    public boolean isCorrect(String word, MultiMap<Integer, String> nearMatches) {
         return isCorrect(word, DEFAULT_MAX_DISTANCE, nearMatches);
     }
 

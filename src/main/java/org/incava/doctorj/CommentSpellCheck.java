@@ -2,12 +2,13 @@ package org.incava.doctorj;
 
 import java.io.*;
 import java.util.*;
+import org.incava.ijdk.util.MultiMap;
 import org.incava.io.FileExt;
 import org.incava.text.*;
 
 
-public class CommentSpellCheck
-{
+public class CommentSpellCheck {
+
     public static CommentSpellCheck instance = null;
 
     public static CommentSpellCheck getInstance() {
@@ -103,28 +104,28 @@ public class CommentSpellCheck
     }
 
     protected void checkWord(String word, int position) {
-        // tr.Ace.log("checking word '" + word + "' at position " + position);
+        tr.Ace.log("checking word '" + word + "' at position " + position);
 
-        Map nearMatches = new TreeMap();
+        MultiMap<Integer, String> nearMatches = new MultiMap<Integer, String>();
         boolean valid = _checker.isCorrect(word, nearMatches);
+        tr.Ace.cyan("valid(" + word + ")?", String.valueOf(valid));
+        tr.Ace.cyan("nearMatches", nearMatches);
         if (!valid) {
             wordMisspelled(word, position, nearMatches);
         }
     }
 
-    protected void wordMisspelled(String word, int position, Map nearMatches) {
+    protected void wordMisspelled(String word, int position, MultiMap<Integer, String> nearMatches) {
         int nPrinted = 0;
         final int printGoal = 15;
         for (int i = 0; nPrinted < printGoal && i < 4; ++i) { // 4 == max edit distance
-            Integer eDist = new Integer(i);
-            List matches = (List)nearMatches.get(eDist);
+            Collection<String> matches = nearMatches.get(i);
             if (matches != null) {
-                Iterator it = matches.iterator();
-                while (it.hasNext()) {
+                for (String match : matches) {
                     // This is not debugging output -- this is actually wanted. 
                     // But I often run "glark '^\s*System.out' to find all my
                     // print statements, so we'll hide this very sneakily:
-                    /* escond */ System.out.println("    near match '" + it.next() + "': " + i);
+                    /* escond */ System.out.println("    near match '" + match + "': " + i);
                     ++nPrinted;
                 }
             }

@@ -6,6 +6,7 @@ import org.incava.ijdk.lang.StringExt;
 import org.incava.javadoc.*;
 import org.incava.text.LineMapping;
 import org.incava.text.Location;
+import org.incava.ijdk.util.MultiMap;
 
 
 public class ItemCommentSpellCheck extends CommentSpellCheck {
@@ -27,7 +28,7 @@ public class ItemCommentSpellCheck extends CommentSpellCheck {
         super.check(this.desc.text);
     }
     
-    protected String makeMessage(String word, Map nearMatches) {
+    protected String makeMessage(String word, MultiMap<Integer, String> nearMatches) {
         StringBuffer buf = new StringBuffer("Word '" + word + "' appears to be misspelled. ");
         if (nearMatches.size() == 0) {
             buf.append("No close matches");
@@ -35,15 +36,15 @@ public class ItemCommentSpellCheck extends CommentSpellCheck {
         else {
             buf.append("Closest matches: ");
             
-            Iterator it = nearMatches.values().iterator();
+            Iterator<Collection<String>> it = nearMatches.values().iterator();
             List<String> msgWords = new ArrayList<String>();
             
             while (it.hasNext() && msgWords.size() < NUM_CLOSEST_MATCHES) {
-                List     matches = (List)it.next();
-                Iterator mit = matches.iterator();
+                Collection<String> matches = it.next();
+                Iterator<String> mit = matches.iterator();
                 
                 while (mit.hasNext() && msgWords.size() < NUM_CLOSEST_MATCHES) {
-                    String w = (String)mit.next();
+                    String w = mit.next();
                     msgWords.add(w);
                 }
             }
@@ -53,7 +54,7 @@ public class ItemCommentSpellCheck extends CommentSpellCheck {
         return buf.toString();
     }
 
-    protected void wordMisspelled(String word, int position, Map nearMatches) {
+    protected void wordMisspelled(String word, int position, MultiMap<Integer, String> nearMatches) {
         tr.Ace.log("word", word);
 
         if (this.lines == null) {
