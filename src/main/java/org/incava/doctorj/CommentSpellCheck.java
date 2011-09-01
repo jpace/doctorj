@@ -2,8 +2,8 @@ package org.incava.doctorj;
 
 import java.io.*;
 import java.util.*;
+import org.incava.ijdk.io.FileExt;
 import org.incava.ijdk.util.MultiMap;
-import org.incava.io.FileExt;
 import org.incava.text.*;
 
 

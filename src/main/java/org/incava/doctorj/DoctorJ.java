@@ -4,14 +4,14 @@ import java.io.*;
 import java.util.*;
 import net.sourceforge.pmd.ast.*;
 import org.incava.analysis.*;
-import org.incava.io.Find;
+import org.incava.ijdk.io.Find;
 import org.incava.pmd.SimpleNodeUtil;
 import org.incava.util.TimedEvent;
 import org.incava.util.TimedEventSet;
 
 
-public class DoctorJ
-{
+public class DoctorJ {
+
     private TimedEventSet _totalInit = new TimedEventSet();
 
     private TimedEventSet _totalParse = new TimedEventSet();
@@ -20,9 +20,9 @@ public class DoctorJ
 
     private JavaParser _parser = null;
 
-    private Report _report = null;
+    private final Report _report;
 
-    private JavaParserVisitor _analyzer;
+    private final JavaParserVisitor _analyzer;
 
     private int _exitValue;
 

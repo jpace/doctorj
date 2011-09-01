@@ -3,68 +3,81 @@ package org.incava.text;
 import java.io.*;
 import java.util.*;
 import junit.framework.TestCase;
+import org.incava.ijdk.lang.Pair;
 import org.incava.ijdk.util.MultiMap;
 
 
-public class TestNoCaseSpellChecker extends TestCase
-{
-    public TestNoCaseSpellChecker(String name)
-    {
+public class TestNoCaseSpellChecker extends AbstractTestSpellChecker {
+
+    public TestNoCaseSpellChecker(String name) {
         super(name);
     }
 
-    public void testSame()
-    {
-        NoCaseSpellChecker sc = new NoCaseSpellChecker();
-        assertEquals(0, sc.editDistance("this", "this"));
-        assertEquals(0, sc.editDistance("THIS", "THIS"));
-        assertEquals(0, sc.editDistance("repository", "repository"));
+    public SpellChecker createSpellChecker() {
+        return new NoCaseSpellChecker();
     }
-    
-    public void testDifferent()
-    {
-        NoCaseSpellChecker sc = new NoCaseSpellChecker();
+
+    public Collection<Pair<String, String>> getSameWords() {
+        List<Pair<String, String>> sameWords = new ArrayList<Pair<String, String>>();
+
+        sameWords.add(new Pair("this", "this"));
+        sameWords.add(new Pair("THIS", "THIS"));
+        sameWords.add(new Pair("repository", "repository"));
+
+        sameWords.add(new Pair("thIs", "This"));
+        sameWords.add(new Pair("this", "THIS"));
+        sameWords.add(new Pair("repoSITORY", "REPOsitory"));
+
+        return sameWords;
+    }
+
+    public MultiMap<Integer, Pair<Pair<String, String>, Integer>> getDifferentWords() {
+        MultiMap<Integer, Pair<Pair<String, String>, Integer>> diffWords = new MultiMap<Integer, Pair<Pair<String, String>, Integer>>();
 
         // additions
-        assertEquals(1, sc.editDistance("the",   "THEY"));
-        assertEquals(2, sc.editDistance("The",   "their"));
-        assertEquals(3, sc.editDistance("thEy",  "THEY're"));
-        assertEquals(4, sc.editDistance("THE",   "theaTre", 5));
-        assertEquals(4, sc.editDistance("the",   "THEAter", 5));
+        addWord(diffWords, 1, "the",   "THEY");
+        addWord(diffWords, 2, "The",   "their");
+        addWord(diffWords, 3, "thEy",  "THEY're");
+        addWord(diffWords, 4, "THE",   "theaTre", 5);
+        addWord(diffWords, 4, "the",   "THEAter", 5);
 
         // deletions
-        assertEquals(1, sc.editDistance("thEy",    "tHe"));
-        assertEquals(2, sc.editDistance("thEIR",   "The"));
-        assertEquals(3, sc.editDistance("ThEy'Re", "ThEy"));
-        assertEquals(4, sc.editDistance("tHeaTre", "tHe", 5));
-        assertEquals(4, sc.editDistance("thEatEr", "ThE", 5));
+        addWord(diffWords, 1, "thEy",    "tHe");
+        addWord(diffWords, 2, "thEIR",   "The");
+        addWord(diffWords, 3, "ThEy'Re", "ThEy");
+        addWord(diffWords, 4, "tHeaTre", "tHe", 5);
+        addWord(diffWords, 4, "thEatEr", "ThE", 5);
         
         // changes
-        assertEquals(2, sc.editDistance("tHeaTER", "theAtre"));
-        assertEquals(2, sc.editDistance("cenTER",  "cEntre"));
-        assertEquals(2, sc.editDistance("reAlize", "reALISE"));
-        assertEquals(4, sc.editDistance("rEaLiZE", "Reality", 5));
+        addWord(diffWords, 2, "tHeaTER", "theAtre");
+        addWord(diffWords, 2, "cenTER",  "cEntre");
+        addWord(diffWords, 2, "reAlize", "reALISE");
+        addWord(diffWords, 4, "rEaLiZE", "Reality", 5);
 
         // miscellaneous
-        assertEquals(1, sc.editDistance("Here",  "There"));
-        assertEquals(5, sc.editDistance("hIt",   "miSS",   5));
-        assertEquals(6, sc.editDistance("up",    "dOWn",   6));
-        assertEquals(7, sc.editDistance("fEast", "fAMINE", 7));
+        addWord(diffWords, 1, "Here",  "There");
+        addWord(diffWords, 5, "hIt",   "miSS",   5);
+        addWord(diffWords, 6, "up",    "dOWn",   6);
+        addWord(diffWords, 7, "fEast", "fAMINE", 7);
+
+        return diffWords;
     }
 
-    public void testDictionary()
-    {
-        NoCaseSpellChecker sc = new NoCaseSpellChecker();
-        sc.addDictionary("/home/jpace/proj/doctorj/etc/words.en_US");
-        
-        assertTrue(sc.hasWord("Locate"));
-        assertTrue(sc.hasWord("LogAritHM"));
-        assertFalse(sc.hasWord("EuJiffEroUs")); // alas.
+    public Collection<String> getDictionaryWords() {
+        List<String> dictWords = new ArrayList<String>();
 
-        MultiMap<Integer, String> nearMatches = new MultiMap<Integer, String>();
-        boolean isOK = sc.isCorrect("badd", nearMatches);
-        tr.Ace.log("isOK: " + isOK);
-        tr.Ace.log("nearMatches", nearMatches);
+        dictWords.add("locate");
+        dictWords.add("logarithm");
+
+        return dictWords;
+    }
+
+    public Collection<String> getNotInDictionaryWords() {
+        List<String> noDictWords = new ArrayList<String>();
+
+        noDictWords.add("eujiffEROUS"); // alas
+
+        return noDictWords;
     }
     
 }

@@ -31,7 +31,7 @@ public class Pair<FirstType, SecondType> implements Comparable<Pair<FirstType, S
     public boolean equals(Object obj) {
         if (obj instanceof Pair) {
             Pair other = (Pair)obj;
-            return getFirst().equals(other.getFirst()) && getSecond().equals(other.getSecond());
+            return ObjectExt.areEqual(getFirst(), other.getFirst()) && ObjectExt.areEqual(getSecond(), other.getSecond());
         }
         else {
             return false;
@@ -65,11 +65,15 @@ public class Pair<FirstType, SecondType> implements Comparable<Pair<FirstType, S
     }
 
     public String toString() {
-        return getFirst().toString() + ", " + getSecond().toString();
+        String firstStr  = getFirst()  == null ? null : getFirst().toString();
+        String secondStr = getSecond() == null ? null : getSecond().toString();
+        return firstStr + ", " + secondStr;
     }
 
     public int hashCode() {
-        return getFirst().hashCode() * 31 + getSecond().hashCode();
+        int firstHc  = getFirst()  == null ? 0 : getFirst().hashCode();
+        int secondHc = getSecond() == null ? 0 : getSecond().hashCode();
+        return firstHc * 31 + secondHc;
     }
 
 }

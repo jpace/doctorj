@@ -22,7 +22,6 @@ public class ItemCommentSpellCheck extends CommentSpellCheck {
     public void check(ItemDocAnalyzer analyzer, JavadocElement desc) {
         this.analyzer = analyzer;
         this.desc = desc;
-
         this.lines = null;
         
         super.check(this.desc.text);

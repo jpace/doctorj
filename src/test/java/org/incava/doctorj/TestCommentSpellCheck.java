@@ -6,27 +6,22 @@ import junit.framework.TestCase;
 import org.incava.ijdk.util.MultiMap;
 
 
-public class TestCommentSpellCheck extends TestCase
-{
-    static class TestableCommentSpellCheck extends CommentSpellCheck
-    {
-        class Misspelling
-        {
+public class TestCommentSpellCheck extends TestCase {
+    static class TestableCommentSpellCheck extends CommentSpellCheck {
+        class Misspelling {
             public String word;
 
             public int position;
 
             public Map nearMatches;
 
-            public Misspelling(String word, int position, Map nearMatches)
-            {
+            public Misspelling(String word, int position, Map nearMatches) {
                 this.word = word;
                 this.position = position;
                 this.nearMatches = nearMatches;
             }
 
-            public String toString()
-            {
+            public String toString() {
                 return "[" + word + ", " + position + ", {" + nearMatches + "}";
             }
         }
@@ -49,43 +44,32 @@ public class TestCommentSpellCheck extends TestCase
         tcsc.addDictionary("/home/jpace/proj/doctorj/etc/words.en_US");
     }
     
-    public TestCommentSpellCheck(String name)
-    {
+    public TestCommentSpellCheck(String name) {
         super(name);
-
-        tr.Ace.setVerbose(true);
     }
 
-    public void runSpellTest(String comment, int nMisspellings)
-    {
-        tr.Ace.cyan("comment", comment);
+    public void runSpellTest(String comment, int nMisspellings) {
         tcsc.check(comment);
-        tr.Ace.cyan("misspellings: " + tcsc.misspellings);
         assertEquals(nMisspellings, tcsc.misspellings.size());
     }
 
-    public void testOK()
-    {
+    public void testOK() {
         runSpellTest("// This is a comment.", 0);
     }
     
-    public void testMisspelling()
-    {
+    public void testMisspelling() {
         runSpellTest("// This is comment has a mispelled word.", 1);
     }
 
-    public void testMisspellings()
-    {
+    public void testMisspellings() {
         runSpellTest("// This is comment has twoo mispelled word.", 2);
     }
 
-    public void testOKCapitalized()
-    {
+    public void testOKCapitalized() {
         runSpellTest("// This is a Comment.", 0);
     }
 
-    public void testOKPreBlock()
-    {
+    public void testOKPreBlock() {
         runSpellTest(
             "/** This is a comment.\n" +
             "  *\n" +
@@ -113,14 +97,12 @@ public class TestCommentSpellCheck extends TestCase
             0);
     }
 
-    public void testOKCodeBlock()
-    {
+    public void testOKCodeBlock() {
         runSpellTest("/** This is a comment that refers to <code>str</code>. */", 0);
         runSpellTest("/** This is a comment that refers to <code>somethingthatdoesnotend */", 0);
     }
 
-    public void testOKLink()
-    {
+    public void testOKLink() {
         runSpellTest("/** This is a comment that refers to a {@link tosomewhere}. */", 0);
         runSpellTest("/** This is a comment that refers to a {@link tosomewherefarbeyond */", 0);     // "}" -- for Emacs
     }

@@ -61,7 +61,7 @@ public class JavadocTags
 
     public final static int CUSTOM_TAG = 999;
 
-    private final static Map tags = new HashMap();
+    private final static Map<String, TagDescription> tags = new HashMap<String, TagDescription>();
     
     // reference: http://java.sun.com/j2se/1.4.2/docs/tooldocs/solaris/javadoc.html
     static {
@@ -86,7 +86,7 @@ public class JavadocTags
 
     public static int getIndex(String tag) {
         if (tags.containsKey(tag)) {
-            TagDescription td = (TagDescription)tags.get(tag);
+            TagDescription td = tags.get(tag);
             return td.index;
         }
         else {
@@ -94,12 +94,12 @@ public class JavadocTags
         }
     }
 
-    public static List getTagsAtIndex(int index) {
-        Iterator it = tags.keySet().iterator();
-        List list = new ArrayList();
-        while (it.hasNext()) {
-            String tag = (String)it.next();
-            TagDescription td = (TagDescription)tags.get(tag);
+    public static List<String> getTagsAtIndex(int index) {
+        Iterator<String> it = tags.keySet().iterator();
+        List<String> list = new ArrayList<String>();
+        for (Map.Entry<String, TagDescription> entry : tags.entrySet()) {
+            String tag = entry.getKey();
+            TagDescription td = entry.getValue();
             if (td.index == index) {
                 list.add(tag);
             }
@@ -107,8 +107,8 @@ public class JavadocTags
         return list;
     }
 
-    static abstract class TagCollect extends Collect 
-    {
+    static abstract class TagCollect extends Collect {
+
         public TagCollect(Collection c) {
             super(c);
         }

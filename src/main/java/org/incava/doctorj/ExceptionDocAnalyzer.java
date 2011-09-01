@@ -29,9 +29,9 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
 
     protected final static int CHKLVL_EXCEPTION_DOC_EXISTS = 1;
     
-    private static Map excToRuntime = new HashMap();
+    private static Map<String, Boolean> excToRuntime = new HashMap<String, Boolean>();
 
-    private static Collection reportedExceptions = new ArrayList();
+    private static Collection<String> reportedExceptions = new ArrayList<String>();
 
     protected final static String[] KNOWN_RUNTIME_EXCEPTIONS = new String[] {
         "java.awt.color.CMMException",
@@ -97,17 +97,17 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
         }
     }
 
-    private JavadocNode _javadoc;
+    private final JavadocNode _javadoc;
 
-    private ASTNameList _throwsList;
+    private final ASTNameList _throwsList;
 
-    private SimpleNode _function;
+    private final SimpleNode _function;
 
-    private List _documentedExceptions = new ArrayList();
+    private final List<String> _documentedExceptions;
 
-    private int _nodeLevel;
+    private final int _nodeLevel;
 
-    private Map _importMap;
+    private Map<String, ASTImportDeclaration> _importMap;
 
     /**
      * Creates and runs the exception documentation analyzer.
@@ -124,6 +124,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
         _function = function;
         _nodeLevel = nodeLevel;
         _importMap = null;
+        _documentedExceptions = new ArrayList<String>();
     }
     
     public void run() {
@@ -174,17 +175,14 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
                         fullName = getExactMatch(fullName);
                         
                         if (fullName == null) {
-                            Iterator iit = _importMap.keySet().iterator();
+                            Iterator<String> iit = _importMap.keySet().iterator();
                             while (cls == null && iit.hasNext()) {
-                                String impName   = (String)iit.next();
+                                String impName   = iit.next();
                                 String shImpName = getShortName(impName);
                                 if (shImpName.equals("*")) {
                                     // try to load pkg.name
                                     fullName = impName.substring(0, impName.indexOf("*")) + shortName;
                                     cls = loadClass(fullName);
-                                }
-                                else {
-                                    // skip it.
                                 }
                             }
                             
@@ -219,8 +217,8 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
         }            
     }
 
-    protected Map makeImportMap(ASTImportDeclaration[] imports) {
-        Map namesToImp = new HashMap();
+    protected Map<String, ASTImportDeclaration> makeImportMap(ASTImportDeclaration[] imports) {
+        Map<String, ASTImportDeclaration> namesToImp = new HashMap<String, ASTImportDeclaration>();
 
         for (int ii = 0; ii < imports.length; ++ii) {
             ASTImportDeclaration imp = imports[ii];
@@ -254,14 +252,11 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
     }
 
     protected String getExactMatch(String name) {
-        Iterator iit = _importMap.keySet().iterator();
+        Iterator<String> iit = _importMap.keySet().iterator();
         while (iit.hasNext()) {
-            String impName   = (String)iit.next();
+            String impName   = iit.next();
             String shImpName = getShortName(impName);
-            if (shImpName.equals("*")) {
-                // skip it.
-            }
-            else if (shImpName.equals(name)) {
+            if (!shImpName.equals("*") && shImpName.equals(name)) {
                 return impName;
             }
         }
@@ -290,7 +285,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
         }
         else {
             String  excName = excClass.getName();
-            Boolean val     = (Boolean)excToRuntime.get(excName);
+            Boolean val     = excToRuntime.get(excName);
             if (val == null) {
                 val = new Boolean(RuntimeException.class.isAssignableFrom(excClass) || 
                                   Error.class.isAssignableFrom(excClass));

@@ -3,68 +3,78 @@ package org.incava.text;
 import java.io.*;
 import java.util.*;
 import junit.framework.TestCase;
+import org.incava.ijdk.lang.Pair;
 import org.incava.ijdk.util.MultiMap;
 
 
-public class TestSpellChecker extends TestCase
-{
-    public TestSpellChecker(String name)
-    {
+public class TestSpellChecker extends AbstractTestSpellChecker {
+
+    public TestSpellChecker(String name) {
         super(name);
+
+        tr.Ace.setVerbose(true);
     }
 
-    public void testSame()
-    {
-        SpellChecker sc = new SpellChecker();
-        assertEquals(0, sc.editDistance("this", "this"));
-        assertEquals(0, sc.editDistance("THIS", "THIS"));
-        assertEquals(0, sc.editDistance("repository", "repository"));
+    public SpellChecker createSpellChecker() {
+        return new SpellChecker();
     }
-    
-    public void testDifferent()
-    {
-        SpellChecker sc = new SpellChecker();
+
+    public Collection<Pair<String, String>> getSameWords() {
+        List<Pair<String, String>> sameWords = new ArrayList<Pair<String, String>>();
+
+        sameWords.add(new Pair("this", "this"));
+        sameWords.add(new Pair("THIS", "THIS"));
+        sameWords.add(new Pair("repository", "repository"));
+
+        return sameWords;
+    }
+
+    public MultiMap<Integer, Pair<Pair<String, String>, Integer>> getDifferentWords() {
+        MultiMap<Integer, Pair<Pair<String, String>, Integer>> diffWords = new MultiMap<Integer, Pair<Pair<String, String>, Integer>>();
 
         // additions
-        assertEquals(1, sc.editDistance("the",   "they"));
-        assertEquals(2, sc.editDistance("the",   "their"));
-        assertEquals(3, sc.editDistance("they",  "they're"));
-        assertEquals(4, sc.editDistance("the",   "theatre", 5));
-        assertEquals(4, sc.editDistance("the",   "theater", 5));
+        addWord(diffWords, 1, "the", "they");
+        addWord(diffWords, 2, "the", "their");
+        addWord(diffWords, 3, "they", "they're");
+        addWord(diffWords, 4, "the",   "theater", 5);
 
         // deletions
-        assertEquals(1, sc.editDistance("they",    "the"));
-        assertEquals(2, sc.editDistance("their",   "the"));
-        assertEquals(3, sc.editDistance("they're", "they"));
-        assertEquals(4, sc.editDistance("theatre", "the", 5));
-        assertEquals(4, sc.editDistance("theater", "the", 5));
+        addWord(diffWords, 1, "they", "the");
+        addWord(diffWords, 2, "their", "the");
+        addWord(diffWords, 3, "they're", "they");
+        addWord(diffWords, 4, "theatre", "the", 5);
+        addWord(diffWords, 4, "theater", "the", 5);
         
         // changes
-        assertEquals(2, sc.editDistance("theater", "theatre"));
-        assertEquals(2, sc.editDistance("center",  "centre"));
-        assertEquals(2, sc.editDistance("realize", "realise"));
-        assertEquals(4, sc.editDistance("realize", "reality", 5));
+        addWord(diffWords, 2, "theater", "theatre");
+        addWord(diffWords, 2, "center", "centre");
+        addWord(diffWords, 2, "realize", "realise");
+        addWord(diffWords, 4, "realize", "reality", 5);
 
         // miscellaneous
-        assertEquals(1, sc.editDistance("here",  "there"));
-        assertEquals(5, sc.editDistance("hit",   "miss",   5));
-        assertEquals(6, sc.editDistance("up",    "down",   6));
-        assertEquals(7, sc.editDistance("feast", "famine", 7));
+        addWord(diffWords, 1, "here", "there");
+        addWord(diffWords, 5, "hit",   "miss",   5);
+        addWord(diffWords, 6, "up",    "down",   6);
+        addWord(diffWords, 7, "feast", "famine", 7);
+     
+        return diffWords;
     }
 
-    public void testDictionary()
-    {
-        SpellChecker sc = new SpellChecker();
-        sc.addDictionary("/home/jpace/proj/doctorj/etc/words.en_US");
-        
-        assertTrue(sc.hasWord("locate"));
-        assertTrue(sc.hasWord("logarithm"));
-        assertFalse(sc.hasWord("eujifferous")); // alas.
+    public Collection<String> getDictionaryWords() {
+        List<String> dictWords = new ArrayList<String>();
 
-        MultiMap<Integer, String> nearMatches = new MultiMap<Integer, String>();
-        boolean isOK = sc.isCorrect("badd", nearMatches);
-        tr.Ace.log("isOK: " + isOK);
-        tr.Ace.log("nearMatches", nearMatches);
+        dictWords.add("locate");
+        dictWords.add("logarithm");
+
+        return dictWords;
+    }
+
+    public Collection<String> getNotInDictionaryWords() {
+        List<String> noDictWords = new ArrayList<String>();
+
+        noDictWords.add("eujifferous"); // alas
+
+        return noDictWords;
     }
     
 }

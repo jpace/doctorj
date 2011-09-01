@@ -14,8 +14,8 @@ import org.incava.text.Location;
 /**
  * Analyzes Javadoc and code.
  */
-public abstract class ItemDocAnalyzer extends DocAnalyzer
-{
+public abstract class ItemDocAnalyzer extends DocAnalyzer {
+
     public final static String MSG_NO_SUMMARY_SENTENCE = "No summary sentence";
 
     public final static String MSG_SUMMARY_SENTENCE_DOES_NOT_END_WITH_PERIOD = "Summary sentence does not end with period";
