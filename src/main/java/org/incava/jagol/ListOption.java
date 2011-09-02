@@ -8,8 +8,8 @@ import org.incava.ijdk.lang.StringExt;
 /**
  * Represents a list of objects that comprise this option.
  */
-public class ListOption extends Option
-{
+public class ListOption extends Option {
+    
     private List<String> value;
     
     /**

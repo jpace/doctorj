@@ -8,8 +8,7 @@ import junit.framework.TestCase;
 public class TestNonBooleanOption extends TestCase
 {
     NonBooleanOption opt = new NonBooleanOption("nbopt", "this is the description of nbopt") {
-            public void setValue(String value) throws InvalidTypeException
-            {        
+            public void setValue(String value) throws InvalidTypeException {        
             }
 
             protected String getType() {

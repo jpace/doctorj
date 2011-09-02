@@ -8,6 +8,7 @@ import java.util.*;
  * A group of options.
  */
 public class OptionSet {
+
     private final List<Option> options;
 
     private final List<String> rcFileNames;

@@ -37,8 +37,7 @@ public class DoubleOption extends NonBooleanOption
     /**
      * Sets the value from the string, for a double type.
      */
-    public void setValue(String value) throws InvalidTypeException
-    {
+    public void setValue(String value) throws InvalidTypeException {
         tr.Ace.log("value: '" + value + "'");
         try {
             setValue(new Double(value));
@@ -55,5 +54,4 @@ public class DoubleOption extends NonBooleanOption
     protected String getType() {
         return "double";
     }
-
 }

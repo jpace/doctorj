@@ -5,8 +5,8 @@ import java.util.*;
 import junit.framework.TestCase;
 
 
-public class TestBooleanOption extends TestCase
-{
+public class TestBooleanOption extends TestCase {
+
     BooleanOption opt = new BooleanOption("boolopt", "this is the description of boolopt");
 
     public TestBooleanOption(String name) {

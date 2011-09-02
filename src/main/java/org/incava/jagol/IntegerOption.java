@@ -7,8 +7,8 @@ import java.util.*;
 /**
  * Represents an option that is an integer.
  */
-public class IntegerOption extends NonBooleanOption
-{
+public class IntegerOption extends NonBooleanOption {
+
     private Integer value;
     
     public IntegerOption(String longName, String description) {
@@ -37,8 +37,7 @@ public class IntegerOption extends NonBooleanOption
     /**
      * Sets the value from the string, for an integer type.
      */
-    public void setValue(String value) throws InvalidTypeException
-    {
+    public void setValue(String value) throws InvalidTypeException {
         try {
             setValue(new Integer(value));
         }

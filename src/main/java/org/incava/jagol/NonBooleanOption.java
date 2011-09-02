@@ -7,8 +7,8 @@ import java.util.*;
 /**
  * Base class of all options, except for booleans.
  */
-public abstract class NonBooleanOption extends Option
-{
+public abstract class NonBooleanOption extends Option {
+    
     public NonBooleanOption(String longName, String description) {
         super(longName, description);
     }
