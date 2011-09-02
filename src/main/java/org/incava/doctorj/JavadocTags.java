@@ -9,10 +9,10 @@ import org.incava.ijdk.util.Collect;
 /**
  * Javadoc tags and the order in which they should appear for each Java type.
  */
-public class JavadocTags
-{
-    public static class TagDescription 
-    {
+public class JavadocTags {
+
+    public static class TagDescription {
+
         String tag;
 
         int index;
@@ -117,35 +117,35 @@ public class JavadocTags
         }
     }
     
-    public static List getValidConstructorTags() {
+    public static List<String> getValidConstructorTags() {
         return new TagCollect(tags.values()) {
             public final static long serialVersionUID = 1;
             public boolean where(TagDescription td) { return td.isCtorTag; }
         };
     }
     
-    public static List getValidMethodTags() {
+    public static List<String> getValidMethodTags() {
         return new TagCollect(tags.values()) {
             public final static long serialVersionUID = 1;
             public boolean where(TagDescription td) { return td.isMethodTag; }
         };
     }
 
-    public static List getValidFieldTags() {
+    public static List<String> getValidFieldTags() {
         return new TagCollect(tags.values()) {
             public final static long serialVersionUID = 1;
             public boolean where(TagDescription td) { return td.isFieldTag; }
         };
     }
 
-    public static List getValidInterfaceTags() {
+    public static List<String> getValidInterfaceTags() {
         return new TagCollect(tags.values()) {
             public final static long serialVersionUID = 1;
             public boolean where(TagDescription td) { return td.isTypeTag; }
         };
     }
 
-    public static List getValidClassTags() {
+    public static List<String> getValidClassTags() {
         return getValidInterfaceTags();
     }
 }

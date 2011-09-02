@@ -36,7 +36,7 @@ public class CtorDocAnalyzer extends FunctionDocAnalyzer {
     /**
      * Returns the valid tags, as strings, for ctors.
      */
-    protected List getValidTags() {
+    protected List<String> getValidTags() {
         return JavadocTags.getValidConstructorTags();
     }
 

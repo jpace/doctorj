@@ -5,8 +5,8 @@ import java.util.*;
 import junit.framework.TestCase;
 
 
-public class TestListOption extends TestCase
-{
+public class TestListOption extends TestCase {
+
     ListOption opt = new ListOption("listopt", "this is the description of listopt");
 
     public TestListOption(String name) {
@@ -32,7 +32,7 @@ public class TestListOption extends TestCase
         v.add("charon");
         
         opt.setValue(v);
-        List values = opt.getValue();
+        List<String> values = opt.getValue();
         assertNotNull("list", values);
         assertEquals("list size",    3,        values.size());
         assertEquals("option value", v.get(0), values.get(0));
@@ -45,7 +45,7 @@ public class TestListOption extends TestCase
         try {
             boolean processed = opt.set("--listopt=fee, fi, fo, fum", args);
             assertEquals("option processed", true, processed);
-            List values = opt.getValue();
+            List<String> values = opt.getValue();
             assertEquals("list size", 4, values.size());
             assertEquals("option value", "fee", values.get(0));
             assertEquals("option value", "fi",  values.get(1));
@@ -64,7 +64,7 @@ public class TestListOption extends TestCase
         try {
             boolean processed = opt.set("--listopt", args);
             assertEquals("option processed", true, processed);
-            List values = opt.getValue();
+            List<String> values = opt.getValue();
             assertEquals("list size", 2, values.size());
             assertEquals("option value", "closing", values.get(0));
             assertEquals("option value", "winds",  values.get(1));
@@ -81,7 +81,7 @@ public class TestListOption extends TestCase
         try {
             boolean processed = opt.set("--listopt=ord", args);
             assertEquals("option processed", true, processed);
-            List values = opt.getValue();
+            List<String> values = opt.getValue();
             assertEquals("list size", 1, values.size());
             assertEquals("option value", "ord", values.get(0));
             assertEquals("argument removed from list", 1, args.size());
@@ -98,7 +98,7 @@ public class TestListOption extends TestCase
         try {
             boolean processed = opt.set("--listopt", args);
             assertEquals("option processed", true, processed);
-            List values = opt.getValue();
+            List<String> values = opt.getValue();
             assertEquals("list size", 3, values.size());
             assertEquals("option value", "red", values.get(0));
             assertEquals("option value", "blue", values.get(1));

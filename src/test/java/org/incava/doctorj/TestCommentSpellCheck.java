@@ -13,9 +13,9 @@ public class TestCommentSpellCheck extends TestCase {
 
             public int position;
 
-            public Map nearMatches;
+            public MultiMap<Integer, String> nearMatches;
 
-            public Misspelling(String word, int position, Map nearMatches) {
+            public Misspelling(String word, int position, MultiMap<Integer, String> nearMatches) {
                 this.word = word;
                 this.position = position;
                 this.nearMatches = nearMatches;

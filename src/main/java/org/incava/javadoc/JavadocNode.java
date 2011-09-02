@@ -30,7 +30,7 @@ public class JavadocNode
     public static JavadocNode parse(String text, int startLine, int startColumn)
     {
         JavadocParser parser = new JavadocParser();
-        List subs = parser.parse(text, startLine, startColumn);
+        List<Point> subs = parser.parse(text, startLine, startColumn);
 
         if (subs == null) {
             return null;
@@ -50,9 +50,9 @@ public class JavadocNode
             jd.endColumn = end.column;
 
             if (subs.size() > 0) {
-                Iterator it = subs.iterator();
+                Iterator<Point> it = subs.iterator();
 
-                Point descPos = (Point)it.next();
+                Point descPos = it.next();
                 if (descPos != null) {
                     Location[] descLocations = lines.getLocations(descPos);
 
@@ -72,7 +72,7 @@ public class JavadocNode
 
                 jd.tagged = new JavadocTaggedNode[subs.size() - 1];
                 for (int i = 0; it.hasNext(); ++i) {
-                    Point      pos       = (Point)it.next();
+                    Point      pos       = it.next();
                     Location[] locations = lines.getLocations(pos);
                     
                     jd.tagged[i] = new JavadocTaggedNode(text.substring(pos.x, pos.y), locations[0], locations[1]);

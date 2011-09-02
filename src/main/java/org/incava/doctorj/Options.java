@@ -179,7 +179,7 @@ public class Options extends OptionSet
         tr.Ace.log("dictProperty", dictProperty);
         
         if (dictProperty != null) {
-            List     list = StringExt.listify(dictProperty);
+            List<String>     list = StringExt.listify(dictProperty);
             Iterator it = list.iterator();
             while (it.hasNext()) {
                 String s = (String)it.next();
@@ -268,11 +268,9 @@ public class Options extends OptionSet
             System.exit(0);
         }
 
-        List dictList = _dictOpt.getValue();
+        List<String> dictList = _dictOpt.getValue();
         if (dictList != null) {
-            Iterator it = dictList.iterator();
-            while (it.hasNext()) {
-                String dict = (String)it.next();
+            for (String dict : dictList) {
                 ItemDocAnalyzer.spellChecker.addDictionary(dict);
             }
         }

@@ -22,7 +22,7 @@ public class InterfaceDocAnalyzer extends TypeDocAnalyzer
     /**
      * Returns the valid tags, as strings, for interfaces.
      */
-    protected List getValidTags() {
+    protected List<String> getValidTags() {
         return JavadocTags.getValidInterfaceTags();
     }
 

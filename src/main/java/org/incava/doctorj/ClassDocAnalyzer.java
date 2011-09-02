@@ -22,7 +22,7 @@ public class ClassDocAnalyzer extends TypeDocAnalyzer
     /**
      * Returns the valid tags, as strings, for classes.
      */
-    protected List getValidTags() {
+    protected List<String> getValidTags() {
         return JavadocTags.getValidClassTags();
     }
 

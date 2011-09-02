@@ -83,7 +83,7 @@ public class FieldDocAnalyzer extends ItemDocAnalyzer {
     /**
      * Returns the valid tags, as strings, for fields.
      */
-    protected List getValidTags() {
+    protected List<String> getValidTags() {
         return JavadocTags.getValidFieldTags();
     }
 

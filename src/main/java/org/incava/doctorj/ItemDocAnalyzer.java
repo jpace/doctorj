@@ -191,7 +191,7 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer {
         // check for proper tags for this type of item
         if (isCheckable(encNode, CHKLVL_VALID_TAGS)) {
             tr.Ace.log("checking for valid tags");
-            List                validTags = getValidTags();
+            List<String>        validTags = getValidTags();
             JavadocTaggedNode[] taggedComments = javadoc.getTaggedComments();
             for (int ti = 0; ti < taggedComments.length; ++ti) {
                 JavadocTag tag = taggedComments[ti].getTag();
@@ -246,6 +246,6 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer {
     /**
      * Returns the valid tags, as strings, for this type of item.
      */
-    protected abstract List getValidTags();
+    protected abstract List<String> getValidTags();
 
 }

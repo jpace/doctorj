@@ -88,7 +88,7 @@ public class MethodDocAnalyzer extends FunctionDocAnalyzer
     /**
      * Returns the valid tags, as strings, for methods.
      */
-    protected List getValidTags() {
+    protected List<String> getValidTags() {
         return JavadocTags.getValidMethodTags();
     }
 

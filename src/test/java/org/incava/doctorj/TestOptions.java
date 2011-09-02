@@ -19,17 +19,15 @@ public class TestOptions extends Tester
             tr.Ace.yellow("level: " + level);
             
             for (int ci = 0; ci < contents.length; ++ci) {
-                String cont = contents[ci];
-                String msg = messages.length    > 1 ? messages[ci]    : messages[0];
-                int    bgLn = beginLine.length   > 1 ? beginLine[ci]   : beginLine[0];
-                int    bgCol = beginColumn.length > 1 ? beginColumn[ci] : beginColumn[0];
-                int    endLn = endLine.length     > 1 ? endLine[ci]     : endLine[0];
+                String cont   = contents[ci];
+                String msg    = messages.length    > 1 ? messages[ci]    : messages[0];
+                int    bgLn   = beginLine.length   > 1 ? beginLine[ci]   : beginLine[0];
+                int    bgCol  = beginColumn.length > 1 ? beginColumn[ci] : beginColumn[0];
+                int    endLn  = endLine.length     > 1 ? endLine[ci]     : endLine[0];
                 int    endCol = endColumn.length   > 1 ? endColumn[ci]   : endColumn[0];
 
                 tr.Ace.yellow("msg", msg);
                 tr.Ace.yellow("violationLevel + 3 - ci: " + (violationLevel + 3 - ci));
-
-                List expected = new ArrayList();
 
                 Violation[] violations = new Violation[0];
                 
