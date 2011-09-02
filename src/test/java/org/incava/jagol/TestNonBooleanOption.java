@@ -12,20 +12,17 @@ public class TestNonBooleanOption extends TestCase
             {        
             }
 
-            protected String getType()
-            {
+            protected String getType() {
                 return "";
             }
         };
     
-    public TestNonBooleanOption(String name)
-    {
+    public TestNonBooleanOption(String name) {
         super(name);
     }
 
-    public void testSetFromArgsListEqual()
-    {
-        List args = new ArrayList();
+    public void testSetFromArgsListEqual() {
+        List<String> args = new ArrayList<String>();
         try {
             boolean processed = opt.set("--nbopt=444", args);
             assertEquals("option processed", true, processed);
@@ -36,9 +33,8 @@ public class TestNonBooleanOption extends TestCase
         }
     }
 
-    public void testSetFromArgsListSeparateString()
-    {
-        List args = new ArrayList();
+    public void testSetFromArgsListSeparateString() {
+        List<String> args = new ArrayList<String>();
         args.add("41");
         try {
             boolean processed = opt.set("--nbopt", args);
@@ -50,9 +46,8 @@ public class TestNonBooleanOption extends TestCase
         }
     }
 
-    public void testSetFromLongerArgsListEqual()
-    {
-        List args = new ArrayList();
+    public void testSetFromLongerArgsListEqual() {
+        List<String> args = new ArrayList<String>();
         args.add("--anotheropt");
         try {
             boolean processed = opt.set("--nbopt=666", args);
@@ -64,9 +59,8 @@ public class TestNonBooleanOption extends TestCase
         }
     }
 
-    public void testSetFromLongerArgsListSeparateString()
-    {
-        List args = new ArrayList();
+    public void testSetFromLongerArgsListSeparateString() {
+        List<String> args = new ArrayList<String>();
         args.add("1234");
         args.add("--anotheropt");
         try {
@@ -79,9 +73,8 @@ public class TestNonBooleanOption extends TestCase
         }
     }
 
-    public void testSetInvalidValueDanglingEquals()
-    {
-        List args = new ArrayList();
+    public void testSetInvalidValueDanglingEquals() {
+        List<String> args = new ArrayList<String>();
         args.add("--anotheropt");
         try {
             boolean processed = opt.set("--nbopt=", args);

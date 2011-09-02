@@ -5,25 +5,23 @@ import java.util.*;
 import junit.framework.TestCase;
 
 
-public class TestOptionSet extends TestCase
-{
+public class TestOptionSet extends TestCase {
+    
     OptionSet optSet = new OptionSet("app", "this application does wonderful things");
         
-    IntegerOption intOpt     = new IntegerOption("intopt",            "this option takes an integer argument");
-    StringOption  stringOpt  = new StringOption("stringopt",      "this option takes a string argument");
-    FloatOption   floatOpt   = new FloatOption("floatopt",        "this option takes a float argument");
-    DoubleOption  doubleOpt  = new DoubleOption("doubleopt",      "this option takes a double argument");
+    IntegerOption intOpt = new IntegerOption("intopt",            "this option takes an integer argument");
+    StringOption  stringOpt = new StringOption("stringopt",      "this option takes a string argument");
+    FloatOption   floatOpt = new FloatOption("floatopt",        "this option takes a float argument");
+    DoubleOption  doubleOpt = new DoubleOption("doubleopt",      "this option takes a double argument");
     BooleanOption booleanOpt = new BooleanOption("booleanopt",    "this option takes a boolean argument");
 
-    public TestOptionSet(String name)
-    {
+    public TestOptionSet(String name) {
         super(name);
 
         tr.Ace.log("running");
     }
 
-    public void setUp()
-    {
+    public void setUp() {
         tr.Ace.log("setting up");
 
         floatOpt.setShortName('f');
@@ -35,8 +33,7 @@ public class TestOptionSet extends TestCase
         optSet.add(booleanOpt);
     }
 
-    public void testCommandLine()
-    {
+    public void testCommandLine() {
         tr.Ace.log("testing command line");
 
         tr.Ace.log("done adding");
@@ -52,8 +49,7 @@ public class TestOptionSet extends TestCase
         assertEquals(Boolean.FALSE,      booleanOpt.getValue());
     }
 
-    public void testCommandLineRemainingArgs()
-    {
+    public void testCommandLineRemainingArgs() {
         tr.Ace.log("testing command line");
 
         tr.Ace.log("done adding");
@@ -83,8 +79,7 @@ public class TestOptionSet extends TestCase
         assertEquals("baz", args[2]);
     }
 
-    public void testUsage()
-    {
+    public void testUsage() {
         tr.Ace.log("testing usage");
 
         String[] args = new String[] { "--help" };
@@ -94,8 +89,7 @@ public class TestOptionSet extends TestCase
         optSet.process(args);
     }
 
-    public void testConfig()
-    {
+    public void testConfig() {
         tr.Ace.log("testing config help");
 
         String[] args = new String[] { "--help-config" };
@@ -105,18 +99,17 @@ public class TestOptionSet extends TestCase
         optSet.process(args);
     }
 
-    public void testRunControlFile()
-    {
+    public void testRunControlFile() {
         tr.Ace.log("testing command line");
 
         tr.Ace.log("done adding");
 
         try {
-            String userHome   = System.getProperty("user.home");
+            String userHome = System.getProperty("user.home");
             String rcFileName = userHome + "/.TestOptionSet";
-            File   rcFile     = new File(rcFileName);
+            File   rcFile = new File(rcFileName);
             
-            Writer out        = new BufferedWriter(new FileWriter(rcFile));
+            Writer out = new BufferedWriter(new FileWriter(rcFile));
             out.write("intopt:     999\n");
             out.write("stringopt:  april\n");
             out.write("floatopt:   8.41\n");
@@ -143,18 +136,17 @@ public class TestOptionSet extends TestCase
         }
     }
 
-    public void testRunControlFileAndCommandLine()
-    {
+    public void testRunControlFileAndCommandLine() {
         tr.Ace.log("testing command line");
 
         tr.Ace.log("done adding");
 
         try {
-            String userHome   = System.getProperty("user.home");
+            String userHome = System.getProperty("user.home");
             String rcFileName = userHome + "/.TestOptionSet";
-            File   rcFile     = new File(rcFileName);
+            File   rcFile = new File(rcFileName);
             
-            Writer out        = new BufferedWriter(new FileWriter(rcFile));
+            Writer out = new BufferedWriter(new FileWriter(rcFile));
             out.write("intopt:     999\n");
             out.write("stringopt:  april\n");
             out.write("floatopt:   8.41\n");

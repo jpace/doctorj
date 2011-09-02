@@ -20,13 +20,13 @@ public class TestNoCaseSpellChecker extends AbstractTestSpellChecker {
     public Collection<Pair<String, String>> getSameWords() {
         List<Pair<String, String>> sameWords = new ArrayList<Pair<String, String>>();
 
-        sameWords.add(new Pair("this", "this"));
-        sameWords.add(new Pair("THIS", "THIS"));
-        sameWords.add(new Pair("repository", "repository"));
+        sameWords.add(new Pair<String, String>("this", "this"));
+        sameWords.add(new Pair<String, String>("THIS", "THIS"));
+        sameWords.add(new Pair<String, String>("repository", "repository"));
 
-        sameWords.add(new Pair("thIs", "This"));
-        sameWords.add(new Pair("this", "THIS"));
-        sameWords.add(new Pair("repoSITORY", "REPOsitory"));
+        sameWords.add(new Pair<String, String>("thIs", "This"));
+        sameWords.add(new Pair<String, String>("this", "THIS"));
+        sameWords.add(new Pair<String, String>("repoSITORY", "REPOsitory"));
 
         return sameWords;
     }

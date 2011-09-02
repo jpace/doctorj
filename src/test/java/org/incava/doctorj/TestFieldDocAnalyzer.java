@@ -6,13 +6,11 @@ import org.incava.analysis.Violation;
 
 public class TestFieldDocAnalyzer extends Tester
 {
-    public TestFieldDocAnalyzer(String name)
-    {
+    public TestFieldDocAnalyzer(String name) {
         super(name);
     } 
 
-    public void testSerialFieldOK()
-    {
+    public void testSerialFieldOK() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -26,8 +24,7 @@ public class TestFieldDocAnalyzer extends Tester
                  });
     }
 
-    public void testSerialFieldNoDoc()
-    {
+    public void testSerialFieldNoDoc() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -55,8 +52,7 @@ public class TestFieldDocAnalyzer extends Tester
                  });
     }
 
-    public void testSerialFieldNoDescription()
-    {
+    public void testSerialFieldNoDescription() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -71,8 +67,7 @@ public class TestFieldDocAnalyzer extends Tester
                  });
     }
 
-    public void testSerialFieldNoTypeNorDescription()
-    {
+    public void testSerialFieldNoTypeNorDescription() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +

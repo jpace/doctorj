@@ -9,33 +9,28 @@ public class TestIntegerOption extends TestCase
 {
     IntegerOption opt = new IntegerOption("intopt", "this is the description of intopt");
 
-    public TestIntegerOption(String name)
-    {
+    public TestIntegerOption(String name) {
         super(name);
     }
 
-    public void testDefaultNull()
-    {
+    public void testDefaultNull() {
         assertEquals("intopt", opt.getLongName());
         assertEquals("this is the description of intopt", opt.getDescription());
 
         assertNull("default value", opt.getValue());
     }
 
-    public void testDefaultValue()
-    {
+    public void testDefaultValue() {
         IntegerOption opt = new IntegerOption("intopt", "this is the description of intopt", new Integer(1012));
         assertEquals("default value", new Integer(1012), opt.getValue());
     }
     
-    public void testSetIntegerValue()
-    {
+    public void testSetIntegerValue() {
         opt.setValue(new Integer(14));
         assertEquals("option value", new Integer(14), opt.getValue());
     }
 
-    public void testSetInvalidValueString()
-    {
+    public void testSetInvalidValueString() {
         try {
             opt.setValue("fred");
             fail("exception expected");
@@ -44,8 +39,7 @@ public class TestIntegerOption extends TestCase
         }
     }
 
-    public void testSetInvalidValueFloatingPoint()
-    {
+    public void testSetInvalidValueFloatingPoint() {
         try {
             opt.setValue("1.4");
             fail("exception expected");
@@ -54,8 +48,7 @@ public class TestIntegerOption extends TestCase
         }
     }
 
-    public void testSetValidValueNegative()
-    {
+    public void testSetValidValueNegative() {
         try {
             opt.setValue("-987");
             assertEquals("option value", new Integer(-987), opt.getValue());
@@ -65,9 +58,8 @@ public class TestIntegerOption extends TestCase
         }
     }
 
-    public void testSetFromArgsListEqual()
-    {
-        List args = new ArrayList();
+    public void testSetFromArgsListEqual() {
+        List<String> args = new ArrayList<String>();
         try {
             boolean processed = opt.set("--intopt=444", args);
             assertEquals("option processed", true, processed);
@@ -79,9 +71,8 @@ public class TestIntegerOption extends TestCase
         }
     }
 
-    public void testSetFromArgsListSeparateString()
-    {
-        List args = new ArrayList();
+    public void testSetFromArgsListSeparateString() {
+        List<String> args = new ArrayList<String>();
         args.add("41");
         try {
             boolean processed = opt.set("--intopt", args);
@@ -94,9 +85,8 @@ public class TestIntegerOption extends TestCase
         }
     }
 
-    public void testSetFromLongerArgsListEqual()
-    {
-        List args = new ArrayList();
+    public void testSetFromLongerArgsListEqual() {
+        List<String> args = new ArrayList<String>();
         args.add("--anotheropt");
         try {
             boolean processed = opt.set("--intopt=666", args);
@@ -109,9 +99,8 @@ public class TestIntegerOption extends TestCase
         }
     }
 
-    public void testSetFromLongerArgsListSeparateString()
-    {
-        List args = new ArrayList();
+    public void testSetFromLongerArgsListSeparateString() {
+        List<String> args = new ArrayList<String>();
         args.add("1234");
         args.add("--anotheropt");
         try {
@@ -125,9 +114,8 @@ public class TestIntegerOption extends TestCase
         }
     }
 
-    public void testSetInvalidValueDanglingEquals()
-    {
-        List args = new ArrayList();
+    public void testSetInvalidValueDanglingEquals() {
+        List<String> args = new ArrayList<String>();
         args.add("--anotheropt");
         try {
             boolean processed = opt.set("--intopt=", args);

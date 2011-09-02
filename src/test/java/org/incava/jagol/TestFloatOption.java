@@ -9,39 +9,33 @@ public class TestFloatOption extends TestCase
 {
     FloatOption opt = new FloatOption("fltopt", "this is the description of fltopt");
 
-    public TestFloatOption(String name)
-    {
+    public TestFloatOption(String name) {
         super(name);
     }
 
-    public void testDefaultNull()
-    {
+    public void testDefaultNull() {
         assertEquals("fltopt", opt.getLongName());
         assertEquals("this is the description of fltopt", opt.getDescription());
 
         assertNull("default value", opt.getValue());
     }
 
-    public void testDefaultValue()
-    {
+    public void testDefaultValue() {
         FloatOption opt = new FloatOption("fltopt", "this is the description of fltopt", new Float(10.12F));
         assertEquals("default value", new Float(10.12F), opt.getValue());
     }
 
-    public void testShortName()
-    {
+    public void testShortName() {
         opt.setShortName('d');
         assertEquals('d', opt.getShortName());
     }
 
-    public void testSetFloatValue()
-    {
+    public void testSetFloatValue() {
         opt.setValue(new Float(1.4F));
         assertEquals("option value", new Float(1.4F), opt.getValue());
     }
 
-    public void testSetInvalidValueString()
-    {
+    public void testSetInvalidValueString() {
         try {
             opt.setValue("fred");
             fail("exception expected");
@@ -50,8 +44,7 @@ public class TestFloatOption extends TestCase
         }
     }
 
-    public void testSetInvalidValue()
-    {
+    public void testSetInvalidValue() {
         try {
             opt.setValue("1.4.8");
             fail("exception expected");
@@ -60,8 +53,7 @@ public class TestFloatOption extends TestCase
         }
     }
 
-    public void testSetValidValueNegative()
-    {
+    public void testSetValidValueNegative() {
         try {
             opt.setValue("-9.87");
             assertEquals("option value", new Float(-9.87F), opt.getValue());
@@ -71,8 +63,7 @@ public class TestFloatOption extends TestCase
         }
     }
 
-    public void testSetValidValueNoLeadingZero()
-    {
+    public void testSetValidValueNoLeadingZero() {
         try {
             opt.setValue(".87");
             assertEquals("option value", new Float(0.87F), opt.getValue());
@@ -82,9 +73,8 @@ public class TestFloatOption extends TestCase
         }
     }
 
-    public void testSetFromArgsListEqual()
-    {
-        List args = new ArrayList();
+    public void testSetFromArgsListEqual() {
+        List<String> args = new ArrayList<String>();
         try {
             boolean processed = opt.set("--fltopt=4.44", args);
             assertEquals("option processed", true, processed);
@@ -96,9 +86,8 @@ public class TestFloatOption extends TestCase
         }
     }
 
-    public void testSetFromArgsListSeparateString()
-    {
-        List args = new ArrayList();
+    public void testSetFromArgsListSeparateString() {
+        List<String> args = new ArrayList<String>();
         args.add("41.82");
         try {
             boolean processed = opt.set("--fltopt", args);
@@ -111,9 +100,8 @@ public class TestFloatOption extends TestCase
         }
     }
 
-    public void testSetFromLongerArgsListEqual()
-    {
-        List args = new ArrayList();
+    public void testSetFromLongerArgsListEqual() {
+        List<String> args = new ArrayList<String>();
         args.add("--anotheropt");
         try {
             boolean processed = opt.set("--fltopt=3.1415", args);
@@ -126,9 +114,8 @@ public class TestFloatOption extends TestCase
         }
     }
 
-    public void testSetFromLongerArgsListSeparateString()
-    {
-        List args = new ArrayList();
+    public void testSetFromLongerArgsListSeparateString() {
+        List<String> args = new ArrayList<String>();
         args.add("1234.567890");
         args.add("--anotheropt");
         try {
@@ -142,9 +129,8 @@ public class TestFloatOption extends TestCase
         }
     }
 
-    public void testSetInvalidValueDanglingEquals()
-    {
-        List args = new ArrayList();
+    public void testSetInvalidValueDanglingEquals() {
+        List<String> args = new ArrayList<String>();
         args.add("--anotheropt");
         try {
             boolean processed = opt.set("--fltopt=", args);

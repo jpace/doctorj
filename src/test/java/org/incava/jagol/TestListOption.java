@@ -9,28 +9,24 @@ public class TestListOption extends TestCase
 {
     ListOption opt = new ListOption("listopt", "this is the description of listopt");
 
-    public TestListOption(String name)
-    {
+    public TestListOption(String name) {
         super(name);
     }
 
-    public void testDefault()
-    {
+    public void testDefault() {
         assertEquals("listopt", opt.getLongName());
         assertEquals("this is the description of listopt", opt.getDescription());
 
         assertEquals("default value", (new ArrayList()), opt.getValue());
     }
 
-    public void testShortName()
-    {
+    public void testShortName() {
         opt.setShortName('d');
         assertEquals('d', opt.getShortName());
     }
 
-    public void testSetListValue()
-    {
-        List v = new ArrayList();
+    public void testSetListValue() {
+        List<String> v = new ArrayList<String>();
         v.add("dimmu");
         v.add("callendish");
         v.add("charon");
@@ -44,11 +40,10 @@ public class TestListOption extends TestCase
         assertEquals("option value", v.get(2), values.get(2));
     }
 
-    public void testSetFromArgsListEqual()
-    {
-        List args = new ArrayList();
+    public void testSetFromArgsListEqual() {
+        List<String> args = new ArrayList<String>();
         try {
-            boolean processed = opt.set("--listopt=fee,fi,fo,fum", args);
+            boolean processed = opt.set("--listopt=fee, fi, fo, fum", args);
             assertEquals("option processed", true, processed);
             List values = opt.getValue();
             assertEquals("list size", 4, values.size());
@@ -63,9 +58,8 @@ public class TestListOption extends TestCase
         }
     }
 
-    public void testSetFromArgsListSeparateList()
-    {
-        List args = new ArrayList();
+    public void testSetFromArgsListSeparateList() {
+        List<String> args = new ArrayList<String>();
         args.add("closing\nwinds");
         try {
             boolean processed = opt.set("--listopt", args);
@@ -81,9 +75,8 @@ public class TestListOption extends TestCase
         }
     }
 
-    public void testSetFromLongerArgsListEqual()
-    {
-        List args = new ArrayList();
+    public void testSetFromLongerArgsListEqual() {
+        List<String> args = new ArrayList<String>();
         args.add("--anotheropt");
         try {
             boolean processed = opt.set("--listopt=ord", args);
@@ -98,9 +91,8 @@ public class TestListOption extends TestCase
         }
     }
 
-    public void testSetFromLongerArgsListSeparateList()
-    {
-        List args = new ArrayList();
+    public void testSetFromLongerArgsListSeparateList() {
+        List<String> args = new ArrayList<String>();
         args.add("\"red blue\tgreen\"");
         args.add("--anotheropt");
         try {
@@ -118,9 +110,8 @@ public class TestListOption extends TestCase
         }
     }
 
-    public void testSetInvalidValueDanglingEquals()
-    {
-        List args = new ArrayList();
+    public void testSetInvalidValueDanglingEquals() {
+        List<String> args = new ArrayList<String>();
         args.add("--anotheropt");
         try {
             boolean processed = opt.set("--listopt=", args);

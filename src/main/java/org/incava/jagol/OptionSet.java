@@ -158,7 +158,7 @@ public class OptionSet {
                     if (arg.equals("--help") || arg.equals("-h")) {
                         showUsage();
                     }
-                    else if (!rcFileNames.isEmpty() && arg.equals("--help - config")) {
+                    else if (!rcFileNames.isEmpty() && arg.equals("--help-config")) {
                         showConfig();
                     }
                     else {
@@ -228,7 +228,7 @@ public class OptionSet {
         }
 
         if (!rcFileNames.isEmpty()) {
-            System.out.println("For an example configure file, run --help - config");
+            System.out.println("For an example configure file, run --help-config");
             System.out.println();
             System.out.println("Configuration File" + (rcFileNames.size() > 1 ? "s" : "") + ":");
             for (String rcFileName : rcFileNames) {

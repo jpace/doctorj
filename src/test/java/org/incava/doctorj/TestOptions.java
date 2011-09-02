@@ -8,24 +8,22 @@ import org.incava.analysis.Violation;
 
 public class TestOptions extends Tester
 {
-    public TestOptions(String name)
-    {
+    public TestOptions(String name) {
         super(name);
     }
 
-    public void runTest(int violationLevel, String[] contents, String[] messages, int[] beginLine, int[] beginColumn, int[] endLine, int[] endColumn)
-    {
+    public void runTest(int violationLevel, String[] contents, String[] messages, int[] beginLine, int[] beginColumn, int[] endLine, int[] endColumn) {
         for (int level = -1; level < 9; ++level) {
             Options.warningLevel = level;
         
             tr.Ace.yellow("level: " + level);
             
             for (int ci = 0; ci < contents.length; ++ci) {
-                String cont   = contents[ci];
-                String msg    = messages.length    > 1 ? messages[ci]    : messages[0];
-                int    bgLn   = beginLine.length   > 1 ? beginLine[ci]   : beginLine[0];
-                int    bgCol  = beginColumn.length > 1 ? beginColumn[ci] : beginColumn[0];
-                int    endLn  = endLine.length     > 1 ? endLine[ci]     : endLine[0];
+                String cont = contents[ci];
+                String msg = messages.length    > 1 ? messages[ci]    : messages[0];
+                int    bgLn = beginLine.length   > 1 ? beginLine[ci]   : beginLine[0];
+                int    bgCol = beginColumn.length > 1 ? beginColumn[ci] : beginColumn[0];
+                int    endLn = endLine.length     > 1 ? endLine[ci]     : endLine[0];
                 int    endCol = endColumn.length   > 1 ? endColumn[ci]   : endColumn[0];
 
                 tr.Ace.yellow("msg", msg);
@@ -46,8 +44,7 @@ public class TestOptions extends Tester
         }
     }
     
-    public void testDocumented()
-    {
+    public void testDocumented() {
         runTest(ItemDocAnalyzer.CHKLVL_DOC_EXISTS,
                 new String[] {
                     "/** This is a description.\n" +
@@ -84,8 +81,7 @@ public class TestOptions extends Tester
                 new int[] { 23, 10, 25, 27 }); // end columns
     }
 
-    public void testSummarySentence()
-    {
+    public void testSummarySentence() {
         runTest(ItemDocAnalyzer.CHKLVL_SUMMARY_SENTENCE,
                 new String[] {
                     "/** This is a description.\n" +
@@ -123,8 +119,7 @@ public class TestOptions extends Tester
                 new int[] { 18, 14, 18, 14 });
     }
 
-    public void testClassTagOrder()
-    {
+    public void testClassTagOrder() {
         runTest(ItemDocAnalyzer.CHKLVL_MISORDERED_TAGS,
                 new String[] {
                     "/** This is a description.\n" +
@@ -185,8 +180,7 @@ public class TestOptions extends Tester
                 new int[] { 15 });
     }
 
-    public void testMethodTagOrder()
-    {
+    public void testMethodTagOrder() {
         runTest(ItemDocAnalyzer.CHKLVL_MISORDERED_TAGS,
                 new String[] {
                     "/** This is a description.\n" +
@@ -243,8 +237,7 @@ public class TestOptions extends Tester
                 new int[] { 12 });
     }
 
-    public void testMethodValidTags()
-    {
+    public void testMethodValidTags() {
         runTest(ItemDocAnalyzer.CHKLVL_VALID_TAGS,
                 new String[] {
                     "/** This is a description.\n" +
@@ -297,8 +290,7 @@ public class TestOptions extends Tester
                 new int[] { 16 });
     }
 
-    public void testClassTagContent()
-    {
+    public void testClassTagContent() {
         runTest(ItemDocAnalyzer.CHKLVL_TAG_CONTENT,
                 new String[] {
                     "/** This is a description.\n" +
@@ -355,8 +347,7 @@ public class TestOptions extends Tester
                 new int[] { 16 });
     }
 
-    public void testMethodTags()
-    {
+    public void testMethodTags() {
         runTest(ItemDocAnalyzer.CHKLVL_TAG_CONTENT,
                 new String[] {
                     "/** This is a description.\n" +
@@ -409,8 +400,7 @@ public class TestOptions extends Tester
                 new int[] { 15 });
     }
 
-    public void testMethodParameters()
-    {
+    public void testMethodParameters() {
         runTest(ItemDocAnalyzer.CHKLVL_TAG_CONTENT,
                 new String[] {
                     "/** This is a description.\n" +
@@ -463,8 +453,7 @@ public class TestOptions extends Tester
                 new int[] { 16 });
     }
 
-    public void testMethodExceptions()
-    {
+    public void testMethodExceptions() {
         runTest(ItemDocAnalyzer.CHKLVL_TAG_CONTENT,
                 new String[] {
                     "/** This is a description.\n" +
@@ -517,8 +506,7 @@ public class TestOptions extends Tester
                 new int[] { 27 });
     }
 
-    public void testFieldDoc()
-    {
+    public void testFieldDoc() {
         runTest(ItemDocAnalyzer.CHKLVL_TAG_CONTENT,
                 new String[] {
                     "/** This is a description. */\n" +

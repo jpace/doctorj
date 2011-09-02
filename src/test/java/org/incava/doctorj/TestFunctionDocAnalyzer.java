@@ -6,13 +6,11 @@ import org.incava.analysis.Violation;
 
 public class TestFunctionDocAnalyzer extends Tester
 {
-    public TestFunctionDocAnalyzer(String name)
-    {
+    public TestFunctionDocAnalyzer(String name) {
         super(name);
     }
 
-    public void testMethodSerialDataOK()
-    {
+    public void testMethodSerialDataOK() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -24,8 +22,7 @@ public class TestFunctionDocAnalyzer extends Tester
                  });
     }
 
-    public void testCtorSerialDataOK()
-    {
+    public void testCtorSerialDataOK() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -37,8 +34,7 @@ public class TestFunctionDocAnalyzer extends Tester
                  });
     }
 
-    public void testMethodSerialDataUndescribed()
-    {
+    public void testMethodSerialDataUndescribed() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -51,8 +47,7 @@ public class TestFunctionDocAnalyzer extends Tester
                  });
     }
 
-    public void testCtorSerialDataUndescribed()
-    {
+    public void testCtorSerialDataUndescribed() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +

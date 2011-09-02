@@ -8,13 +8,11 @@ import org.incava.analysis.Violation;
 
 public class TestExceptionDocAnalyzer extends Tester
 {
-    public TestExceptionDocAnalyzer(String name)
-    {
+    public TestExceptionDocAnalyzer(String name) {
         super(name);
     }
 
-    public void xtestMethodExceptionWithoutTag()
-    {
+    public void xtestMethodExceptionWithoutTag() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -28,8 +26,7 @@ public class TestExceptionDocAnalyzer extends Tester
                  });
     }
 
-    public void xtestMethodExceptionUndocumented()
-    {
+    public void xtestMethodExceptionUndocumented() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -42,8 +39,7 @@ public class TestExceptionDocAnalyzer extends Tester
                  });
     }
 
-    public void xtestMethodExceptionMisspelled()
-    {
+    public void xtestMethodExceptionMisspelled() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -56,8 +52,7 @@ public class TestExceptionDocAnalyzer extends Tester
                  });
     }
     
-    public void xtestMethodExceptionAsNameMisspelled()
-    {
+    public void xtestMethodExceptionAsNameMisspelled() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -70,8 +65,7 @@ public class TestExceptionDocAnalyzer extends Tester
                  });
     }
     
-    public void xtestMethodExceptionDocumentedButNotInCode()
-    {
+    public void xtestMethodExceptionDocumentedButNotInCode() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -96,8 +90,7 @@ public class TestExceptionDocAnalyzer extends Tester
                  });
     }
 
-    public void xtestMethodExceptionNotDocumented()
-    {
+    public void xtestMethodExceptionNotDocumented() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -139,8 +132,7 @@ public class TestExceptionDocAnalyzer extends Tester
                  });
     }
 
-    public void xtestMethodExceptionNotAlphabetical()
-    {
+    public void xtestMethodExceptionNotAlphabetical() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -167,8 +159,7 @@ public class TestExceptionDocAnalyzer extends Tester
                  });
     }
     
-    public void xtestCtorExceptionWithoutTag()
-    {
+    public void xtestCtorExceptionWithoutTag() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -182,8 +173,7 @@ public class TestExceptionDocAnalyzer extends Tester
                  });
     }
 
-    public void xtestCtorExceptionUndocumented()
-    {
+    public void xtestCtorExceptionUndocumented() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -196,8 +186,7 @@ public class TestExceptionDocAnalyzer extends Tester
                  });
     }
 
-    public void xtestCtorExceptionMisspelled()
-    {
+    public void xtestCtorExceptionMisspelled() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -210,8 +199,7 @@ public class TestExceptionDocAnalyzer extends Tester
                  });
     }
     
-    public void xtestCtorExceptionAsNameMisspelled()
-    {
+    public void xtestCtorExceptionAsNameMisspelled() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -224,8 +212,7 @@ public class TestExceptionDocAnalyzer extends Tester
                  });
     }
     
-    public void xtestCtorExceptionDocumentedButNotInCode()
-    {
+    public void xtestCtorExceptionDocumentedButNotInCode() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -250,8 +237,7 @@ public class TestExceptionDocAnalyzer extends Tester
                  });
     }
 
-    public void xtestCtorExceptionNotDocumented()
-    {
+    public void xtestCtorExceptionNotDocumented() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -293,8 +279,7 @@ public class TestExceptionDocAnalyzer extends Tester
                  });
     }
 
-    public void xtestCtorExceptionNotAlphabetical()
-    {
+    public void xtestCtorExceptionNotAlphabetical() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -321,9 +306,8 @@ public class TestExceptionDocAnalyzer extends Tester
                  });
     }
 
-    public void xtestCtorExceptionRuntimeExceptionNotDeclared()
-    {
-        List runtimeExceptions = new ArrayList();
+    public void xtestCtorExceptionRuntimeExceptionNotDeclared() {
+        List<String> runtimeExceptions = new ArrayList<String>();
         runtimeExceptions.addAll(Arrays.asList(new String[] {
                                                    "java.awt.color.CMMException",
                                                    "java.awt.color.ProfileDataException",
@@ -380,10 +364,7 @@ public class TestExceptionDocAnalyzer extends Tester
                                                    //"org.w3c.dom.ls.LSException", 1.5
                                                }));
 
-        Iterator it = runtimeExceptions.iterator();
-        while (it.hasNext()) {
-            String rtexc = (String)it.next();
-
+        for (String rtexc : runtimeExceptions) {
             evaluate("/** This is a description.\n" +
                      "  */\n" +
                      "class Test {\n" +
@@ -397,8 +378,7 @@ public class TestExceptionDocAnalyzer extends Tester
         }
     }
 
-    public void xtestFullNameNotImported()
-    {
+    public void xtestFullNameNotImported() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -411,8 +391,7 @@ public class TestExceptionDocAnalyzer extends Tester
                  });
     }
 
-    public void xtestShortNameImportedSingle()
-    {
+    public void xtestShortNameImportedSingle() {
         evaluate("import java.util.NoSuchElementException;\n" +
                  "/** This is a description.\n" +
                  "  */\n" +
@@ -426,8 +405,7 @@ public class TestExceptionDocAnalyzer extends Tester
                  });
     }
 
-    public void xtestShortNameImportedOnDemand()
-    {
+    public void xtestShortNameImportedOnDemand() {
         evaluate("import java.util.*;\n" +
                  "/** This is a description.\n" +
                  "  */\n" +
@@ -441,8 +419,7 @@ public class TestExceptionDocAnalyzer extends Tester
                  });
     }
 
-    public void xtestShortNameImportedOnDemandJava1415()
-    {
+    public void xtestShortNameImportedOnDemandJava1415() {
         evaluate("import org.apache.xml.utils.*;\n" +                  // 1.4
                  "import com.sun.org.apache.xml.internal.utils.*;\n" + // 1.5
                  "/** This is a description.\n" +
@@ -457,8 +434,7 @@ public class TestExceptionDocAnalyzer extends Tester
                  });
     }
 
-    public void testUnknownExceptionReportOnce()
-    {
+    public void testUnknownExceptionReportOnce() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -477,8 +453,7 @@ public class TestExceptionDocAnalyzer extends Tester
                  });
     }
 
-    public void testErrorShortName()
-    {
+    public void testErrorShortName() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -491,8 +466,7 @@ public class TestExceptionDocAnalyzer extends Tester
                  });
     }
 
-    public void testErrorLongName()
-    {
+    public void testErrorLongName() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +

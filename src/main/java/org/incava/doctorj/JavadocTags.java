@@ -3,7 +3,7 @@ package org.incava.doctorj;
 import java.util.*;
 import org.incava.analysis.Analyzer;
 import org.incava.analysis.Report;
-import org.incava.util.Collect;
+import org.incava.ijdk.util.Collect;
 
 
 /**
@@ -107,39 +107,42 @@ public class JavadocTags
         return list;
     }
 
-    static abstract class TagCollect extends Collect {
-
-        public TagCollect(Collection c) {
+    static abstract class TagCollect extends Collect<TagDescription, String> {
+        public TagCollect(Collection<TagDescription> c) {
             super(c);
         }
         
-        public Object block(Object obj) {
-            return ((TagDescription)obj).tag; 
+        public String block(TagDescription td) {
+            return td.tag; 
         }
     }
     
     public static List getValidConstructorTags() {
         return new TagCollect(tags.values()) {
-                public boolean where(Object obj) { return ((TagDescription)obj).isCtorTag; }
-            };
+            public final static long serialVersionUID = 1;
+            public boolean where(TagDescription td) { return td.isCtorTag; }
+        };
     }
-
+    
     public static List getValidMethodTags() {
         return new TagCollect(tags.values()) {
-                public boolean where(Object obj) { return ((TagDescription)obj).isMethodTag; }
-            };
+            public final static long serialVersionUID = 1;
+            public boolean where(TagDescription td) { return td.isMethodTag; }
+        };
     }
 
     public static List getValidFieldTags() {
         return new TagCollect(tags.values()) {
-                public boolean where(Object obj) { return ((TagDescription)obj).isFieldTag; }
-            };
+            public final static long serialVersionUID = 1;
+            public boolean where(TagDescription td) { return td.isFieldTag; }
+        };
     }
 
     public static List getValidInterfaceTags() {
         return new TagCollect(tags.values()) {
-                public boolean where(Object obj) { return ((TagDescription)obj).isTypeTag; }
-            };
+            public final static long serialVersionUID = 1;
+            public boolean where(TagDescription td) { return td.isTypeTag; }
+        };
     }
 
     public static List getValidClassTags() {

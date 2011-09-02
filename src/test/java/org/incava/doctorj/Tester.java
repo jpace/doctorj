@@ -10,23 +10,21 @@ import org.incava.java.*;
 
 public class Tester extends TestCase
 {
-    public Tester(String name)
-    {
+    public Tester(String name) {
         super(name);
         
         Options.warningLevel = Options.MAXIMUM_WARNING_LEVEL;
     }
 
-    protected Report analyze(String contents, String version)
-    {
+    protected Report analyze(String contents, String version) {
         StringWriter      reportOutput = new StringWriter();
-        Report            report       = new TerseReport(reportOutput);
-        JavaParserVisitor analyzer     = new JavadocAnalyzer(report);
+        Report            report = new TerseReport(reportOutput);
+        JavaParserVisitor analyzer = new JavadocAnalyzer(report);
         try {
             report.reset(contents);
 
-            Reader             rdr    = new StringReader(contents);
-            JavaCharStream     jcs    = new JavaCharStream(rdr);
+            Reader             rdr = new StringReader(contents);
+            JavaCharStream     jcs = new JavaCharStream(rdr);
             JavaParser         parser = new JavaParser(jcs);
             if ("1.3".equals(version)) {
                 parser.setJDK13();
@@ -34,7 +32,7 @@ public class Tester extends TestCase
             else if ("1.5".equals(version)) {
                 parser.setJDK15();
             }
-            ASTCompilationUnit cu     = parser.CompilationUnit();
+            ASTCompilationUnit cu = parser.CompilationUnit();
 
             cu.jjtAccept(analyzer, null);
         }
@@ -47,13 +45,11 @@ public class Tester extends TestCase
         return report;
     }
 
-    public void evaluate(String contents, Violation[] expectations)
-    {
+    public void evaluate(String contents, Violation[] expectations) {
         evaluate(contents, expectations, "1.4");
     }
 
-    public void evaluate(String contents, Violation[] expectations, String version)
-    {
+    public void evaluate(String contents, Violation[] expectations, String version) {
         tr.Ace.log("expectations", expectations);
         Report report = analyze(contents, version);
         
@@ -65,7 +61,7 @@ public class Tester extends TestCase
         Iterator vit = violations.iterator();
         for (int vi = 0; vit.hasNext() && vi < violations.size(); ++vi) {
             Violation violation = (Violation)vit.next();
-            Violation exp       = expectations[vi];
+            Violation exp = expectations[vi];
                 
             assertNotNull("violation not null", violation);
             assertEquals("violation[" + vi + "]", exp, violation);

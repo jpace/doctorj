@@ -61,7 +61,7 @@ public class ItemCommentSpellCheck extends CommentSpellCheck {
         }
         
         Location start = this.lines.getLocation(position);
-        Location end   = this.lines.getLocation(position + word.length() - 1);
+        Location end = this.lines.getLocation(position + word.length() - 1);
         String   msg = makeMessage(word, nearMatches);
         
         this.analyzer.addViolation(msg, start, end);

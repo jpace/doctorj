@@ -8,13 +8,11 @@ import org.incava.analysis.Violation;
 
 public class TestParameterDocAnalyzer extends Tester
 {
-    public TestParameterDocAnalyzer(String name)
-    {
+    public TestParameterDocAnalyzer(String name) {
         super(name);
     }
 
-    public void testMethodParametersOK()
-    {
+    public void testMethodParametersOK() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -35,8 +33,7 @@ public class TestParameterDocAnalyzer extends Tester
                  });
     }
 
-    public void testMethodParametersNoParamsInCode()
-    {
+    public void testMethodParametersNoParamsInCode() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -100,8 +97,7 @@ public class TestParameterDocAnalyzer extends Tester
                  });
     }
 
-    public void testMethodParametersParamWithoutTarget()
-    {
+    public void testMethodParametersParamWithoutTarget() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -115,8 +111,7 @@ public class TestParameterDocAnalyzer extends Tester
                  });
     }
 
-    public void testMethodParametersParamMisspelled()
-    {
+    public void testMethodParametersParamMisspelled() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -140,8 +135,7 @@ public class TestParameterDocAnalyzer extends Tester
                  });
     }
 
-    public void testMethodParametersParamNotDocumented()
-    {
+    public void testMethodParametersParamNotDocumented() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -166,8 +160,7 @@ public class TestParameterDocAnalyzer extends Tester
                  });
     }
 
-    public void testMethodParametersMisordered()
-    {
+    public void testMethodParametersMisordered() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -194,8 +187,7 @@ public class TestParameterDocAnalyzer extends Tester
                  });
     }
 
-    public void testMethodParametersTypeUsed()
-    {
+    public void testMethodParametersTypeUsed() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -223,8 +215,7 @@ public class TestParameterDocAnalyzer extends Tester
 
     // Same as above, but for constructors.
 
-    public void testCtorParametersOK()
-    {
+    public void testCtorParametersOK() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -245,8 +236,7 @@ public class TestParameterDocAnalyzer extends Tester
                  });
     }
 
-    public void testCtorParametersNoParamsInCode()
-    {
+    public void testCtorParametersNoParamsInCode() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -310,8 +300,7 @@ public class TestParameterDocAnalyzer extends Tester
                  });
     }
 
-    public void testCtorParametersParamWithoutTarget()
-    {
+    public void testCtorParametersParamWithoutTarget() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -325,8 +314,7 @@ public class TestParameterDocAnalyzer extends Tester
                  });
     }
 
-    public void testCtorParametersParamMisspelled()
-    {
+    public void testCtorParametersParamMisspelled() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -350,8 +338,7 @@ public class TestParameterDocAnalyzer extends Tester
                  });
     }
 
-    public void testCtorParametersParamNotDocumented()
-    {
+    public void testCtorParametersParamNotDocumented() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -376,8 +363,7 @@ public class TestParameterDocAnalyzer extends Tester
                  });
     }
 
-    public void testCtorParametersMisordered()
-    {
+    public void testCtorParametersMisordered() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -404,8 +390,7 @@ public class TestParameterDocAnalyzer extends Tester
                  });
     }
 
-    public void testCtorParametersTypeUsed()
-    {
+    public void testCtorParametersTypeUsed() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -431,8 +416,7 @@ public class TestParameterDocAnalyzer extends Tester
                  });
     }
 
-    public void testParamterNotInCode()
-    {
+    public void testParamterNotInCode() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /**\n" +

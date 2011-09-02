@@ -26,10 +26,10 @@ public class TestCommentSpellCheck extends TestCase {
             }
         }
 
-        private List misspellings = new ArrayList();
+        private List<Misspelling> misspellings = new ArrayList<Misspelling>();
 
         public void check(String desc) {
-            misspellings = new ArrayList();
+            misspellings = new ArrayList<Misspelling>();
             super.check(desc);
         }
             

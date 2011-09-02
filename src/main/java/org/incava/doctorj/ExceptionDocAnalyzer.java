@@ -177,7 +177,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
                         if (fullName == null) {
                             Iterator<String> iit = _importMap.keySet().iterator();
                             while (cls == null && iit.hasNext()) {
-                                String impName   = iit.next();
+                                String impName = iit.next();
                                 String shImpName = getShortName(impName);
                                 if (shImpName.equals("*")) {
                                     // try to load pkg.name
@@ -254,7 +254,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
     protected String getExactMatch(String name) {
         Iterator<String> iit = _importMap.keySet().iterator();
         while (iit.hasNext()) {
-            String impName   = iit.next();
+            String impName = iit.next();
             String shImpName = getShortName(impName);
             if (!shImpName.equals("*") && shImpName.equals(name)) {
                 return impName;
@@ -285,7 +285,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
         }
         else {
             String  excName = excClass.getName();
-            Boolean val     = excToRuntime.get(excName);
+            Boolean val = excToRuntime.get(excName);
             if (val == null) {
                 val = new Boolean(RuntimeException.class.isAssignableFrom(excClass) || 
                                   Error.class.isAssignableFrom(excClass));

@@ -9,33 +9,28 @@ public class TestBooleanOption extends TestCase
 {
     BooleanOption opt = new BooleanOption("boolopt", "this is the description of boolopt");
 
-    public TestBooleanOption(String name)
-    {
+    public TestBooleanOption(String name) {
         super(name);
     }
 
-    public void testDefaultNull()
-    {
+    public void testDefaultNull() {
         assertEquals("boolopt", opt.getLongName());
         assertEquals("this is the description of boolopt", opt.getDescription());
 
         assertNull("default value", opt.getValue());
     }
 
-    public void testDefaultValue()
-    {
+    public void testDefaultValue() {
         BooleanOption opt = new BooleanOption("boolopt", "this is the description of boolopt", Boolean.TRUE);
         assertEquals("default value", Boolean.TRUE, opt.getValue());
     }
 
-    public void testShortName()
-    {
+    public void testShortName() {
         opt.setShortName('n');
         assertEquals('n', opt.getShortName());
     }
 
-    public void testSetBooleanValue()
-    {
+    public void testSetBooleanValue() {
         opt.setValue(Boolean.TRUE);
         assertEquals("option value", Boolean.TRUE, opt.getValue());
 
@@ -43,9 +38,8 @@ public class TestBooleanOption extends TestCase
         assertEquals("option value", Boolean.FALSE, opt.getValue());
     }
 
-    public void testSetFromArgsListPositive()
-    {
-        List args = new ArrayList();
+    public void testSetFromArgsListPositive() {
+        List<String> args = new ArrayList<String>();
         try {
             boolean processed = opt.set("--boolopt", args);
             assertEquals("option processed", true, processed);
@@ -57,9 +51,8 @@ public class TestBooleanOption extends TestCase
         }
     }
 
-    public void testSetFromArgsListNegativeDash()
-    {
-        List args = new ArrayList();
+    public void testSetFromArgsListNegativeDash() {
+        List<String> args = new ArrayList<String>();
         try {
             boolean processed = opt.set("--no-boolopt", args);
             assertEquals("option processed", true, processed);
@@ -71,9 +64,8 @@ public class TestBooleanOption extends TestCase
         }
     }
 
-    public void testSetFromArgsListNegativeNoDash()
-    {
-        List args = new ArrayList();
+    public void testSetFromArgsListNegativeNoDash() {
+        List<String> args = new ArrayList<String>();
         try {
             boolean processed = opt.set("--noboolopt", args);
             assertEquals("option processed", true, processed);

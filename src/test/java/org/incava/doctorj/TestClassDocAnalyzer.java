@@ -6,13 +6,11 @@ import org.incava.analysis.Violation;
 
 public class TestClassDocAnalyzer extends TestTypeDocAnalyzer
 {
-    public TestClassDocAnalyzer(String name)
-    {
+    public TestClassDocAnalyzer(String name) {
         super(name);
     }
 
-    public void testClassAuthorWithText()
-    {
+    public void testClassAuthorWithText() {
         evaluate("/** This is a description.\n" +
                  "  * @author e. e. cummings\n" +
                  "  */\n" +
@@ -38,8 +36,7 @@ public class TestClassDocAnalyzer extends TestTypeDocAnalyzer
                  });
     }
 
-    public void testClassAuthorWithoutText()
-    {
+    public void testClassAuthorWithoutText() {
         evaluate("/** This is a description.\n" +
                  "  * @author\n" +
                  "  */\n" +
@@ -50,8 +47,7 @@ public class TestClassDocAnalyzer extends TestTypeDocAnalyzer
                  });
     }
     
-    public void testClassAuthorWithoutTextSpaces()
-    {
+    public void testClassAuthorWithoutTextSpaces() {
         evaluate("/** This is a description.\n" +
                  "  * @author   \n" +
                  "  */\n" +
@@ -71,8 +67,7 @@ public class TestClassDocAnalyzer extends TestTypeDocAnalyzer
                  });
     }
 
-    public void testClassVersionWithText()
-    {
+    public void testClassVersionWithText() {
         evaluate("/** This is a description.\n" +
                  "  * @version 1.1.2\n" +
                  "  */\n" +
@@ -90,8 +85,7 @@ public class TestClassDocAnalyzer extends TestTypeDocAnalyzer
                  });
     }
 
-    public void testClassVersionWithoutText()
-    {
+    public void testClassVersionWithoutText() {
         evaluate("/** This is a description.\n" +
                  "  * @version\n" +
                  "  */\n" +
@@ -102,8 +96,7 @@ public class TestClassDocAnalyzer extends TestTypeDocAnalyzer
                  });
     }
     
-    public void testClassVersionWithoutTextSpaces()
-    {
+    public void testClassVersionWithoutTextSpaces() {
         evaluate("/** This is a description.\n" +
                  "  * @version   \n" +
                  "  */\n" +
@@ -123,8 +116,7 @@ public class TestClassDocAnalyzer extends TestTypeDocAnalyzer
                  });
     }
 
-    public void testClassSerialWithText()
-    {
+    public void testClassSerialWithText() {
         evaluate("/** This is a description.\n" +
                  "  * @serial This describes the serial field.\n" +
                  "  */\n" +
@@ -142,8 +134,7 @@ public class TestClassDocAnalyzer extends TestTypeDocAnalyzer
                  });
     }
 
-    public void testClassSerialWithoutText()
-    {
+    public void testClassSerialWithoutText() {
         evaluate("/** This is a description.\n" +
                  "  * @serial\n" +
                  "  */\n" +
@@ -154,8 +145,7 @@ public class TestClassDocAnalyzer extends TestTypeDocAnalyzer
                  });
     }
     
-    public void testClassSerialWithoutTextSpaces()
-    {
+    public void testClassSerialWithoutTextSpaces() {
         evaluate("/** This is a description.\n" +
                  "  * @serial   \n" +
                  "  */\n" +

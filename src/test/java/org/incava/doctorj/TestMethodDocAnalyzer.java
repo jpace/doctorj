@@ -6,13 +6,11 @@ import org.incava.analysis.Violation;
 
 public class TestMethodDocAnalyzer extends Tester
 {
-    public TestMethodDocAnalyzer(String name)
-    {
+    public TestMethodDocAnalyzer(String name) {
         super(name);
     }
 
-    public void testReturnOK()
-    {
+    public void testReturnOK() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -24,8 +22,7 @@ public class TestMethodDocAnalyzer extends Tester
                  });
     }
 
-    public void testReturnFromVoid()
-    {
+    public void testReturnFromVoid() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -38,8 +35,7 @@ public class TestMethodDocAnalyzer extends Tester
                  });
     }
 
-    public void testReturnUndescribed()
-    {
+    public void testReturnUndescribed() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -52,8 +48,7 @@ public class TestMethodDocAnalyzer extends Tester
                  });
     }
 
-    public void testReturnTypeUsed()
-    {
+    public void testReturnTypeUsed() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -66,8 +61,7 @@ public class TestMethodDocAnalyzer extends Tester
                  });
     }
 
-    public void testJava15OK()
-    {
+    public void testJava15OK() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /**\n" +

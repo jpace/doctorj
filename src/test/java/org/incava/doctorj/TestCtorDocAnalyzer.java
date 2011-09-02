@@ -6,13 +6,11 @@ import org.incava.analysis.Violation;
 
 public class TestCtorDocAnalyzer extends Tester
 {
-    public TestCtorDocAnalyzer(String name)
-    {
+    public TestCtorDocAnalyzer(String name) {
         super(name);
     }
 
-    public void testReturnTag()
-    {
+    public void testReturnTag() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
