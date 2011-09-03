@@ -4,8 +4,8 @@ import java.util.List;
 import net.sourceforge.pmd.ast.*;
 import org.incava.analysis.Report;
 import org.incava.javadoc.*;
-import org.incava.pmd.FieldUtil;
-import org.incava.pmd.SimpleNodeUtil;
+import org.incava.pmdx.FieldUtil;
+import org.incava.pmdx.SimpleNodeUtil;
 
 
 /**

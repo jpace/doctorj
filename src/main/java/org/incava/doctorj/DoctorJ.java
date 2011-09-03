@@ -5,7 +5,7 @@ import java.util.*;
 import net.sourceforge.pmd.ast.*;
 import org.incava.analysis.*;
 import org.incava.ijdk.io.Find;
-import org.incava.pmd.SimpleNodeUtil;
+import org.incava.pmdx.SimpleNodeUtil;
 import org.incava.util.TimedEvent;
 import org.incava.util.TimedEventSet;
 

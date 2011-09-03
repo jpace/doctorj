@@ -5,8 +5,8 @@ import java.util.List;
 import net.sourceforge.pmd.ast.*;
 import org.incava.analysis.Report;
 import org.incava.javadoc.JavadocNode;
-import org.incava.pmd.CtorUtil;
-import org.incava.pmd.SimpleNodeUtil;
+import org.incava.pmdx.CtorUtil;
+import org.incava.pmdx.SimpleNodeUtil;
 
 
 /**

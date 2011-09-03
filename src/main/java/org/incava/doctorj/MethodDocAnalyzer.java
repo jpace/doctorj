@@ -5,7 +5,7 @@ import java.util.List;
 import net.sourceforge.pmd.ast.*;
 import org.incava.analysis.Report;
 import org.incava.java.*;
-import org.incava.pmd.*;
+import org.incava.pmdx.*;
 import org.incava.javadoc.*;
 
 

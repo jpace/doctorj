@@ -6,7 +6,7 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.Token;
 import org.incava.analysis.Report;
 import org.incava.javadoc.*;
-import org.incava.pmd.SimpleNodeUtil;
+import org.incava.pmdx.SimpleNodeUtil;
 import org.incava.text.LineMapping;
 import org.incava.text.Location;
 

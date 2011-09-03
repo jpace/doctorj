@@ -1,4 +1,4 @@
-package org.incava.pmd;
+package org.incava.pmdx;
 
 import java.io.*;
 import java.util.*;
