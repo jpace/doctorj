@@ -53,15 +53,15 @@ public class Tester extends TestCase
         tr.Ace.log("expectations", expectations);
         Report report = analyze(contents, version);
         
-        Set violations = report.getViolations();
+        Set<Violation> violations = report.getViolations();
         tr.Ace.log("violations", violations);
         
-        assertEquals("number of violations", expectations.length, violations.size());
-            
-        Iterator vit = violations.iterator();
+        assertEquals("number of violations", expectations.length, violations.size());    
+        
+        Iterator<Violation> vit = violations.iterator();
         for (int vi = 0; vit.hasNext() && vi < violations.size(); ++vi) {
-            Violation violation = (Violation)vit.next();
-            Violation exp = expectations[vi];
+            Violation violation = vit.next();
+            Violation exp       = expectations[vi];
                 
             assertNotNull("violation not null", violation);
             assertEquals("violation[" + vi + "]", exp, violation);

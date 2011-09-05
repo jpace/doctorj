@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.*;
 import org.incava.ijdk.io.FileExt;
 import org.incava.ijdk.util.MultiMap;
-import org.incava.text.*;
+import org.incava.text.spell.*;
 
 
 public class CommentSpellCheck extends ParsingSpellChecker {

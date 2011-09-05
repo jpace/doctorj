@@ -1,4 +1,4 @@
-package org.incava.text;
+package org.incava.text.spell;
 
 import java.io.*;
 import java.util.*;

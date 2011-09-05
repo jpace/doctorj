@@ -5,7 +5,7 @@ import net.sourceforge.pmd.ast.*;
 import org.incava.analysis.Report;
 import org.incava.javadoc.*;
 import org.incava.pmdx.*;
-import org.incava.text.SpellChecker;
+import org.incava.text.spell.SpellChecker;
 
 
 /**

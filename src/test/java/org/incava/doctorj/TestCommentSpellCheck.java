@@ -4,30 +4,13 @@ import java.io.*;
 import java.util.*;
 import junit.framework.TestCase;
 import org.incava.ijdk.util.MultiMap;
+import org.incava.text.spell.Misspelling;
 
 
 public class TestCommentSpellCheck extends TestCase {
 
     static class TestableCommentSpellCheck extends CommentSpellCheck {
         
-        class Misspelling {
-            public String word;
-
-            public int position;
-
-            public MultiMap<Integer, String> nearMatches;
-
-            public Misspelling(String word, int position, MultiMap<Integer, String> nearMatches) {
-                this.word = word;
-                this.position = position;
-                this.nearMatches = nearMatches;
-            }
-
-            public String toString() {
-                return "[" + word + ", " + position + ", {" + nearMatches + "}";
-            }
-        }
-
         private List<Misspelling> misspellings = new ArrayList<Misspelling>();
 
         public void check(String desc) {

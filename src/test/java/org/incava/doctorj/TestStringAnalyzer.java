@@ -22,8 +22,9 @@ public class TestStringAnalyzer extends Tester {
 
     protected Report analyze(String contents, String version) {
         StringWriter      reportOutput = new StringWriter();
-        Report            report = new TerseReport(reportOutput);
-        JavaParserVisitor analyzer = new StringAnalyzer(report);
+        Report            report       = new TerseReport(reportOutput);
+        JavaParserVisitor analyzer     = new StringAnalyzer(report);
+
         try {
             report.reset(contents);
 
@@ -57,6 +58,9 @@ public class TestStringAnalyzer extends Tester {
                            "}\n");
         Report report = analyze(contents, "1.5");
         tr.Ace.log("report", report);
+
+        Set<Violation> violations = report.getViolations();
+        tr.Ace.yellow("violations", violations);
     }
 
     public void testIncorrectString() {
@@ -67,6 +71,9 @@ public class TestStringAnalyzer extends Tester {
                            "}\n");
         Report report = analyze(contents, "1.5");
         tr.Ace.log("report", report);
+
+        Set<Violation> violations = report.getViolations();
+        tr.Ace.yellow("violations", violations);
     }
 
 }

@@ -21,7 +21,7 @@ public abstract class Report {
     /**
      * The writer to which this report sends output.
      */
-    private Writer writer;
+    private final Writer writer;
 
     /**
      * The set of violations, which are maintained in sorted order.
@@ -143,7 +143,7 @@ public abstract class Report {
         }
         catch (IOException ioe) {
         }
-        this.violations = new TreeSet<Violation>();
+        this.violations.clear();
     }
 
     /**

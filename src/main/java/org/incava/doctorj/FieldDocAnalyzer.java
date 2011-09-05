@@ -19,12 +19,12 @@ public class FieldDocAnalyzer extends ItemDocAnalyzer {
 
     public final static String MSG_SERIALFIELD_WITHOUT_DESCRIPTION = "@serialField without description.";
     
-    private ASTFieldDeclaration _field;
+    private final ASTFieldDeclaration field;
     
     public FieldDocAnalyzer(Report r, ASTFieldDeclaration field) {
         super(r, field);
         
-        _field = field;
+        this.field = field;
     }
 
     public String getItemType() {
@@ -94,7 +94,7 @@ public class FieldDocAnalyzer extends ItemDocAnalyzer {
     protected void addUndocumentedViolation(String desc) {
         // reference the list of variables declared in this field.
 
-        ASTVariableDeclarator[] vds = FieldUtil.getVariableDeclarators(_field);
+        ASTVariableDeclarator[] vds = FieldUtil.getVariableDeclarators(this.field);
 
         Token begin = vds[0].getFirstToken();
         Token end = vds[vds.length - 1].getFirstToken();
@@ -103,7 +103,7 @@ public class FieldDocAnalyzer extends ItemDocAnalyzer {
     }
 
     protected SimpleNode getEnclosingNode() {
-        return SimpleNodeUtil.getParent(_field);
+        return SimpleNodeUtil.getParent(this.field);
     }
 
 }

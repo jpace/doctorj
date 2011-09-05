@@ -4,11 +4,11 @@ import java.io.*;
 import java.util.*;
 import net.sourceforge.pmd.ast.*;
 import org.incava.analysis.*;
+import org.incava.javadoc.*;
 import org.incava.pmdx.ParameterUtil;
 import org.incava.pmdx.SimpleNodeUtil;
-import org.incava.javadoc.*;
 import org.incava.text.Location;
-import org.incava.text.SpellChecker;
+import org.incava.text.spell.SpellChecker;
 
 
 /**

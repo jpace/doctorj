@@ -5,7 +5,7 @@ import java.util.regex.*;
 import net.sourceforge.pmd.ast.*;
 import org.incava.analysis.Report;
 import org.incava.pmdx.SimpleNodeUtil;
-import org.incava.text.*;
+import org.incava.text.spell.*;
 
 
 /**

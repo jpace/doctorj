@@ -1,10 +1,9 @@
-package org.incava.doctorj;
+package org.incava.text.spell;
 
 import java.io.*;
 import java.util.*;
 import org.incava.ijdk.io.FileExt;
 import org.incava.ijdk.util.MultiMap;
-import org.incava.text.*;
 
 
 public class ParsingSpellChecker {
