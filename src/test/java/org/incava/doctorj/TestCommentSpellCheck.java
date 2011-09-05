@@ -7,7 +7,9 @@ import org.incava.ijdk.util.MultiMap;
 
 
 public class TestCommentSpellCheck extends TestCase {
+
     static class TestableCommentSpellCheck extends CommentSpellCheck {
+        
         class Misspelling {
             public String word;
 
@@ -46,9 +48,12 @@ public class TestCommentSpellCheck extends TestCase {
     
     public TestCommentSpellCheck(String name) {
         super(name);
+
+        tr.Ace.setVerbose(true);
     }
 
     public void runSpellTest(String comment, int nMisspellings) {
+        tr.Ace.log("comment", comment);
         tcsc.check(comment);
         assertEquals(nMisspellings, tcsc.misspellings.size());
     }
@@ -106,5 +111,18 @@ public class TestCommentSpellCheck extends TestCase {
         runSpellTest("/** This is a comment that refers to a {@link tosomewhere}. */", 0);
         runSpellTest("/** This is a comment that refers to a {@link tosomewherefarbeyond */", 0);     // "}" -- for Emacs
     }
-    
+
+    public void testOKPreThenCode() {
+        runSpellTest(
+            "/** This is a comment.\n" +
+            "  *\n" +
+            "  *<pre>\n" +
+            "  * nuffim eh?\n" +
+            "  *</pre>\n" +
+            "  *<code>\n" +
+            "  * rredd eh?\n" +
+            "  *</code>\n" +
+            "  */\n",
+            0);
+    }
 }
