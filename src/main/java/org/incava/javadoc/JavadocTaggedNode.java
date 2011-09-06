@@ -10,8 +10,8 @@ import org.incava.text.Location;
  * A tagged element, such as:
  * @since 0.1
  */
-public class JavadocTaggedNode extends JavadocElement
-{
+public class JavadocTaggedNode extends JavadocElement {
+    
     private boolean parsed = false;
 
     private JavadocTag tag = null;
@@ -22,13 +22,11 @@ public class JavadocTaggedNode extends JavadocElement
 
     private JavadocElement descriptionNonTarget = null;
     
-    public JavadocTaggedNode(String text, Location start, Location end)
-    {
+    public JavadocTaggedNode(String text, Location start, Location end) {
         super(text, start, end);
     }
 
-    public JavadocTag getTag()
-    {
+    public JavadocTag getTag() {
         parse();
         return tag;
     }
@@ -40,8 +38,7 @@ public class JavadocTaggedNode extends JavadocElement
      * @quoted "A Quoted Target"
      * @word Word
      */
-    public JavadocElement getTarget()
-    {
+    public JavadocElement getTarget() {
         parse();
         return target;
     }
@@ -49,8 +46,7 @@ public class JavadocTaggedNode extends JavadocElement
     /**
      * This returns the text following the tag, and including the target.
      */
-    public JavadocElement getDescription()
-    {
+    public JavadocElement getDescription() {
         parse();
         return description;
     }
@@ -58,14 +54,12 @@ public class JavadocTaggedNode extends JavadocElement
     /**
      * This returns the text following the target.
      */
-    public JavadocElement getDescriptionNonTarget()
-    {
+    public JavadocElement getDescriptionNonTarget() {
         parse();
         return descriptionNonTarget;
     }
 
-    protected void parse()
-    {
+    protected void parse() {
         if (!parsed) {
             int pos = 0;
             int line = start.line;
@@ -162,7 +156,7 @@ public class JavadocTaggedNode extends JavadocElement
                     ++pos;
                 }
 
-                // even unbalanced HTML or double-quoted strings will get a target:
+                // even unbalanced HTML or double - quoted strings will get a target:
 
                 Location[] targetLocations = lines.getLocations(targetStart, pos - 1);
 

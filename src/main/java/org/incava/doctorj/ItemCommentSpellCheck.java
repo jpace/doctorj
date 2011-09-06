@@ -2,24 +2,25 @@ package org.incava.doctorj;
 
 import java.util.*;
 import net.sourceforge.pmd.ast.*;
+import org.incava.analysis.Analyzer;
 import org.incava.ijdk.lang.StringExt;
+import org.incava.ijdk.util.MultiMap;
 import org.incava.javadoc.*;
 import org.incava.text.LineMapping;
 import org.incava.text.Location;
-import org.incava.ijdk.util.MultiMap;
 
 
 public class ItemCommentSpellCheck extends CommentSpellCheck {
 
     public final static int NUM_CLOSEST_MATCHES = 6;
 
-    private ItemDocAnalyzer analyzer;
+    private Analyzer analyzer;
 
     private JavadocElement desc;
 
     private LineMapping lines;
 
-    public void check(ItemDocAnalyzer analyzer, JavadocElement desc) {
+    public void check(Analyzer analyzer, JavadocElement desc) {
         this.analyzer = analyzer;
         this.desc = desc;
         this.lines = null;

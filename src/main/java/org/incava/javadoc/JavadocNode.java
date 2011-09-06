@@ -10,8 +10,8 @@ import org.incava.text.Location;
 /**
  * Represents a Javadoc element.
  */
-public class JavadocNode
-{
+public class JavadocNode {
+
     private JavadocDescriptionNode description = null;
 
     private JavadocTaggedNode[] tagged = new JavadocTaggedNode[0];
@@ -27,8 +27,7 @@ public class JavadocNode
     /**
      * Parses itself from the given text.
      */
-    public static JavadocNode parse(String text, int startLine, int startColumn)
-    {
+    public static JavadocNode parse(String text, int startLine, int startColumn) {
         JavadocParser parser = new JavadocParser();
         List<Point> subs = parser.parse(text, startLine, startColumn);
 
@@ -40,13 +39,13 @@ public class JavadocNode
             // 0-based) to line:column (which are 1-based)
 
             LineMapping lines = new LineMapping(text, startLine, startColumn);
-            JavadocNode jd    = new JavadocNode();
+            JavadocNode jd = new JavadocNode();
 
             jd.startLine = startLine;
             jd.startColumn = startColumn;
 
             Location end = lines.getLocation(text.length() - 1);
-            jd.endLine   = end.line;
+            jd.endLine = end.line;
             jd.endColumn = end.column;
 
             if (subs.size() > 0) {
@@ -72,7 +71,7 @@ public class JavadocNode
 
                 jd.tagged = new JavadocTaggedNode[subs.size() - 1];
                 for (int i = 0; it.hasNext(); ++i) {
-                    Point      pos       = it.next();
+                    Point      pos = it.next();
                     Location[] locations = lines.getLocations(pos);
                     
                     jd.tagged[i] = new JavadocTaggedNode(text.substring(pos.x, pos.y), locations[0], locations[1]);
@@ -83,33 +82,27 @@ public class JavadocNode
         }
     }
 
-    public JavadocDescriptionNode getDescription()
-    {
+    public JavadocDescriptionNode getDescription() {
         return description;
     }
 
-    public JavadocTaggedNode[] getTaggedComments()
-    {
+    public JavadocTaggedNode[] getTaggedComments() {
         return tagged;
     }
 
-    public int getStartLine()
-    {
+    public int getStartLine() {
         return startLine;
     }
 
-    public int getStartColumn()
-    {
+    public int getStartColumn() {
         return startColumn;
     }
 
-    public int getEndLine()
-    {
+    public int getEndLine() {
         return endLine;
     }
 
-    public int getEndColumn()
-    {
+    public int getEndColumn() {
         return endColumn;
     }
 

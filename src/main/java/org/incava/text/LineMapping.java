@@ -6,14 +6,15 @@ import java.util.*;
 
 
 /**
- * Converts from 0 - indexed string positions to line:column values. Lines and
- * columns are 1 - indexed, matching the Java parser.
+ * Converts from 0-indexed string positions to line:column values. Lines and
+ * columns are 1-indexed, matching the Java parser.
  */
 public class LineMapping extends ArrayList<LineMapping.PositionToLocation> {
 
     private static final long serialVersionUID = 1;
 
     public class PositionToLocation {
+
         public final int position;
         
         public final int line;
@@ -29,6 +30,10 @@ public class LineMapping extends ArrayList<LineMapping.PositionToLocation> {
         public String toString() {
             return "{ position: " + position + " => { line: " + line + ", column: " + column + " } }";
         }
+    }
+
+    public LineMapping(String text, Location location) {
+        add(new PositionToLocation(0, location.getLine(), location.getColumn()));
     }
 
     public LineMapping(String text, int startLine, int startColumn) {
