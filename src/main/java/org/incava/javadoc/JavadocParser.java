@@ -3,6 +3,7 @@ package org.incava.javadoc;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
+import org.incava.ijdk.lang.Pair;
 
 
 /**
@@ -104,6 +105,11 @@ public class JavadocParser {
      * Reads to the next Javadoc field, or to the end of the comment.
      */
     protected int read(Point pt, String text, int pos, int len) {
+        tr.Ace.cyan("pt", pt);
+        tr.Ace.cyan("text", text);
+        tr.Ace.cyan("pos", pos);
+        tr.Ace.cyan("len", len);
+        
         pt.y = pos;
         while (pos < len && (text.charAt(pos) != '@' || (pos >= 0 && text.charAt(pos - 1) == '{'))) {
             pt.y = pos;
@@ -128,6 +134,11 @@ public class JavadocParser {
         }
 
         ++pt.y;
+
+        tr.Ace.cyan("pt", pt);
+        tr.Ace.cyan("text", text);
+        tr.Ace.cyan("pos", pos);
+        tr.Ace.cyan("len", len);
 
         return pos;
     }

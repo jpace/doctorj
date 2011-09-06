@@ -5,21 +5,20 @@ import java.util.List;
 import junit.framework.TestCase;
 
 
-public class TestJavadocParser extends TestCase
-{
-    public TestJavadocParser(String name)
-    {
+public class TestJavadocParser extends TestCase {
+
+    public TestJavadocParser(String name) {
         super(name);
+
+        tr.Ace.setVerbose(true);
     }
 
-    public static List<Point> parse(String text)
-    {
+    public static List<Point> parse(String text) {
         JavadocParser jp = new JavadocParser();
         return jp.parse(text);
     }
 
-    public void testBasic()
-    {
+    public void testBasic() {
         String text  = ("/** This is a description.\n" +
                         "  */\n" +
                         "class Test {\n" +
@@ -34,16 +33,14 @@ public class TestJavadocParser extends TestCase
         assertNotNull("results", segments);
     }
 
-    public void testNone()
-    {
+    public void testNone() {
         String text = "";
         List<Point> segments = parse(text);
         
         assertNull("results", segments);
     }
 
-    public void testNotJavadoc()
-    {
+    public void testNotJavadoc() {
         String text = ("/* This is a description,\n" +
                        " * not in Javadoc format. */\n");
         List<Point> segments = parse(text);
@@ -51,8 +48,7 @@ public class TestJavadocParser extends TestCase
         assertNull("results", segments);
     }
     
-    public void testEmpty()
-    {
+    public void testEmpty() {
         List<Point> segments = null;
         
         segments = parse("/**/");
@@ -65,8 +61,7 @@ public class TestJavadocParser extends TestCase
         assertEquals("size of results", 0, segments.size());
     }
     
-    public void testDescribedSingleLine()
-    {
+    public void testDescribedSingleLine() {
         String text = "/** This is a test. */";
         List<Point> segments = parse(text);
         
@@ -75,8 +70,7 @@ public class TestJavadocParser extends TestCase
         assertEquals("description text", "This is a test.",  text.substring(4, 19));
     }
     
-    public void testDescribedSeparateLine()
-    {
+    public void testDescribedSeparateLine() {
         String text = "/** \n * This is a test. \n */";
         List<Point> segments = parse(text);
         
@@ -85,8 +79,7 @@ public class TestJavadocParser extends TestCase
         assertEquals("description text", "This is a test.",  text.substring(8, 23));
     }
     
-    public void testDescribedMultiLineOnSeparateLine()
-    {
+    public void testDescribedMultiLineOnSeparateLine() {
         String text = "/** \n * This is a test.\n * There are many like it,\n   but this one is mine. \n */";
         List<Point> segments = parse(text);
         
@@ -95,8 +88,7 @@ public class TestJavadocParser extends TestCase
         assertEquals("description text", "This is a test.\n * There are many like it,\n   but this one is mine.",  text.substring(8, 75));
     }
     
-    public void testDescribedOneTag()
-    {
+    public void testDescribedOneTag() {
         String text = "/** \n * This is a test.\n * @tag description. \n */";
         List<Point> segments = parse(text);
         
@@ -106,8 +98,7 @@ public class TestJavadocParser extends TestCase
         assertEquals("tag text",         "@tag description.", text.substring(27, 44));
     }
     
-    public void testUndescribedOneTag()
-    {
+    public void testUndescribedOneTag() {
         String text = "/** \n * @tag description. \n */";
         List<Point> segments = parse(text);
         
@@ -117,10 +108,9 @@ public class TestJavadocParser extends TestCase
         assertEquals("tag text",         "@tag description.", text.substring(8, 25));
     }
     
-    public void testDescribedTwoTags()
-    {
+    public void testDescribedTwoTags() {
         String text  = "/** \n * This is a test.\n * @tag0 description. \n * @tag1 Another description, \n * this one on multiple lines.\n */";
-        List<Point> segments   = parse(text);
+        List<Point> segments = parse(text);
         
         assertEquals("size of results",  3,                    segments.size());
         assertEquals("description",      (new Point(8, 23)),   segments.get(0));
@@ -131,8 +121,7 @@ public class TestJavadocParser extends TestCase
         assertEquals("tag text",         "@tag1 Another description, \n * this one on multiple lines.", text.substring(50, 108));
     }
     
-    public void testDescribedTwoTagsEndCommentOnSameLine()
-    {
+    public void testDescribedTwoTagsEndCommentOnSameLine() {
         String text   = "/** \n * This is a test.\n * @tag0 description. \n * @tag1 Another description, \n * this one on multiple lines. */";
         List<Point> segments = parse(text);
         
@@ -145,8 +134,7 @@ public class TestJavadocParser extends TestCase
         assertEquals("tag text",         "@tag1 Another description, \n * this one on multiple lines.", text.substring(50, 108));
     }
     
-    public void testDescribedPreBlock()
-    {
+    public void testDescribedPreBlock() {
         String text  = "/** \n" +
             " * This is a test.\n" + 
             " * And here is its pre block: \n" +
@@ -170,8 +158,7 @@ public class TestJavadocParser extends TestCase
                      " * </pre>",    text.substring(8, 110));
     }
 
-    public void testLineStartsWithLink()
-    {
+    public void testLineStartsWithLink() {
         String text = ("/**\n" +
                        " * This is a description that makes a reference to \n" +
                        " * {@link SomeWhere#someThing(someType)} which should not\n" +

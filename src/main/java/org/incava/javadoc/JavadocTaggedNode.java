@@ -156,7 +156,7 @@ public class JavadocTaggedNode extends JavadocElement {
                     ++pos;
                 }
 
-                // even unbalanced HTML or double - quoted strings will get a target:
+                // even unbalanced HTML or double-quoted strings will get a target:
 
                 Location[] targetLocations = lines.getLocations(targetStart, pos - 1);
 
