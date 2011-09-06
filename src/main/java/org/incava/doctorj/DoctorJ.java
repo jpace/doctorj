@@ -5,9 +5,9 @@ import java.util.*;
 import net.sourceforge.pmd.ast.*;
 import org.incava.analysis.*;
 import org.incava.ijdk.io.Find;
+import org.incava.ijdk.util.TimedEvent;
+import org.incava.ijdk.util.TimedEventSet;
 import org.incava.pmdx.SimpleNodeUtil;
-import org.incava.util.TimedEvent;
-import org.incava.util.TimedEventSet;
 
 
 public class DoctorJ {
