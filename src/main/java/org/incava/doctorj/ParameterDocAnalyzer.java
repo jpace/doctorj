@@ -14,8 +14,8 @@ import org.incava.text.spell.SpellChecker;
 /**
  * Checks the validity of Javadoc for a list of parameters.
  */
-public class ParameterDocAnalyzer extends DocAnalyzer
-{
+public class ParameterDocAnalyzer extends DocAnalyzer {
+
     /**
      * The message for documented parameters for a function without any in the
      * code.
@@ -72,24 +72,24 @@ public class ParameterDocAnalyzer extends DocAnalyzer
     /**
      * The Javadoc block applicable to this parameter list.
      */
-    private final JavadocNode _javadoc;
+    private final JavadocNode javadoc;
 
     /**
      * The function containing the list of parameters.
      */
-    private final SimpleNode _function;
+    private final SimpleNode function;
 
     /**
      * The list of parameters in the code.
      */
-    private final ASTFormalParameters _parameterList;
+    private final ASTFormalParameters parameterList;
 
     /**
      * The list of parameters from the code, that were documented.
      */
-    private final List<Integer> _documentedParameters;
+    private final List<Integer> documentedParameters;
 
-    private int _nodeLevel;
+    private int nodeLevel;
 
     /**
      * Creates and runs the parameter documentation analyzer.
@@ -101,18 +101,18 @@ public class ParameterDocAnalyzer extends DocAnalyzer
     public ParameterDocAnalyzer(Report report, JavadocNode javadoc, SimpleNode function, ASTFormalParameters parameterList, int nodeLevel) {
         super(report);
 
-        _javadoc = javadoc;
-        _function = function;
-        _parameterList = parameterList;
-        _nodeLevel = nodeLevel;
-        _documentedParameters = new ArrayList<Integer>();
+        this.javadoc = javadoc;
+        this.function = function;
+        this.parameterList = parameterList;
+        this.nodeLevel = nodeLevel;
+        this.documentedParameters = new ArrayList<Integer>();
     }
 
     /**
      * Analyzes the Javadoc for the parameter list.
      */
     public void run() {
-        tr.Ace.log("function", _function);
+        tr.Ace.log("function", this.function);
 
         // foreach @throws / @parameter tag:
         //  - check for target
@@ -122,7 +122,7 @@ public class ParameterDocAnalyzer extends DocAnalyzer
         boolean misorderedReported = false;
         int     parameterIndex = 0;
             
-        JavadocTaggedNode[] taggedComments = _javadoc.getTaggedComments();
+        JavadocTaggedNode[] taggedComments = this.javadoc.getTaggedComments();
         for (int ti = 0; ti < taggedComments.length; ++ti) {
             JavadocTaggedNode jtn = taggedComments[ti];
             tr.Ace.bold("jtn", jtn);
@@ -137,26 +137,26 @@ public class ParameterDocAnalyzer extends DocAnalyzer
 
                 tr.Ace.yellow("parameter index: " + parameterIndex);
 
-                if (!SimpleNodeUtil.hasChildren(_parameterList)) {
+                if (!SimpleNodeUtil.hasChildren(this.parameterList)) {
                     addViolation(MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, tag.start, tag.end);
                     break;
                 }
                 else if (tgt == null) {
-                    if (Options.warningLevel >= CHKLVL_TAG_CONTENT + _nodeLevel) {
+                    if (Options.warningLevel >= CHKLVL_TAG_CONTENT + this.nodeLevel) {
                         addViolation(MSG_PARAMETER_WITHOUT_NAME, tag.start, tag.end);
                     }
                     else {
-                        tr.Ace.log("function", _function);
+                        tr.Ace.log("function", this.function);
                     }
                 }
                 else {
                     JavadocElement desc = jtn.getDescriptionNonTarget();
                     if (jtn.getDescriptionNonTarget() == null) {
-                        if (Options.warningLevel >= CHKLVL_TAG_CONTENT + _nodeLevel) {
+                        if (Options.warningLevel >= CHKLVL_TAG_CONTENT + this.nodeLevel) {
                             addViolation(MSG_PARAMETER_WITHOUT_DESCRIPTION, tgt.start, tgt.end);
                         }
                         else {
-                            tr.Ace.log("function", _function);
+                            tr.Ace.log("function", this.function);
                         }
                     }
 
@@ -170,10 +170,10 @@ public class ParameterDocAnalyzer extends DocAnalyzer
                         tr.Ace.log("closest matching parameter: " + index);
                         tr.Ace.log("parameter index: " + parameterIndex);
 
-                        SimpleNodeUtil.dump(_parameterList, "pppp");
+                        SimpleNodeUtil.dump(this.parameterList, "pppp");
 
                         if (index == -1) {
-                            String paramType = ParameterUtil.getParameterType(_parameterList, parameterIndex);
+                            String paramType = ParameterUtil.getParameterType(this.parameterList, parameterIndex);
                             tr.Ace.log("paramType: " + paramType + "; tgtStr: " + tgtStr);
 
                             if (tgtStr.equals(paramType)) {
@@ -197,16 +197,16 @@ public class ParameterDocAnalyzer extends DocAnalyzer
             }
         }
 
-        tr.Ace.log("documentedParameters", _documentedParameters);
+        tr.Ace.log("documentedParameters", this.documentedParameters);
 
-        if (_parameterList == null) {
+        if (this.parameterList == null) {
             tr.Ace.log("no parameters");
         }
-        else if (isCheckable(_function, CHKLVL_PARAM_DOC_EXISTS)) {
+        else if (isCheckable(this.function, CHKLVL_PARAM_DOC_EXISTS)) {
             reportUndocumentedParameters();
         }
         else {
-            tr.Ace.log("function", _function);
+            tr.Ace.log("function", this.function);
         }
     }
 
@@ -219,25 +219,25 @@ public class ParameterDocAnalyzer extends DocAnalyzer
     }
 
     protected void addDocumentedParameter(int index, Location start, Location end) {
-        if (_documentedParameters.size() > 0 && last(_documentedParameters) > index) {
+        if (this.documentedParameters.size() > 0 && last(this.documentedParameters) > index) {
             addViolation(MSG_PARAMETER_NOT_IN_CODE_ORDER, start, end);
         }
         
-        if (_documentedParameters.contains(index)) {
+        if (this.documentedParameters.contains(index)) {
             addViolation(MSG_PARAMETER_REPEATED, start, end);
         }
         else {
-            _documentedParameters.add(index);
+            this.documentedParameters.add(index);
         }
     }
     
     protected void reportUndocumentedParameters() {
-        ASTFormalParameter[] params = ParameterUtil.getParameters(_parameterList);
+        ASTFormalParameter[] params = ParameterUtil.getParameters(this.parameterList);
         
         for (int ni = 0; ni < params.length; ++ni) {
             tr.Ace.log("parameter", params[ni]);
             ASTFormalParameter param = params[ni];
-            if (!_documentedParameters.contains(new Integer(ni))) {
+            if (!this.documentedParameters.contains(new Integer(ni))) {
                 Token nameTk = ParameterUtil.getParameterName(param);
                 addViolation(MSG_PARAMETER_NOT_DOCUMENTED, nameTk);
             }
@@ -248,7 +248,7 @@ public class ParameterDocAnalyzer extends DocAnalyzer
      * Returns the first param in the list whose name matches the given string.
      */
     protected int getMatchingParameter(String str) {
-        ASTFormalParameter[] params = ParameterUtil.getParameters(_parameterList);
+        ASTFormalParameter[] params = ParameterUtil.getParameters(this.parameterList);
         
         for (int ni = 0; ni < params.length; ++ni) {
             tr.Ace.log("parameter", params[ni]);
@@ -267,14 +267,14 @@ public class ParameterDocAnalyzer extends DocAnalyzer
      * given string.
      */
     protected int getClosestMatchingParameter(String str) {
-        if (_parameterList == null) {
+        if (this.parameterList == null) {
             return - 1;
         }
         else {
             SpellChecker         spellChecker = new SpellChecker();
             int                  bestDistance = -1;
             int                  bestIndex    = -1;
-            ASTFormalParameter[] params = ParameterUtil.getParameters(_parameterList);
+            ASTFormalParameter[] params = ParameterUtil.getParameters(this.parameterList);
         
             for (int ni = 0; ni < params.length; ++ni) {
                 tr.Ace.log("parameter", params[ni]);

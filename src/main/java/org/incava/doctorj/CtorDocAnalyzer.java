@@ -14,12 +14,12 @@ import org.incava.pmdx.SimpleNodeUtil;
  */
 public class CtorDocAnalyzer extends FunctionDocAnalyzer {
 
-    private ASTConstructorDeclaration _ctor;
+    private final ASTConstructorDeclaration ctor;
     
     public CtorDocAnalyzer(Report r, ASTConstructorDeclaration ctor) {
         super(r, ctor);
         
-        _ctor = ctor;
+        this.ctor = ctor;
     }
 
     public String getItemType() {
@@ -30,7 +30,7 @@ public class CtorDocAnalyzer extends FunctionDocAnalyzer {
      * Returns the throws list for the constructor.
      */
     protected ASTFormalParameters getParameterList() {
-        return CtorUtil.getParameters(_ctor);
+        return CtorUtil.getParameters(this.ctor);
     }
 
     /**
@@ -45,12 +45,12 @@ public class CtorDocAnalyzer extends FunctionDocAnalyzer {
      * constructor name.
      */
     protected void addUndocumentedViolation(String desc) {
-        Token nameTk = CtorUtil.getName(_ctor);
+        Token nameTk = CtorUtil.getName(this.ctor);
         addViolation(desc, nameTk);
     }
 
     protected SimpleNode getEnclosingNode() {
-        return SimpleNodeUtil.getParent(_ctor);
+        return SimpleNodeUtil.getParent(this.ctor);
     }
 
 }

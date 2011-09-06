@@ -50,79 +50,76 @@ public class Options extends OptionSet
     /**
      * The warning level option.
      */
-    private IntegerOption _levelOpt;
+    private final IntegerOption levelOpt;
 
     /**
      * The warning level option.
      */
-    private IntegerOption _warningOpt;
+    private final IntegerOption warningOpt;
 
-    /**
-     * Option to set warning level to the equivalent of --level = 0.
-     */
-    private BooleanOption _errorsOpt;
+    // /**
+    //  * Option to set warning level to the equivalent of --level = 0.
+    //  */
+    // private final BooleanOption errorsOpt;
 
 //     /**
 //      * Option to set warning level to the equivalent of --level = 1.
 //      */
-//     private BooleanOption _publicOpt;
+//     private BooleanOption publicOpt;
 
 //     /**
 //      * Option to set warning level to the equivalent of --level = 2.
 //      */
-//     private BooleanOption _protectedOpt;
+//     private BooleanOption protectedOpt;
 
 //     /**
 //      * Option to set warning level to the equivalent of --level = 3.
 //      */
-//     private BooleanOption _packageOpt;
+//     private BooleanOption packageOpt;
 
 //     /**
 //      * Option to set warning level to the equivalent of --level = 4.
 //      */
-//     private BooleanOption _privateOpt;
+//     private BooleanOption privateOpt;
 
 //     /**
 //      * Option to set warning level to the equivalent of --level = max.
 //      */
-//     private BooleanOption _pedanticOpt;
+//     private BooleanOption pedanticOpt;
 
     /**
      * The emacs option.
      */
-    private BooleanOption _emacsOpt;
+    private final BooleanOption emacsOpt;
 
     /**
      * The tab width option.
      */
-    private IntegerOption _tabWidthOpt;
+    private final IntegerOption tabWidthOpt;
 
     /**
      * The verbose option.
      */
-    private BooleanOption _verboseOpt;
+    private final BooleanOption verboseOpt;
 
     /**
      * The list of word - list (dictionary) files.
      */
-    private ListOption _dictOpt;
+    private final ListOption dictOpt;
 
     /**
      * The version option.
      */
-    private BooleanOption _versionOpt;
+    private final BooleanOption versionOpt;
 
     /**
      * The source option.
      */
-    private StringOption _sourceOpt;
+    private final StringOption sourceOpt;
 
-    private static Options instance = null;
+    private static Options instance = new Options();
 
     public static Options get() {
-        if (instance == null) {
-            instance = new Options();
-        }
         return instance;
     }
 
@@ -187,23 +184,23 @@ public class Options extends OptionSet
             }
         }
         
-        add(_emacsOpt = new BooleanOption("emacs",     "whether to list violations in Emacs form (single line)",                 emacs));
-        add(_levelOpt = new IntegerOption("level",     "the level of warnings to be output, with 0 being to check only errors",  lvl));
-        add(_warningOpt = new IntegerOption("warning",   "same as --level",                                                        lvl));
+        add(this.emacsOpt = new BooleanOption("emacs",     "whether to list violations in Emacs form (single line)",                 emacs));
+        add(this.levelOpt = new IntegerOption("level",     "the level of warnings to be output, with 0 being to check only errors",  lvl));
+        add(this.warningOpt = new IntegerOption("warning",   "same as --level",                                                        lvl));
 
-//         add(_errorsOpt = new BooleanOption("errors",    "report only errors; equivalent to warning level of 0"));
-//         add(_publicOpt = new BooleanOption("public",    "public methods; equivalent to warning level of 1"));
-//         add(_protectedOpt = new BooleanOption("protected", "protected methods; equivalent to warning level of 2"));
-//         add(_packageOpt = new BooleanOption("package",   "package methods; equivalent to warning level of 3"));
-//         add(_privateOpt = new BooleanOption("private",   "private methods; warning level of 4"));
-//         add(_pedanticOpt = new BooleanOption("pedantic",  "warning level at max"));
+//         add(this.errorsOpt = new BooleanOption("errors",    "report only errors; equivalent to warning level of 0"));
+//         add(this.publicOpt = new BooleanOption("public",    "public methods; equivalent to warning level of 1"));
+//         add(this.protectedOpt = new BooleanOption("protected", "protected methods; equivalent to warning level of 2"));
+//         add(this.packageOpt = new BooleanOption("package",   "package methods; equivalent to warning level of 3"));
+//         add(this.privateOpt = new BooleanOption("private",   "private methods; warning level of 4"));
+//         add(this.pedanticOpt = new BooleanOption("pedantic",  "warning level at max"));
 
-        add(_tabWidthOpt = new IntegerOption("tabwidth",  "the number of spaces to treat tabs equal to",                            tabWidth));
-        add(_dictOpt = new ListOption("dictionaries", "the list of dictionary (word list) files",                               wordLists));
-        add(_verboseOpt = new BooleanOption("verbose",   "whether to run in verbose mode (for debugging)",                         verbose));
-        add(_versionOpt = new BooleanOption("version",   "Displays the version"));
-        add(_sourceOpt = new StringOption("source",     "the Java source version; either 1.3, 1.4 (the default), or 1.5",         source));
-        _versionOpt.setShortName('v');
+        add(this.tabWidthOpt = new IntegerOption("tabwidth",  "the number of spaces to treat tabs equal to",                            tabWidth));
+        add(this.dictOpt = new ListOption("dictionaries", "the list of dictionary (word list) files",                               wordLists));
+        add(this.verboseOpt = new BooleanOption("verbose",   "whether to run in verbose mode (for debugging)",                         verbose));
+        add(this.versionOpt = new BooleanOption("version",   "Displays the version"));
+        add(this.sourceOpt = new StringOption("source",     "the Java source version; either 1.3, 1.4 (the default), or 1.5",         source));
+        this.versionOpt.setShortName('v');
         
         addRunControlFile("/etc/doctorj.conf");
         addRunControlFile("~/.doctorjrc");
@@ -218,49 +215,49 @@ public class Options extends OptionSet
         tr.Ace.log("args: " + args);
         String[] unprocessed = super.process(args);
 
-        Integer tabWidthInt = _tabWidthOpt.getValue();
+        Integer tabWidthInt = this.tabWidthOpt.getValue();
         if (tabWidthInt != null) {
             tr.Ace.log("setting tab width: " + tabWidthInt);
             ContextReport.tabWidth = tabWidthInt.intValue();
         }
     
-        Integer levelInt = _levelOpt.getValue();
+        Integer levelInt = this.levelOpt.getValue();
         if (levelInt != null) {
             tr.Ace.log("setting warning level: " + levelInt);
             warningLevel = levelInt.intValue();
         }
 
-//         if (_errorsOpt.getValue() != null) {
+//         if (this.errorsOpt.getValue() != null) {
 //             warningLevel = 0;
 //         }
-//         else if (_publicOpt.getValue() != null) {
+//         else if (this.publicOpt.getValue() != null) {
 //             warningLevel = 1;
 //         }
-//         else if (_protectedOpt.getValue() != null) {
+//         else if (this.protectedOpt.getValue() != null) {
 //             warningLevel = 2;
 //         }
-//         else if (_packageOpt.getValue() != null) {
+//         else if (this.packageOpt.getValue() != null) {
 //             warningLevel = 3;
 //         }
-//         else if (_privateOpt.getValue() != null) {
+//         else if (this.privateOpt.getValue() != null) {
 //             warningLevel = 4;
 //         }
-//         else if (_pedanticOpt.getValue() != null) {
+//         else if (this.pedanticOpt.getValue() != null) {
 //             warningLevel = MAXIMUM_WARNING_LEVEL;
 //         }
         
-        Boolean emacsBool = _emacsOpt.getValue();
+        Boolean emacsBool = this.emacsOpt.getValue();
         if (emacsBool != null) {
             tr.Ace.log("setting output format: " + emacsBool);
             emacsOutput = emacsBool.booleanValue();
         }
         
-        Boolean verboseBool = _verboseOpt.getValue();
+        Boolean verboseBool = this.verboseOpt.getValue();
         if (verboseBool != null) {
             tr.Ace.setVerbose(verboseBool.booleanValue());
         }
 
-        Boolean versionBool = _versionOpt.getValue();
+        Boolean versionBool = this.versionOpt.getValue();
         if (versionBool != null) {
             System.out.println("doctorj, version " + VERSION);
             System.out.println("Written by Jeff Pace (jpace [at] incava [dot] org)");
@@ -268,14 +265,14 @@ public class Options extends OptionSet
             System.exit(0);
         }
 
-        List<String> dictList = _dictOpt.getValue();
+        List<String> dictList = this.dictOpt.getValue();
         if (dictList != null) {
             for (String dict : dictList) {
                 ItemDocAnalyzer.spellChecker.addDictionary(dict);
             }
         }
 
-        String sourceStr = _sourceOpt.getValue();
+        String sourceStr = this.sourceOpt.getValue();
         if (sourceStr != null) {
             tr.Ace.log("sourceStr", sourceStr);
             source = sourceStr;

@@ -38,12 +38,12 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer {
 
     public static ItemCommentSpellCheck spellChecker = new ItemCommentSpellCheck();
 
-    private SimpleNode _node;
+    private final SimpleNode node;
     
     public ItemDocAnalyzer(Report r, SimpleNode node) {
         super(r);
         
-        _node = node;
+        this.node = node;
     }
 
     public static void addDictionary(String dictName) {
@@ -235,7 +235,7 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer {
     }
 
     protected SimpleNode getNode() {
-        return _node;
+        return this.node;
     }
 
     /**

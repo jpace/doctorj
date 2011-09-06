@@ -11,12 +11,12 @@ import org.incava.analysis.Report;
 /**
  * Analyzes Javadoc and code.
  */
-public class JavadocAnalyzer extends JavaParserVisitorAdapter
-{
-    private Report _report;
+public class JavadocAnalyzer extends JavaParserVisitorAdapter {
+
+    private final Report report;
 
     public JavadocAnalyzer(Report r) {
-        _report = r;
+        this.report = r;
     }
 
     public Object visit(SimpleJavaNode node, Object data) {
@@ -31,10 +31,10 @@ public class JavadocAnalyzer extends JavaParserVisitorAdapter
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         TypeDocAnalyzer analyzer = null;
         if (node.isInterface()) {
-            analyzer = new InterfaceDocAnalyzer(_report, node);
+            analyzer = new InterfaceDocAnalyzer(this.report, node);
         }
         else { 
-            analyzer = new ClassDocAnalyzer(_report, node);
+            analyzer = new ClassDocAnalyzer(this.report, node);
         }
         analyzer.run();
         return visit((SimpleJavaNode)node, data);
@@ -177,7 +177,7 @@ public class JavadocAnalyzer extends JavaParserVisitorAdapter
     }
 
     public Object visit(ASTFieldDeclaration node, Object data) {
-        FieldDocAnalyzer analyzer = new FieldDocAnalyzer(_report, node);
+        FieldDocAnalyzer analyzer = new FieldDocAnalyzer(this.report, node);
         analyzer.run();
         return visit((SimpleJavaNode)node, data);
     }
@@ -199,7 +199,7 @@ public class JavadocAnalyzer extends JavaParserVisitorAdapter
     }
 
     public Object visit(ASTMethodDeclaration node, Object data) {
-        MethodDocAnalyzer analyzer = new MethodDocAnalyzer(_report, node);
+        MethodDocAnalyzer analyzer = new MethodDocAnalyzer(this.report, node);
         analyzer.run();
         return visit((SimpleJavaNode)node, data);
     }
@@ -217,7 +217,7 @@ public class JavadocAnalyzer extends JavaParserVisitorAdapter
     }
 
     public Object visit(ASTConstructorDeclaration node, Object data) {
-        CtorDocAnalyzer analyzer = new CtorDocAnalyzer(_report, node);
+        CtorDocAnalyzer analyzer = new CtorDocAnalyzer(this.report, node);
         analyzer.run();
         return visit((SimpleJavaNode)node, data);
     }

@@ -97,17 +97,17 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
         }
     }
 
-    private final JavadocNode _javadoc;
+    private final JavadocNode javadoc;
 
-    private final ASTNameList _throwsList;
+    private final ASTNameList throwsList;
 
-    private final SimpleNode _function;
+    private final SimpleNode function;
 
-    private final List<String> _documentedExceptions;
+    private final List<String> documentedExceptions;
 
-    private final int _nodeLevel;
+    private final int nodeLevel;
 
-    private Map<String, ASTImportDeclaration> _importMap;
+    private Map<String, ASTImportDeclaration> importMap;
 
     /**
      * Creates and runs the exception documentation analyzer.
@@ -119,12 +119,12 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
     public ExceptionDocAnalyzer(Report report, JavadocNode javadoc, SimpleNode function, int nodeLevel) {
         super(report);
 
-        _javadoc = javadoc;
-        _throwsList = FunctionUtil.getThrowsList(function);
-        _function = function;
-        _nodeLevel = nodeLevel;
-        _importMap = null;
-        _documentedExceptions = new ArrayList<String>();
+         this.javadoc = javadoc;
+         this.throwsList = FunctionUtil.getThrowsList(function);
+         this.function = function;
+         this.nodeLevel = nodeLevel;
+         this.importMap = null;
+         this.documentedExceptions = new ArrayList<String>();
     }
     
     public void run() {
@@ -137,16 +137,16 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
         boolean alphabeticalReported = false;
         String  previousException = null;
         
-        SimpleNode node = _function;
+        SimpleNode node = this.function;
         while (node != null && !(node instanceof ASTCompilationUnit)) {
             node = SimpleNodeUtil.getParent(node);
         }
         
         ASTCompilationUnit     cu      = (ASTCompilationUnit)node;
         ASTImportDeclaration[] imports = CompilationUnitUtil.getImports(cu);
-        _importMap = makeImportMap(imports);
+        this.importMap = makeImportMap(imports);
 
-        JavadocTaggedNode[] taggedComments = _javadoc.getTaggedComments();
+        JavadocTaggedNode[] taggedComments = this.javadoc.getTaggedComments();
         for (int ti = 0; ti < taggedComments.length; ++ti) {
             JavadocTaggedNode jtn = taggedComments[ti];            
             JavadocTag        tag = jtn.getTag();
@@ -155,12 +155,12 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
                 JavadocElement tgt = jtn.getTarget();
 
                 if (tgt == null) {
-                    if (Options.warningLevel >= CHKLVL_TAG_CONTENT + _nodeLevel) {
+                    if (Options.warningLevel >= CHKLVL_TAG_CONTENT + this.nodeLevel) {
                         addViolation(MSG_EXCEPTION_WITHOUT_CLASS_NAME, tag.start, tag.end);
                     }
                 }
                 else {
-                    if (jtn.getDescriptionNonTarget() == null && Options.warningLevel >= CHKLVL_TAG_CONTENT + _nodeLevel) {
+                    if (jtn.getDescriptionNonTarget() == null && Options.warningLevel >= CHKLVL_TAG_CONTENT + this.nodeLevel) {
                         addViolation(MSG_EXCEPTION_WITHOUT_DESCRIPTION, tgt.start, tgt.end);
                     }
                     
@@ -175,7 +175,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
                         fullName = getExactMatch(fullName);
                         
                         if (fullName == null) {
-                            Iterator<String> iit = _importMap.keySet().iterator();
+                            Iterator<String> iit = this.importMap.keySet().iterator();
                             while (cls == null && iit.hasNext()) {
                                 String impName = iit.next();
                                 String shImpName = getShortName(impName);
@@ -200,7 +200,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
                     checkAgainstCode(tag, tgt, shortName, fullName, cls);
 
                     if (!alphabeticalReported && 
-                        Options.warningLevel >= CHKLVL_EXCEPTIONS_ALPHABETICAL + _nodeLevel && 
+                        Options.warningLevel >= CHKLVL_EXCEPTIONS_ALPHABETICAL + this.nodeLevel && 
                         previousException != null && previousException.compareTo(shortName) > 0) {
                         
                         addViolation(MSG_EXCEPTIONS_NOT_ALPHABETICAL, tgt.start, tgt.end);
@@ -212,7 +212,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
             }
         }
 
-        if (_throwsList != null && Options.warningLevel >= CHKLVL_EXCEPTION_DOC_EXISTS + _nodeLevel) {
+        if (this.throwsList != null && Options.warningLevel >= CHKLVL_EXCEPTION_DOC_EXISTS + this.nodeLevel) {
             reportUndocumentedExceptions();
         }            
     }
@@ -252,7 +252,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
     }
 
     protected String getExactMatch(String name) {
-        Iterator<String> iit = _importMap.keySet().iterator();
+        Iterator<String> iit = this.importMap.keySet().iterator();
         while (iit.hasNext()) {
             String impName = iit.next();
             String shImpName = getShortName(impName);
@@ -319,16 +319,16 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
             else {
                 // this violation is an error:
                 addViolation(MSG_EXCEPTION_MISSPELLED, tgt.start, tgt.end);
-                _documentedExceptions.add(name.getLastToken().image);
+                this.documentedExceptions.add(name.getLastToken().image);
             }
         }
         else {
-            _documentedExceptions.add(shortExcName);
+            this.documentedExceptions.add(shortExcName);
         }
     }
     
     protected void reportUndocumentedExceptions() {
-        ASTName[] names = ThrowsUtil.getNames(_throwsList);
+        ASTName[] names = ThrowsUtil.getNames(this.throwsList);
         
         for (int ni = 0; ni < names.length; ++ni) {
             ASTName name = names[ni];
@@ -337,7 +337,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
             Token   nameToken = name.getLastToken();
             
             tr.Ace.log("considering name: " + name + " (" + nameToken + ")");
-            if (!_documentedExceptions.contains(nameToken.image)) {
+            if (!this.documentedExceptions.contains(nameToken.image)) {
                 addViolation(MSG_EXCEPTION_NOT_DOCUMENTED, 
                              nameToken.beginLine, nameToken.beginColumn, 
                              nameToken.beginLine, nameToken.beginColumn + nameToken.image.length() - 1);
@@ -349,11 +349,11 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
      * Returns the first name in the list that matches the given string.
      */
     protected ASTName getMatchingException(String str) {
-        if (_throwsList == null) {
+        if (this.throwsList == null) {
             return null;
         }
         else {
-            ASTName[] names = ThrowsUtil.getNames(_throwsList);
+            ASTName[] names = ThrowsUtil.getNames(this.throwsList);
             
             for (int ni = 0; ni < names.length; ++ni) {
                 ASTName name = names[ni];
@@ -373,14 +373,14 @@ public class ExceptionDocAnalyzer extends DocAnalyzer
      * Returns the name in the list that most closely matches the given string.
      */
     protected ASTName getClosestMatchingException(String str) {
-        if (_throwsList == null) {
+        if (this.throwsList == null) {
             return null;
         }
         else {
             SpellChecker spellChecker = new SpellChecker();
             int          bestDistance = -1;
             ASTName      bestName = null;
-            ASTName[]    names = ThrowsUtil.getNames(_throwsList);
+            ASTName[]    names = ThrowsUtil.getNames(this.throwsList);
             
             for (int ni = 0; ni < names.length; ++ni) {
                 ASTName name = names[ni];

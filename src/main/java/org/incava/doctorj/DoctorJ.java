@@ -12,29 +12,29 @@ import org.incava.util.TimedEventSet;
 
 public class DoctorJ {
 
-    private TimedEventSet _totalInit = new TimedEventSet();
+    private TimedEventSet totalInit = new TimedEventSet();
 
-    private TimedEventSet _totalParse = new TimedEventSet();
+    private TimedEventSet totalParse = new TimedEventSet();
 
-    private TimedEventSet _totalAnalysis = new TimedEventSet();
+    private TimedEventSet totalAnalysis = new TimedEventSet();
 
-    private JavaParser _parser = null;
+    private JavaParser parser = null;
 
-    private final Report _report;
+    private final Report report;
 
-    private final JavaParserVisitor _analyzer;
+    private final JavaParserVisitor analyzer;
 
-    private int _exitValue;
+    private int exitValue;
 
-    private int _nFiles;
+    private int nFiles;
 
     public DoctorJ(String[] args) {
         tr.Ace.set(true, 25, 4, 20, 25);
         tr.Ace.setOutput(tr.Ace.VERBOSE, tr.Ace.LEVEL4);
         tr.Ace.setOutput(tr.Ace.QUIET,   tr.Ace.LEVEL2);
 
-        _exitValue = 0;
-        _nFiles = 0;
+        this.exitValue = 0;
+        this.nFiles = 0;
 
         Options  opts = Options.get();
         String[] names = opts.process(args);
@@ -44,31 +44,31 @@ public class DoctorJ {
         tr.Ace.log("properties", System.getProperties());
 
         if (opts.emacsOutput) {
-            _report = new TerseReport(System.out);
+            this.report = new TerseReport(System.out);
         }
         else {
-            _report = new ContextReport(System.out);
+            this.report = new ContextReport(System.out);
         }
         
-        _analyzer = new JavadocAnalyzer(_report);
+        this.analyzer = new JavadocAnalyzer(this.report);
 
         for (int ni = 0; ni < names.length; ++ni) {
             String name = names[ni];
             process(name);
         }
         
-        if (_nFiles > 1) {
-            long total = _totalInit.duration + _totalParse.duration + _totalAnalysis.duration;
+        if (this.nFiles > 1) {
+            long total = this.totalInit.duration + this.totalParse.duration + this.totalAnalysis.duration;
             tr.Ace.log("total time: " + total);
-            tr.Ace.log("init      : " + _totalInit.duration);
-            tr.Ace.log("parse     : " + _totalParse.duration);
-            tr.Ace.log("analysis  : " + _totalAnalysis.duration);
-            tr.Ace.log("#files    : " + _nFiles);
+            tr.Ace.log("init      : " + this.totalInit.duration);
+            tr.Ace.log("parse     : " + this.totalParse.duration);
+            tr.Ace.log("analysis  : " + this.totalAnalysis.duration);
+            tr.Ace.log("#files    : " + this.nFiles);
         }
     }
 
     public int getExitValue() {
-        return _exitValue;
+        return this.exitValue;
     }
 
     protected void process(String name) {
@@ -103,7 +103,7 @@ public class DoctorJ {
     }
     
     protected void processFile(String fileName) {
-        ++_nFiles;
+        ++this.nFiles;
 
         if (initParser(fileName)) {
             ASTCompilationUnit cu = parse(fileName);
@@ -116,27 +116,27 @@ public class DoctorJ {
     protected boolean initParser(String fileName) {
         tr.Ace.log("fileName", fileName);
 
-        TimedEvent init = new TimedEvent(_totalInit);
+        TimedEvent init = new TimedEvent(this.totalInit);
         try {
-            _report.reset(new File(fileName));
+            this.report.reset(new File(fileName));
                 
             // = fromIsStdin ? new FileReader(FileDescriptor.in) :
             FileReader     rdr = new FileReader(fileName);
             JavaCharStream jcs = new JavaCharStream(rdr);
             
-            _parser = new JavaParser(jcs);
+            this.parser = new JavaParser(jcs);
 
             String src = Options.get().source;
             if (src.equals("1.3")) {
                 tr.Ace.log("setting as 1.3");
-                _parser.setJDK13();
+                this.parser.setJDK13();
             }
             else if (src.equals("1.4")) {
                 tr.Ace.log("leaving as 1.4");
             }
-            else if (src.equals("1.5")) {
+            else if (src.equals("1.5") || src.equals("1.6")) {
                 tr.Ace.log("setting as 1.5");
-                _parser.setJDK15();
+                this.parser.setJDK15();
             }
             else {
                 System.err.println("ERROR: source version '" + src + "' not recognized");
@@ -150,19 +150,19 @@ public class DoctorJ {
         }
         catch (FileNotFoundException e) {
             System.out.println("File " + fileName + " not found.");
-            _exitValue = 1;
+            this.exitValue = 1;
 
             return false;
         }
         catch (IOException e) {
             System.out.println("Error opening " + fileName + ": " + e);
-            _exitValue = 1;
+            this.exitValue = 1;
 
             return false;
         }
         catch (TokenMgrError tme) {
             System.out.println("Error parsing (tokenizing) " + fileName + ": " + tme.getMessage());
-            _exitValue = 1;
+            this.exitValue = 1;
 
             return false;
         }
@@ -172,8 +172,8 @@ public class DoctorJ {
         tr.Ace.log("running parser");
             
         try {
-            TimedEvent         parse = new TimedEvent(_totalParse);
-            ASTCompilationUnit cu = _parser.CompilationUnit();
+            TimedEvent         parse = new TimedEvent(this.totalParse);
+            ASTCompilationUnit cu = this.parser.CompilationUnit();
             parse.end();
 
             tr.Ace.log("parse: " + parse.duration);
@@ -182,17 +182,17 @@ public class DoctorJ {
         }
         catch (ParseException e) {
             System.out.println("Parse error in " + fileName + ": " + e.getMessage());
-            _exitValue = 1;
+            this.exitValue = 1;
 
             return null;
         }
     }
 
     protected void analyze(ASTCompilationUnit cu) {
-        TimedEvent analysis = new TimedEvent(_totalAnalysis);
-        cu.jjtAccept(_analyzer, null);
+        TimedEvent analysis = new TimedEvent(this.totalAnalysis);
+        cu.jjtAccept(this.analyzer, null);
 
-        _report.flush();
+        this.report.flush();
         analysis.end();
 
         tr.Ace.log("analysis: " + analysis.duration);

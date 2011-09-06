@@ -12,20 +12,20 @@ import org.incava.javadoc.*;
 /**
  * Analyzes Javadoc and code for methods.
  */
-public class MethodDocAnalyzer extends FunctionDocAnalyzer
-{
+public class MethodDocAnalyzer extends FunctionDocAnalyzer {
+
     public final static String MSG_RETURN_WITHOUT_DESCRIPTION = "@return without description.";
 
     public final static String MSG_RETURN_FOR_VOID_METHOD = "@return for method returning void";
 
     public final static String MSG_RETURN_TYPE_USED = "@return refers to method return type";
     
-    private ASTMethodDeclaration _method;
+    private final ASTMethodDeclaration method;
     
     public MethodDocAnalyzer(Report r, ASTMethodDeclaration method) {
         super(r, method);
         
-        _method = method;
+        this.method = method;
     }
 
     public String getItemType() {
@@ -36,7 +36,7 @@ public class MethodDocAnalyzer extends FunctionDocAnalyzer
      * Returns the parent node, which is the enclosing declaration.
      */
     protected SimpleNode getEnclosingNode() {
-        return SimpleNodeUtil.getParent(_method);
+        return SimpleNodeUtil.getParent(this.method);
     }
 
     protected void checkJavadoc(JavadocNode javadoc) {
@@ -52,7 +52,7 @@ public class MethodDocAnalyzer extends FunctionDocAnalyzer
                 tr.Ace.log("checking tag: " + tag);
                 
                 if (tag.text.equals(JavadocTags.RETURN)) {
-                    ASTResultType resType = (ASTResultType)SimpleNodeUtil.findChild(_method, ASTResultType.class);
+                    ASTResultType resType = (ASTResultType)SimpleNodeUtil.findChild(this.method, ASTResultType.class);
                     Token         resTkn = resType.getFirstToken();
                     
                     if (resTkn.kind == JavaParserConstants.VOID) {
@@ -82,7 +82,7 @@ public class MethodDocAnalyzer extends FunctionDocAnalyzer
      * Returns the parameter list for the method.
      */
     protected ASTFormalParameters getParameterList() {
-        return MethodUtil.getParameters(_method);
+        return MethodUtil.getParameters(this.method);
     }
 
     /**
@@ -97,7 +97,7 @@ public class MethodDocAnalyzer extends FunctionDocAnalyzer
      * name.
      */
     protected void addUndocumentedViolation(String desc) {
-        Token nameTk = MethodUtil.getName(_method);
+        Token nameTk = MethodUtil.getName(this.method);
         addViolation(desc, nameTk);
     }
 

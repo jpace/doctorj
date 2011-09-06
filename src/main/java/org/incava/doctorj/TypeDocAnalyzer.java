@@ -35,7 +35,7 @@ public abstract class TypeDocAnalyzer extends ItemDocAnalyzer {
     /**
      * The node to which this type applies.
      */
-    private ASTClassOrInterfaceDeclaration _decl;
+    private final ASTClassOrInterfaceDeclaration decl;
     
     /**
      * Creates an analyzer, but does not yet run.
@@ -43,7 +43,7 @@ public abstract class TypeDocAnalyzer extends ItemDocAnalyzer {
     public TypeDocAnalyzer(Report r, ASTClassOrInterfaceDeclaration decl) {
         super(r, decl);
         
-        _decl = decl;
+        this.decl = decl;
     }
 
     /**
@@ -75,12 +75,12 @@ public abstract class TypeDocAnalyzer extends ItemDocAnalyzer {
      * Adds a violation, for something that is not documented.
      */
     protected void addUndocumentedViolation(String desc) {
-        Token nameTk = ClassUtil.getName(_decl);
+        Token nameTk = ClassUtil.getName(this.decl);
         addViolation(desc, nameTk);
     }
 
     protected SimpleNode getEnclosingNode() {
-        return SimpleNodeUtil.getParent(_decl);
+        return SimpleNodeUtil.getParent(this.decl);
     }
 
 }
