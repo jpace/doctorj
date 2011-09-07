@@ -1,9 +1,10 @@
 package org.incava.javadoc;
 
 import java.awt.Point;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import org.incava.ijdk.lang.Pair;
+import org.incava.text.LineMapping;
+import org.incava.text.Location;
 
 
 /**
@@ -11,16 +12,69 @@ import org.incava.ijdk.lang.Pair;
  * description and tagged comments in a Javadoc comment block.
  */
 public class JavadocParser {
+
+    /**
+     * Parses itself from the given text.
+     */
+    public static JavadocNode parseJavadocNode(String text, int startLine, int startColumn) {
+        List<Point> subs = parse(text, startLine, startColumn);
+
+        if (subs == null) {
+            return null;
+        }
+        else {
+            // store line positions, for converting string positions (which are
+            // 0-based) to line:column (which are 1-based)
+
+            LineMapping lines = new LineMapping(text, startLine, startColumn);
+
+            Location end = lines.getLocation(text.length() - 1);
+            JavadocDescriptionNode description = null;
+            JavadocTaggedNode[] taggedNodes = new JavadocTaggedNode[0];
+
+            if (subs.size() > 0) {
+                Iterator<Point> it = subs.iterator();
+
+                Point descPos = it.next();
+                if (descPos != null) {
+                    Location[] descLocations = lines.getLocations(descPos);
+
+                    // we could trim whitespace, so that the following descriptions are equivalent:
+
+                    // /** \n
+                    //   * This is a test. \n
+                    //   */
+
+                    // /** \n
+                    //   * This is a test. \n
+                    //   * @tag something
+                    //   */
+
+                    description = new JavadocDescriptionNode(text.substring(descPos.x, descPos.y), descLocations[0], descLocations[1]);
+                }
+
+                taggedNodes = new JavadocTaggedNode[subs.size() - 1];
+                for (int i = 0; it.hasNext(); ++i) {
+                    Point      pos       = it.next();
+                    Location[] locations = lines.getLocations(pos);
+                    
+                    taggedNodes[i] = new JavadocTaggedNode(text.substring(pos.x, pos.y), locations[0], locations[1]);
+                }
+            }
+
+            return new JavadocNode(description, taggedNodes, startLine, startColumn, end.line, end.column);
+        }
+    }
     
     /**
      * Parses the Javadoc in the text. Assumes a start line of 1 and a start
      * column of 1.
      */
-    public List<Point> parse(String text) {
+    public static List<Point> parse(String text) {
         return parse(text, 1, 1);
     }
 
-    public List<Point> parse(String text, int startLine, int startColumn) {
+    public static List<Point> parse(String text, int startLine, int startColumn) {
         int len = text.length();
         List<Point> ary = new ArrayList<Point>();
         int pos = 0;
@@ -104,7 +158,7 @@ public class JavadocParser {
     /**
      * Reads to the next Javadoc field, or to the end of the comment.
      */
-    protected int read(Point pt, String text, int pos, int len) {
+    private static int read(Point pt, String text, int pos, int len) {
         tr.Ace.cyan("pt", pt);
         tr.Ace.cyan("text", text);
         tr.Ace.cyan("pos", pos);

@@ -62,7 +62,7 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer {
         Token       st = first.specialToken;
         
         while (javadoc == null && st != null) {
-            javadoc = JavadocNode.parse(st.image, st.beginLine, st.beginColumn);
+            javadoc = JavadocParser.parseJavadocNode(st.image, st.beginLine, st.beginColumn);
             st = st.specialToken;
         }
         

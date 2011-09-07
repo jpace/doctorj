@@ -16,7 +16,7 @@ public class TestJavadocNode extends TestCase
     public void testNone()
     {
         String      text = "";
-        JavadocNode jd   = JavadocNode.parse(text, 1, 1);
+        JavadocNode jd   = JavadocParser.parseJavadocNode(text, 1, 1);
         
         assertNull("no javadoc node for empty string", jd);
     }
@@ -25,17 +25,17 @@ public class TestJavadocNode extends TestCase
     {
         JavadocNode jd;        
 
-        jd = JavadocNode.parse("/**/", 1, 1);
+        jd = JavadocParser.parseJavadocNode("/**/", 1, 1);
         assertNotNull("javadoc node for empty javadoc comment", jd);
         assertNull("javadoc description", jd.getDescription());
         assertEquals("javadoc tagged comments", 0, jd.getTaggedComments().length);
 
-        jd = JavadocNode.parse("/** */", 1, 1);
+        jd = JavadocParser.parseJavadocNode("/** */", 1, 1);
         assertNotNull("javadoc node for javadoc comment with one space", jd);
         assertNull("javadoc description", jd.getDescription());
         assertEquals("javadoc tagged comments", 0, jd.getTaggedComments().length);
 
-        jd = JavadocNode.parse("/**     */", 1, 1);
+        jd = JavadocParser.parseJavadocNode("/**     */", 1, 1);
         assertNotNull("javadoc node for javadoc comment with multiple spaces", jd);
         assertNull("javadoc description", jd.getDescription());
         assertEquals("javadoc tagged comments", 0, jd.getTaggedComments().length);
@@ -46,7 +46,7 @@ public class TestJavadocNode extends TestCase
         String text  = "/** This is a test. */";
         
         // starts at line 5, column 1:
-        JavadocNode jd = JavadocNode.parse(text, 5, 1);
+        JavadocNode jd = JavadocParser.parseJavadocNode(text, 5, 1);
 
         assertNotNull("javadoc node", jd);
         
@@ -66,7 +66,7 @@ public class TestJavadocNode extends TestCase
                         " */");
 
         // starts at line 5, column 1:
-        JavadocNode jd = JavadocNode.parse(text, 5, 1);
+        JavadocNode jd = JavadocParser.parseJavadocNode(text, 5, 1);
 
         assertNotNull("javadoc node", jd);
         
@@ -87,7 +87,7 @@ public class TestJavadocNode extends TestCase
                         " */");
 
         // starts at line 5, column 1:
-        JavadocNode jd = JavadocNode.parse(text, 5, 1);
+        JavadocNode jd = JavadocParser.parseJavadocNode(text, 5, 1);
 
         assertNotNull("javadoc node", jd);
         
@@ -121,7 +121,7 @@ public class TestJavadocNode extends TestCase
                         " */");
 
         // starts at line 5, column 1:
-        JavadocNode jd = JavadocNode.parse(text, 5, 1);
+        JavadocNode jd = JavadocParser.parseJavadocNode(text, 5, 1);
 
         assertNotNull("javadoc node", jd);
 
