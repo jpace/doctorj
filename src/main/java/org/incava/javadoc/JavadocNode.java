@@ -12,17 +12,17 @@ import org.incava.text.Location;
  */
 public class JavadocNode {
 
-    private JavadocDescriptionNode description;
+    private final JavadocDescriptionNode description;
 
-    private JavadocTaggedNode[] tagged;
+    private final JavadocTaggedNode[] tagged;
 
-    private int startLine;
+    private final int startLine;
 
-    private int startColumn;
+    private final int startColumn;
 
-    private int endLine;
+    private final int endLine;
 
-    private int endColumn;
+    private final int endColumn;
 
     public JavadocNode(JavadocDescriptionNode description, 
                        JavadocTaggedNode[] tagged, 
