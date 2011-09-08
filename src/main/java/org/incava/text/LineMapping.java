@@ -53,7 +53,6 @@ public class LineMapping extends ArrayList<TextLocation> {
      * Converts the string position to a line:column start and end location.
      */
     public TextRange getLocations(int startPos, int endPos) {
-        // tr.Ace.log("parsing description");
         TextLocation start = null;
         TextLocation end = null;
         
