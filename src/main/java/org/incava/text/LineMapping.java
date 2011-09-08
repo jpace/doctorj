@@ -9,7 +9,7 @@ import java.util.*;
  * Converts from 0-indexed string positions to line:column values. Lines and
  * columns are 1-indexed, matching the Java parser.
  */
-public class LineMapping extends ArrayList<LineMapping.PositionToLocation> {
+public class LineMapping extends ArrayList<TextLocation> {
 
     private static final long serialVersionUID = 1;
 
@@ -33,7 +33,7 @@ public class LineMapping extends ArrayList<LineMapping.PositionToLocation> {
     }
 
     public LineMapping(String text, int startLine, int startColumn) {
-        add(new PositionToLocation(0, startLine, startColumn));
+        add(new TextLocation(0, startLine, startColumn));
 
         int len = text.length();
 
@@ -57,7 +57,7 @@ public class LineMapping extends ArrayList<LineMapping.PositionToLocation> {
 
             ++line;
 
-            add(new PositionToLocation(pos + 1, line, 1));
+            add(new TextLocation(pos + 1, line, 1));
         }
     }
 
@@ -77,32 +77,31 @@ public class LineMapping extends ArrayList<LineMapping.PositionToLocation> {
         TextLocation end = null;
         
         // go backward
-        ListIterator<PositionToLocation> lit = listIterator(size());
+        ListIterator<TextLocation> lit = listIterator(size());
         while ((start == null || end == null) && lit.hasPrevious()) {
-            PositionToLocation pl = lit.previous();
-            if (end == null && endPos >= pl.position) {
-                end = new TextLocation(TextLocation.UNDEFINED, pl.line, pl.column + endPos - pl.position);
+            TextLocation pl = lit.previous();
+            if (end == null && endPos >= pl.getPosition()) {
+                end = new TextLocation(TextLocation.UNDEFINED, pl.getLine(), pl.getColumn() + endPos - pl.getPosition());
             }
-            if (start == null && startPos >= pl.position) {
-                start = new TextLocation(TextLocation.UNDEFINED, pl.line, pl.column + startPos - pl.position);
+            if (start == null && startPos >= pl.getPosition()) {
+                start = new TextLocation(TextLocation.UNDEFINED, pl.getLine(), pl.getColumn() + startPos - pl.getPosition());
             }
         }
 
-        // attn Sun: tuples, please!
         return new TextRange(start, end);
     }
     
     /**
-     * Converts the string position to a line:column location.
+     * Converts the string getPosition() to a line:column location.
      */
     public TextLocation getLocation(int pos) {
         // go backward
-        ListIterator<PositionToLocation> lit = listIterator(size());
+        ListIterator<TextLocation> lit = listIterator(size());
         while (lit.hasPrevious()) {
-            PositionToLocation pl = lit.previous();
-            if (pos >= pl.position) {
+            TextLocation pl = lit.previous();
+            if (pos >= pl.getPosition()) {
                 // tr.Ace.log("creating location");
-                return new TextLocation(TextLocation.UNDEFINED, pl.line, pl.column + pos - pl.position);
+                return new TextLocation(TextLocation.UNDEFINED, pl.getLine(), pl.getColumn() + pos - pl.getPosition());
             }
         }
 

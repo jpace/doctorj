@@ -56,10 +56,10 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer {
      * nested under the node with the preceding Javadoc.
      */
     protected JavadocNode getJavadoc() {
-        SimpleNode  sn = getEnclosingNode();
+        SimpleNode  sn      = getEnclosingNode();
         JavadocNode javadoc = null;
-        Token       first = sn.getFirstToken();
-        Token       st = first.specialToken;
+        Token       first   = sn.getFirstToken();
+        Token       st      = first.specialToken;
         
         while (javadoc == null && st != null) {
             javadoc = JavadocParser.parseJavadocNode(st.image, st.beginLine, st.beginColumn);
