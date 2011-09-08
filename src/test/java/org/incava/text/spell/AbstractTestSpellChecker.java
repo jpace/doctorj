@@ -32,7 +32,7 @@ public abstract class AbstractTestSpellChecker extends TestCase {
     public void assertEditDistance(SpellChecker sc, int expDist, String from, String to, Integer max) {
         String msg = "from: " + from + "; to: " + to + "; max: " + max;
 
-        tr.Ace.yellow("msg", msg);
+        // tr.Ace.yellow("msg", msg);
         int actDist = max == null ? sc.editDistance(from, to) : sc.editDistance(from, to, max);
         assertEquals(msg, expDist, actDist);
     }
@@ -83,8 +83,8 @@ public abstract class AbstractTestSpellChecker extends TestCase {
 
         MultiMap<Integer, String> nearMatches = new MultiMap<Integer, String>();
         boolean isOK = sc.isCorrect("badd", nearMatches);
-        tr.Ace.log("isOK: " + isOK);
-        tr.Ace.log("nearMatches", nearMatches);
+        // tr.Ace.log("isOK: " + isOK);
+        // tr.Ace.log("nearMatches", nearMatches);
     }
     
 }

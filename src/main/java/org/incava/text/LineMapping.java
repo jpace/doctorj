@@ -32,10 +32,6 @@ public class LineMapping extends ArrayList<LineMapping.PositionToLocation> {
         }
     }
 
-    public LineMapping(String text, Location location) {
-        add(new PositionToLocation(0, location.getLine(), location.getColumn()));
-    }
-
     public LineMapping(String text, int startLine, int startColumn) {
         add(new PositionToLocation(0, startLine, startColumn));
 
@@ -85,10 +81,10 @@ public class LineMapping extends ArrayList<LineMapping.PositionToLocation> {
         while ((start == null || end == null) && lit.hasPrevious()) {
             PositionToLocation pl = lit.previous();
             if (end == null && endPos >= pl.position) {
-                end = new Location(pl.line, pl.column + endPos - pl.position);
+                end = new TextLocation(TextLocation.UNDEFINED, pl.line, pl.column + endPos - pl.position);
             }
             if (start == null && startPos >= pl.position) {
-                start = new Location(pl.line, pl.column + startPos - pl.position);
+                start = new TextLocation(TextLocation.UNDEFINED, pl.line, pl.column + startPos - pl.position);
             }
         }
 
@@ -106,7 +102,7 @@ public class LineMapping extends ArrayList<LineMapping.PositionToLocation> {
             PositionToLocation pl = lit.previous();
             if (pos >= pl.position) {
                 // tr.Ace.log("creating location");
-                return new Location(pl.line, pl.column + pos - pl.position);
+                return new TextLocation(TextLocation.UNDEFINED, pl.line, pl.column + pos - pl.position);
             }
         }
 

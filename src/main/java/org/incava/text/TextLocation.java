@@ -2,12 +2,14 @@ package org.incava.text;
 
 
 /**
- * Location of text in a file, denoted by both relative position (0-indexed
- * point in a string) and a line and column number (both of which are
+ * Location of text in a string (or file), denoted by both relative position
+ * (0-indexed point in a stream) and a line and column number (both of which are
  * 1-indexed).
  */
-public class TextLocation {
+public class TextLocation extends Location {
 
+    public final static int UNDEFINED = -317;
+    
     private final int position;
 
     private final int line;
@@ -15,6 +17,8 @@ public class TextLocation {
     private final int column;
 
     public TextLocation(int position, int line, int column) {
+        super(line, column);
+        
         this.position = position;
         this.line = line;
         this.column = column;

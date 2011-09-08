@@ -51,8 +51,6 @@ public class ParsingSpellChecker {
 
     public void check(String description) {
         if (this.canCheck) {
-            tr.Ace.log("checking '" + description + "'");
-
             this.desc = description;
             this.len = this.desc.length();
             this.pos = 0;
@@ -79,9 +77,7 @@ public class ParsingSpellChecker {
      * style="lackthereof" />".
      */
     protected void skipBracketedSection(String section) {
-        tr.Ace.log("section: " + section);
         if (consume("<" + section + ">")) {
-            tr.Ace.log("got section: " + section);
             consumeTo("</" + section + ">");
         }
     }
@@ -106,12 +102,8 @@ public class ParsingSpellChecker {
     }
 
     protected void checkWord(String word, int position) {
-        tr.Ace.log("checking word '" + word + "' at position " + position);
-
         MultiMap<Integer, String> nearMatches = new MultiMap<Integer, String>();
         boolean valid = this.checker.isCorrect(word, nearMatches);
-        tr.Ace.cyan("valid(" + word + ")?", String.valueOf(valid));
-        tr.Ace.cyan("nearMatches", nearMatches);
         if (!valid) {
             wordMisspelled(word, position, nearMatches);
         }
@@ -216,8 +208,6 @@ public class ParsingSpellChecker {
             }
         }
 
-        // tr.Ace.log("word: '" + word + "'");
-    
         // has to be more than one character:
         if (canCheck && this.pos - startingPosition > 1) {
             checkWord(word.toString(), startingPosition);

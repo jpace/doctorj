@@ -6,9 +6,9 @@ package org.incava.text;
  */
 public class Location {
 
-    public int line;
+    public final int line;
     
-    public int column;
+    public final int column;
 
     public Location(int line, int column) {
         this.line = line;

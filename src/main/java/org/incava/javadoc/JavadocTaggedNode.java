@@ -2,8 +2,7 @@ package org.incava.javadoc;
 
 import java.io.*;
 import java.util.*;
-import org.incava.text.LineMapping;
-import org.incava.text.Location;
+import org.incava.text.*;
 
 
 /**
@@ -76,7 +75,9 @@ public class JavadocTaggedNode extends JavadocElement {
             // tr.Ace.log("start col: " + start.column);
             // tr.Ace.log("end col  : " + (pos - 1 + start.column));
 
-            tag = new JavadocTag(text.substring(0, pos), new Location(line, start.column), new Location(line, pos - 1 + start.column));
+            tag = new JavadocTag(text.substring(0, pos),
+                                 new TextLocation(TextLocation.UNDEFINED, line, start.column), 
+                                 new TextLocation(TextLocation.UNDEFINED, line, pos - 1 + start.column));
 
             // tr.Ace.log("created tag '" + tag.text + "'");
 

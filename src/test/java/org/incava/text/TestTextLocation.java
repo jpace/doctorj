@@ -36,7 +36,6 @@ public class TestTextLocation extends TestCase {
         assertFalse(new TextLocation(4, 1, 3).equals(new TextLocation(5, 1, 3)));
 
         assertFalse(new TextLocation(4, 1, 3).equals(new Integer(4)));
-
     }
 
 }
