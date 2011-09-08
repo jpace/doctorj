@@ -27,9 +27,9 @@ public class JavadocParser {
 
             LineMapping lines = new LineMapping(text, startLine, startColumn);
 
-            Location end = lines.getLocation(text.length() - 1);
+            Location endLocation = lines.getLocation(text.length() - 1);
             JavadocDescriptionNode description = null;
-            JavadocTaggedNode[] taggedNodes = new JavadocTaggedNode[0];
+            List<JavadocTaggedNode> taggedNodes = new ArrayList<JavadocTaggedNode>();
 
             if (subs.size() > 0) {
                 Iterator<Point> it = subs.iterator();
@@ -52,16 +52,18 @@ public class JavadocParser {
                     description = new JavadocDescriptionNode(text.substring(descPos.x, descPos.y), descRange.getStart(), descRange.getEnd());
                 }
 
-                taggedNodes = new JavadocTaggedNode[subs.size() - 1];
                 for (int i = 0; it.hasNext(); ++i) {
                     Point      pos       = it.next();
                     TextRange  locations = lines.getLocations(pos);
                     
-                    taggedNodes[i] = new JavadocTaggedNode(text.substring(pos.x, pos.y), locations.getStart(), locations.getEnd());
+                    taggedNodes.add(new JavadocTaggedNode(text.substring(pos.x, pos.y), locations.getStart(), locations.getEnd()));
                 }
             }
 
-            return new JavadocNode(description, taggedNodes, startLine, startColumn, end.line, end.column);
+            TextLocation start = new TextLocation(TextLocation.UNDEFINED, startLine, startColumn);
+            TextLocation end   = new TextLocation(TextLocation.UNDEFINED, endLocation.line, endLocation.column);
+
+            return new JavadocNode(description, taggedNodes.toArray(new JavadocTaggedNode[taggedNodes.size()]), start, end);
         }
     }
     

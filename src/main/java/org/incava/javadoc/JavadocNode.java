@@ -2,6 +2,7 @@ package org.incava.javadoc;
 
 import java.io.*;
 import java.util.*;
+import org.incava.text.TextLocation;
 
 
 /**
@@ -13,26 +14,18 @@ public class JavadocNode {
 
     private final JavadocTaggedNode[] tagged;
 
-    private final int startLine;
+    private final TextLocation start;
 
-    private final int startColumn;
-
-    private final int endLine;
-
-    private final int endColumn;
+    private final TextLocation end;
 
     public JavadocNode(JavadocDescriptionNode description, 
                        JavadocTaggedNode[] tagged, 
-                       int startLine,
-                       int startColumn,
-                       int endLine,
-                       int endColumn) {
+                       TextLocation start,
+                       TextLocation end) {
         this.description = description;
         this.tagged = tagged;
-        this.startLine = startLine;
-        this.startColumn = startColumn;
-        this.endLine = endLine;
-        this.endColumn = endColumn;
+        this.start = start;
+        this.end = end;
     }
 
     public JavadocDescriptionNode getDescription() {
@@ -43,20 +36,28 @@ public class JavadocNode {
         return tagged;
     }
 
+    public TextLocation getStart() {
+        return start;
+    }
+
+    public TextLocation getEnd() {
+        return end;
+    }
+
     public int getStartLine() {
-        return startLine;
+        return start.getLine();
     }
 
     public int getStartColumn() {
-        return startColumn;
+        return start.getColumn();
     }
 
     public int getEndLine() {
-        return endLine;
+        return end.getLine();
     }
 
     public int getEndColumn() {
-        return endColumn;
+        return end.getColumn();
     }
 
 }
