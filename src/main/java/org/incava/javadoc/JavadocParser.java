@@ -73,32 +73,45 @@ public class JavadocParser {
         return parse(text, 1, 1);
     }
 
-    public static List<Point> parse(String text, int startLine, int startColumn) {
-        int len = text.length();
-        List<Point> ary = new ArrayList<Point>();
-        int pos = 0;
-
+    private static int skipWhitespace(String text, int pos, int len) {
         while (pos < len && Character.isWhitespace(text.charAt(pos))) {
             ++pos;
         }
+        return pos;
+    }
+
+    private static boolean isCommentCharacter(String text, int pos) {
+        return Character.isWhitespace(text.charAt(pos)) || text.charAt(pos) == '*';
+    }
+    
+    private static int skipCommentCharacters(String text, int pos, int len) {
+        while (pos < len && isCommentCharacter(text, pos)) {
+            ++pos;
+        }
+        return pos;
+    }
+
+    public static List<Point> parse(String text, int startLine, int startColumn) {
+        int len = text.length();
+        List<Point> ary = new ArrayList<Point>();
         
+        int pos = skipWhitespace(text, 0, len);
+
         if (pos + 3 < len && text.startsWith("/**")) {  // unmangle Emacs: */
             // tr.Ace.log("got comment start");
-            pos += 3;
+            pos = skipCommentCharacters(text, pos + 3, len);
 
-            while (pos < len && (Character.isWhitespace(text.charAt(pos)) || text.charAt(pos) == '*')) {
-                ++pos;
-            }
+            // rewind end through comment characters
 
             --len;
             while (len >= 0) {
-                // tr.Ace.log("char[" + len + "]: '" + text.charAt(len) + "'");
-                if (Character.isWhitespace(text.charAt(len)) || text.charAt(len) == '*') {
-                    // tr.Ace.log("star or WS; (text: '" + text.charAt(len) + "')");
+                tr.Ace.log("char[" + len + "]: '" + text.charAt(len) + "'");
+                if (isCommentCharacter(text, len)) {
+                    tr.Ace.log("star or WS; (text: '" + text.charAt(len) + "')");
                     --len;
                 }
-                else if (len > 0 && text.charAt(len) == '/' && text.charAt(len - 1) == '*') {
-                    // tr.Ace.log("at end of comment");
+                else if (len > 0 && text.startsWith("*/", len - 1)) {
+                    tr.Ace.yellow("at end of comment");
                     len -= 2;
                 }
                 else {
@@ -112,36 +125,17 @@ public class JavadocParser {
             if (pos < len) {
                 // the description
                 if (text.charAt(pos) == '@') {
-                    // tr.Ace.log("got tag start -- no description");
+                    tr.Ace.log("got tag start -- no description");
                     // null means no description
                     ary.add(null);
                 }
                 else {
-                    // tr.Ace.log("at description start: " + pos);
-
-                    Point desc = new Point(pos, -1);
-
-                    pos = read(desc, text, pos, len);
-                
-                    // tr.Ace.log("at end, pos: " + pos + "; desc pos   : " + desc);
-
-                    ary.add(desc);
+                    tr.Ace.log("at description start: " + pos);
+                    pos = readDescription(ary, text, pos, len);
                 }
 
                 // now, the tagged comments:
-                while (pos < len && text.charAt(pos) == '@') {
-                    // tr.Ace.log("tag starting.");
-
-                    Point tag = new Point(pos, -1);
-
-                    ++pos;
-                    
-                    pos = read(tag, text, pos, len);
-
-                    // tr.Ace.log("tag pos   : " + tag);
-
-                    ary.add(tag);
-                }
+                pos = readTagList(ary, text, pos, len);
             }
             
             // tr.Ace.log("returning: " + ary);
@@ -152,6 +146,36 @@ public class JavadocParser {
             // tr.Ace.log("no Javadoc comment in this string.");
             return null;
         }
+    }
+
+    private static int readDescription(List<Point> ary, String text, int pos, int len) {
+        Point desc = new Point(pos, -1);
+        
+        pos = read(desc, text, pos, len);
+                    
+        tr.Ace.log("at end, pos: " + pos + "; desc pos   : " + desc);
+
+        ary.add(desc);
+
+        return pos;
+    }
+
+    private static int readTagList(List<Point> ary, String text, int pos, int len) {
+        while (pos < len && text.charAt(pos) == '@') {
+            tr.Ace.log("tag starting.");
+            
+            Point tag = new Point(pos, -1);
+            
+            ++pos;
+            
+            pos = read(tag, text, pos, len);
+            
+            tr.Ace.log("tag pos   : " + tag);
+            
+            ary.add(tag);
+        }
+
+        return pos;
     }
 
     /**
@@ -181,9 +205,7 @@ public class JavadocParser {
             }
 
             // now, we're at the start of a new line:
-            while (pos < len && (Character.isWhitespace(text.charAt(pos)) || text.charAt(pos) == '*')) {
-                ++pos;
-            }
+            pos = skipCommentCharacters(text, pos, len);
         }
 
         ++pt.y;

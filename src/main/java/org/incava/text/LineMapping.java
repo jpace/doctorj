@@ -13,25 +13,6 @@ public class LineMapping extends ArrayList<TextLocation> {
 
     private static final long serialVersionUID = 1;
 
-    public class PositionToLocation {
-
-        public final int position;
-        
-        public final int line;
-
-        public final int column;
-
-        public PositionToLocation(int position, int line, int column) {
-            this.position = position;
-            this.line = line;
-            this.column = column;
-        }
-
-        public String toString() {
-            return "{ position: " + position + " => { line: " + line + ", column: " + column + " } }";
-        }
-    }
-
     public LineMapping(String text, int startLine, int startColumn) {
         add(new TextLocation(0, startLine, startColumn));
 
