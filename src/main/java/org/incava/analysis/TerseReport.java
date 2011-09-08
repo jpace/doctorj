@@ -8,8 +8,8 @@ import net.sourceforge.pmd.ast.Token;
 /**
  * Reports errors in a single line, AKA the format expected by Emacs (!c).
  */
-public class TerseReport extends Report
-{
+public class TerseReport extends Report {
+
     /**
      * Creates a terse report for the given writer.
      *

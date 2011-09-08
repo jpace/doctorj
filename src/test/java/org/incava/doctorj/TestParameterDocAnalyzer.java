@@ -6,8 +6,8 @@ import junit.framework.TestCase;
 import org.incava.analysis.Violation;
 
 
-public class TestParameterDocAnalyzer extends Tester
-{
+public class TestParameterDocAnalyzer extends Tester {
+
     public TestParameterDocAnalyzer(String name) {
         super(name);
     }

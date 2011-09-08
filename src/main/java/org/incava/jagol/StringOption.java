@@ -7,8 +7,8 @@ import java.util.*;
 /**
  * Represents an option that is an String.
  */
-public class StringOption extends NonBooleanOption
-{
+public class StringOption extends NonBooleanOption {
+
     private String value;
     
     public StringOption(String longName, String description) {

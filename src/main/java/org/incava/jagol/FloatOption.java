@@ -7,8 +7,8 @@ import java.util.*;
 /**
  * Represents an option that is an float.
  */
-public class FloatOption extends NonBooleanOption
-{
+public class FloatOption extends NonBooleanOption {
+    
     private Float value;
     
     public FloatOption(String longName, String description) {

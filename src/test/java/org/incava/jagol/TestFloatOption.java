@@ -5,8 +5,8 @@ import java.util.*;
 import junit.framework.TestCase;
 
 
-public class TestFloatOption extends TestCase
-{
+public class TestFloatOption extends TestCase {
+    
     FloatOption opt = new FloatOption("fltopt", "this is the description of fltopt");
 
     public TestFloatOption(String name) {

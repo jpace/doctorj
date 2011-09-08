@@ -8,8 +8,8 @@ import org.incava.analysis.*;
 import org.incava.java.*;
 
 
-public class Tester extends TestCase
-{
+public class Tester extends TestCase {
+
     public Tester(String name) {
         super(name);
         

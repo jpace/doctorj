@@ -12,8 +12,8 @@ import org.incava.pmdx.SimpleNodeUtil;
 /**
  * Analyzes Javadoc and code.
  */
-public class DocAnalyzer extends Analyzer
-{
+public class DocAnalyzer extends Analyzer {
+
     protected final static int CHKLVL_DOC_EXISTS = 1;
     
     protected final static int CHKLVL_TAG_CONTENT = 1;

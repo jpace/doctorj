@@ -11,8 +11,8 @@ import org.incava.text.spell.SpellChecker;
 /**
  * Checks for violations of rules applying to exceptions.
  */
-public class ExceptionDocAnalyzer extends DocAnalyzer
-{
+public class ExceptionDocAnalyzer extends DocAnalyzer {
+    
     public final static String MSG_EXCEPTION_WITHOUT_CLASS_NAME = "Exception without class name";
 
     public final static String MSG_EXCEPTION_WITHOUT_DESCRIPTION = "Exception without description";

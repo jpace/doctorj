@@ -5,8 +5,8 @@ import java.util.*;
 import junit.framework.TestCase;
 
 
-public class TestIntegerOption extends TestCase
-{
+public class TestIntegerOption extends TestCase {
+    
     IntegerOption opt = new IntegerOption("intopt", "this is the description of intopt");
 
     public TestIntegerOption(String name) {

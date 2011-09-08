@@ -9,8 +9,8 @@ import org.incava.javadoc.*;
 /**
  * Analyzes Javadoc and code for an interface.
  */
-public class InterfaceDocAnalyzer extends TypeDocAnalyzer
-{
+public class InterfaceDocAnalyzer extends TypeDocAnalyzer {
+
     public InterfaceDocAnalyzer(Report r, ASTClassOrInterfaceDeclaration node) {
         super(r, node);
     }

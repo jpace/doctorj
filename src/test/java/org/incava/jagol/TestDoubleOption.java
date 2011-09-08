@@ -5,8 +5,8 @@ import java.util.*;
 import junit.framework.TestCase;
 
 
-public class TestDoubleOption extends TestCase
-{
+public class TestDoubleOption extends TestCase {
+    
     DoubleOption opt = new DoubleOption("dblopt", "this is the description of dblopt");
 
     public TestDoubleOption(String name) {

@@ -17,8 +17,8 @@ import org.incava.jagol.*;
  *     doctorj --private   (warning level of 3)
  *     doctorj --pedantic  (warning level at max)
  */
-public class Options extends OptionSet
-{
+public class Options extends OptionSet {
+    
     public static int MAXIMUM_WARNING_LEVEL = 100;
 
     public static int MINIMUM_WARNING_LEVEL = -1;

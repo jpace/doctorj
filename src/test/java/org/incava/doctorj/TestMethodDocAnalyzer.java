@@ -4,8 +4,8 @@ import junit.framework.TestCase;
 import org.incava.analysis.Violation;
 
 
-public class TestMethodDocAnalyzer extends Tester
-{
+public class TestMethodDocAnalyzer extends Tester {
+
     public TestMethodDocAnalyzer(String name) {
         super(name);
     }

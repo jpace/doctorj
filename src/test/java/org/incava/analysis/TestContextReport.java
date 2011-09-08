@@ -6,17 +6,15 @@ import junit.framework.TestCase;
 import org.incava.qualog.ANSIColor;
 
 
-public class TestContextReport extends TestCase
-{
+public class TestContextReport extends TestCase {
+
     private final static String EOLN = System.getProperty("line.separator");
 
-    public TestContextReport(String name)
-    {
+    public TestContextReport(String name) {
         super(name);
     }
 
-    public void testReportOrder()
-    {
+    public void testReportOrder() {
         StringWriter sw;
         Report r;
 
@@ -59,8 +57,7 @@ public class TestContextReport extends TestCase
         assertEquals("order of reported violations", str0, str1);
     }
 
-    public void testSinglePointOutput()
-    {
+    public void testSinglePointOutput() {
         String content = ("As fast as thou shalt wane, so fast thou grow'st\n" +
                           "In one of thine, from that which thou departest;\n" +
                           "And that fresh blood which youngly thou bestow'st,\r\n" +
@@ -93,8 +90,7 @@ public class TestContextReport extends TestCase
                      str);
     }
 
-    public void testSingleLineOutput()
-    {
+    public void testSingleLineOutput() {
         String content = ("How heavy do I journey on the way,\n" +
                           "When what I seek, my weary travel's end,\n" +
                           "Doth teach that ease and that repose to say,\r" +
@@ -127,8 +123,7 @@ public class TestContextReport extends TestCase
                      str);
     }
 
-    public void testMultiLineOutput()
-    {
+    public void testMultiLineOutput() {
         String content = ("Against that time, if ever that time come,\n" +
                           "When I shall see thee frown on my defects,\r\n" +
                           "When as thy love hath cast his utmost sum,\n" +
@@ -168,9 +163,7 @@ public class TestContextReport extends TestCase
                      str);
     }
 
-
-    public void testSingleLineWithTabs()
-    {
+    public void testSingleLineWithTabs() {
         String content = ("\tMine eye hath play'd the painter and hath steel'd,\n" +
                           "\tThy beauty's form in table of my heart;\n" +
                           "\tMy body is the frame wherein 'tis held,\n" +

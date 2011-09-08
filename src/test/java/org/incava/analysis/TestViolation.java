@@ -5,15 +5,13 @@ import java.util.*;
 import junit.framework.TestCase;
 
 
-public class TestViolation extends TestCase
-{
-    public TestViolation(String name)
-    {
+public class TestViolation extends TestCase {
+
+    public TestViolation(String name) {
         super(name);
     }
 
-    public void testLineSameColumnSame()
-    {
+    public void testLineSameColumnSame() {
         Violation v1, v2;
         int comp;
 
@@ -32,8 +30,7 @@ public class TestViolation extends TestCase
         assertTrue("equality", v2.equals(v1));
     }
 
-    public void testLineSameColumnDifferent()
-    {
+    public void testLineSameColumnDifferent() {
         Violation v1, v2;
         int comp;
 
@@ -58,8 +55,7 @@ public class TestViolation extends TestCase
         assertTrue("comparision value", comp < 0);        
     }
 
-    public void testLineDifferentColumnSame()
-    {
+    public void testLineDifferentColumnSame() {
         Violation v1, v2;
         int comp;
 
@@ -84,8 +80,7 @@ public class TestViolation extends TestCase
         assertTrue("comparision value", comp < 0);        
     }
 
-    public void testEndLineDifferent()
-    {
+    public void testEndLineDifferent() {
         Violation v1, v2;
         int comp;
 
@@ -110,8 +105,7 @@ public class TestViolation extends TestCase
         assertTrue("comparision value", comp < 0);        
     }
 
-    public void testEndColumnDifferent()
-    {
+    public void testEndColumnDifferent() {
         Violation v1, v2;
         int comp;
 

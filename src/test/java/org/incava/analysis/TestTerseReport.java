@@ -5,15 +5,13 @@ import java.util.*;
 import junit.framework.TestCase;
 
 
-public class TestTerseReport extends TestCase
-{
-    public TestTerseReport(String name)
-    {
+public class TestTerseReport extends TestCase {
+
+    public TestTerseReport(String name) {
         super(name);
     }
 
-    public void testReportOrder()
-    {
+    public void testReportOrder() {
         StringWriter sw;
         Report r;
         
@@ -40,8 +38,7 @@ public class TestTerseReport extends TestCase
         assertEquals("order of reported violations", str0, str1);
     }
 
-    public void testOutput()
-    {
+    public void testOutput() {
         StringWriter sw = new StringWriter();
         Report r = new TerseReport(sw);
         r.addViolation(new Violation("msg",  3, 5, 4, 6));
@@ -54,4 +51,3 @@ public class TestTerseReport extends TestCase
         assertEquals("-:3:5:4:6: msg\n-:5:3:6:4: msg2\n", str);
     }
 }
-

@@ -8,6 +8,5 @@ import org.incava.qualog.Qualog;
  *
  * Allows name of tr.Ace.XXX("...").
  */
-public class Ace extends Qualog
-{
+public class Ace extends Qualog {
 }

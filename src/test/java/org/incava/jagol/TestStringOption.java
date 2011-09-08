@@ -5,8 +5,8 @@ import java.util.*;
 import junit.framework.TestCase;
 
 
-public class TestStringOption extends TestCase
-{
+public class TestStringOption extends TestCase {
+    
     StringOption opt = new StringOption("stropt", "this is the description of stropt");
 
     public TestStringOption(String name) {

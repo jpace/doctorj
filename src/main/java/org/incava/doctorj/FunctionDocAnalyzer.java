@@ -11,8 +11,8 @@ import org.incava.pmdx.SimpleNodeUtil;
 /**
  * Analyzes Javadoc and code for methods and constructors, AKA functions.
  */
-public abstract class FunctionDocAnalyzer extends ItemDocAnalyzer
-{
+public abstract class FunctionDocAnalyzer extends ItemDocAnalyzer {
+
     public final static String MSG_SERIALDATA_WITHOUT_DESCRIPTION = "@serialData without description";
     
     public FunctionDocAnalyzer(Report r, SimpleNode node) {

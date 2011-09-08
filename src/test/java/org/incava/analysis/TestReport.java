@@ -5,18 +5,15 @@ import java.util.*;
 import junit.framework.TestCase;
 
 
-public class TestReport extends TestCase
-{
-    public TestReport(String name)
-    {
+public class TestReport extends TestCase {
+
+    public TestReport(String name) {
         super(name);
     }
 
-    public void testFlush()
-    {
+    public void testFlush() {
         Report r = new Report(System.out) {
-                protected String toString(Violation violation)
-                {
+                protected String toString(Violation violation) {
                     return "";
                 }
             };
@@ -27,4 +24,3 @@ public class TestReport extends TestCase
         assertEquals(0, r.getViolations().size());
     }
 }
-

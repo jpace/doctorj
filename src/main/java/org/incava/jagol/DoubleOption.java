@@ -7,8 +7,8 @@ import java.util.*;
 /**
  * Represents an option that is an double.
  */
-public class DoubleOption extends NonBooleanOption
-{
+public class DoubleOption extends NonBooleanOption {
+
     private Double value;
     
     public DoubleOption(String longName, String description) {
