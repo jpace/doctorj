@@ -6,23 +6,20 @@ import junit.framework.TestCase;
 import org.incava.text.Location;
 
 
-public class TestJavadocNode extends TestCase
-{
-    public TestJavadocNode(String name)
-    {
+public class TestJavadocNode extends TestCase {
+    
+    public TestJavadocNode(String name) {
         super(name);
     }
 
-    public void testNone()
-    {
+    public void testNone() {
         String      text = "";
-        JavadocNode jd   = JavadocParser.parseJavadocNode(text, 1, 1);
+        JavadocNode jd = JavadocParser.parseJavadocNode(text, 1, 1);
         
         assertNull("no javadoc node for empty string", jd);
     }
     
-    public void testEmpty()
-    {
+    public void testEmpty() {
         JavadocNode jd;        
 
         jd = JavadocParser.parseJavadocNode("/**/", 1, 1);
@@ -41,8 +38,7 @@ public class TestJavadocNode extends TestCase
         assertEquals("javadoc tagged comments", 0, jd.getTaggedComments().length);
     }
     
-    public void testDescribedSingleLine()
-    {
+    public void testDescribedSingleLine() {
         String text  = "/** This is a test. */";
         
         // starts at line 5, column 1:
@@ -59,8 +55,7 @@ public class TestJavadocNode extends TestCase
         assertEquals("javadoc tagged comments",  0,                   jd.getTaggedComments().length);
     }
     
-    public void testDescribedSeparateLine()
-    {
+    public void testDescribedSeparateLine() {
         String text  = ("/** \n" +
                         " * This is a test. \n" +
                         " */");
@@ -79,8 +74,7 @@ public class TestJavadocNode extends TestCase
         assertEquals("javadoc tagged comments", 0, jd.getTaggedComments().length);
     }
 
-    public void testDescribedOneTagLine()
-    {
+    public void testDescribedOneTagLine() {
         String text  = ("/** \n" +
                         " * This is a test. \n" +
                         " * @tag And that's a tag.\n" +
@@ -109,8 +103,7 @@ public class TestJavadocNode extends TestCase
         assertEquals("javadoc tagged comment #0 tag end location",   new Location(7, 7),       jtcs[0].getTag().end);
     }
 
-    public void testDescribedTwoTagsMultiLines()
-    {
+    public void testDescribedTwoTagsMultiLines() {
         String text  = ("/** \n" +
                         " * This is a test. \n" +
                         " * @tag0 And that's a tag,\n" +

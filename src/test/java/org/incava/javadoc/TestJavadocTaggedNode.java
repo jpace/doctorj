@@ -6,21 +6,19 @@ import junit.framework.TestCase;
 import org.incava.text.Location;
 
 
-public class TestJavadocTaggedNode extends TestCase
-{
-    public TestJavadocTaggedNode(String name)
-    {
+public class TestJavadocTaggedNode extends TestCase {
+    
+    public TestJavadocTaggedNode(String name) {
         super(name);
     }
 
-    public void testTagOnly()
-    {
+    public void testTagOnly() {
         String text = "@tag";
 
         // starts at line 11, column 4:
         Location start = new Location(11, 4);
         Location end = new Location(11, 4 + text.length() - 1);
-        JavadocTaggedNode jtn = new JavadocTaggedNode(text, start, end);
+        JavadocTaggedNode jtn = JavadocTaggedNode.create(text, start, end);
 
         assertNotNull("javadoc tagged node", jtn);
         assertEquals("javadoc tagged comment description text",      "@tag",  jtn.text);
@@ -35,14 +33,13 @@ public class TestJavadocTaggedNode extends TestCase
         assertNull("javadoc tagged comment #0 description",                                          jtn.getDescription());
     }
 
-    public void testTagNoFollowingText()
-    {
+    public void testTagNoFollowingText() {
         String text = "@tag ";
 
         // starts at line 11, column 4:
         Location start = new Location(11, 4);
         Location end = new Location(11, 4 + text.length() - 1);
-        JavadocTaggedNode jtn = new JavadocTaggedNode(text, start, end);
+        JavadocTaggedNode jtn = JavadocTaggedNode.create(text, start, end);
 
         assertNotNull("javadoc tagged node", jtn);
         assertEquals("javadoc tagged comment description text",      "@tag ",  jtn.text);
@@ -57,14 +54,13 @@ public class TestJavadocTaggedNode extends TestCase
         assertNull("javadoc tagged comment #0 description",                                          jtn.getDescription());
     }
 
-    public void testOneLetter()
-    {
+    public void testOneLetter() {
         String text = "@tag X";
 
         // starts at line 11, column 4:
         Location start = new Location(11, 4);
         Location end = new Location(11, 4 + text.length() - 1);
-        JavadocTaggedNode jtn = new JavadocTaggedNode(text, start, end);
+        JavadocTaggedNode jtn = JavadocTaggedNode.create(text, start, end);
 
         assertNotNull("javadoc tagged node", jtn);
         assertEquals("javadoc tagged comment description text",      "@tag X",  jtn.text);
@@ -82,14 +78,13 @@ public class TestJavadocTaggedNode extends TestCase
         assertEquals("javadoc tagged comment #0 description end location",   new Location(11, 9),       jtn.getDescription().end);
     }
 
-    public void testOneLine()
-    {
+    public void testOneLine() {
         String text = "@tag And that's a tag.";
 
         // starts at line 11, column 4:
         Location start = new Location(11, 4);
         Location end = new Location(11, 4 + text.length() - 1);
-        JavadocTaggedNode jtn = new JavadocTaggedNode(text, start, end);
+        JavadocTaggedNode jtn = JavadocTaggedNode.create(text, start, end);
 
         assertNotNull("javadoc tagged node", jtn);
         assertEquals("javadoc tagged comment description text",      "@tag And that's a tag.",  jtn.text);
@@ -102,14 +97,13 @@ public class TestJavadocTaggedNode extends TestCase
         assertEquals("javadoc tagged comment #0 tag end location",   new Location(11, 7),       jtn.getTag().end);
     }
 
-    public void testOneWord()
-    {
+    public void testOneWord() {
         String text = "@tag And";
 
         // starts at line 11, column 4:
         Location start = new Location(11, 4);
         Location end = new Location(11, 4 + text.length() - 1);
-        JavadocTaggedNode jtn = new JavadocTaggedNode(text, start, end);
+        JavadocTaggedNode jtn = JavadocTaggedNode.create(text, start, end);
 
         assertNotNull("javadoc tagged node", jtn);
         assertEquals("javadoc tagged comment description text",      "@tag And",  jtn.text);
@@ -127,14 +121,13 @@ public class TestJavadocTaggedNode extends TestCase
         assertEquals("javadoc tagged comment #0 description end location",   new Location(11, 11),      jtn.getDescription().end);
     }
 
-    public void testWordTarget()
-    {
+    public void testWordTarget() {
         String text = "@tag And that's a tag.";
 
         // starts at line 11, column 8:
         Location          start = new Location(11, 8);
-        Location          end   = new Location(11, 8 + text.length() - 1);
-        JavadocTaggedNode jtn   = new JavadocTaggedNode(text, start, end);
+        Location          end = new Location(11, 8 + text.length() - 1);
+        JavadocTaggedNode jtn = JavadocTaggedNode.create(text, start, end);
 
         assertNotNull("javadoc tagged node",                                                      jtn);
         assertEquals("javadoc tagged comment description text",         "@tag And that's a tag.", jtn.text);
@@ -152,14 +145,13 @@ public class TestJavadocTaggedNode extends TestCase
         assertEquals("javadoc tagged comment #0 target end location",   new Location(11, 15),     jtn.getTarget().end);
     }
 
-    public void testHTMLTarget()
-    {
+    public void testHTMLTarget() {
         String text = "@tag <a href=\"www.somewhere.tld/something/something\">this</a> See that thing for more.";
 
         // starts at line 11, column 8:
         Location          start = new Location(8, 3);
-        Location          end   = new Location(8, 3 + text.length() - 1);
-        JavadocTaggedNode jtn   = new JavadocTaggedNode(text, start, end);
+        Location          end = new Location(8, 3 + text.length() - 1);
+        JavadocTaggedNode jtn = JavadocTaggedNode.create(text, start, end);
 
         assertNotNull("javadoc tagged node",                                                      jtn);
         assertEquals("javadoc tagged comment description text",         text,                     jtn.text);
@@ -182,14 +174,13 @@ public class TestJavadocTaggedNode extends TestCase
         assertEquals("javadoc tagged comment #0 nontarget desc end location",   new Location(8, 88),      jtn.getDescriptionNonTarget().end);
     }
 
-    public void testHTMLTargetUppercase()
-    {
+    public void testHTMLTargetUppercase() {
         String text = "@tag <A HREF=\"www.somewhere.tld/something/something\">this</A> See that thing for more.";
 
         // starts at line 11, column 8:
         Location          start = new Location(8, 3);
-        Location          end   = new Location(8, 3 + text.length() - 1);
-        JavadocTaggedNode jtn   = new JavadocTaggedNode(text, start, end);
+        Location          end = new Location(8, 3 + text.length() - 1);
+        JavadocTaggedNode jtn = JavadocTaggedNode.create(text, start, end);
 
         assertNotNull("javadoc tagged node",                                                      jtn);
         assertEquals("javadoc tagged comment description text",         text,                     jtn.text);
@@ -207,14 +198,13 @@ public class TestJavadocTaggedNode extends TestCase
         assertEquals("javadoc tagged comment #0 target end location",   new Location(8, 63),      jtn.getTarget().end);
     }
 
-    public void testHTMLTargetNoEnd()
-    {
+    public void testHTMLTargetNoEnd() {
         String text = "@tag <A HREF=\"www.somewhere.tld/something/something\">this";
 
         // starts at line 11, column 8:
         Location          start = new Location(8, 3);
-        Location          end   = new Location(8, 3 + text.length() - 1);
-        JavadocTaggedNode jtn   = new JavadocTaggedNode(text, start, end);
+        Location          end = new Location(8, 3 + text.length() - 1);
+        JavadocTaggedNode jtn = JavadocTaggedNode.create(text, start, end);
 
         assertNotNull("javadoc tagged node",                                                      jtn);
         assertEquals("javadoc tagged comment description text",         text,                     jtn.text);
@@ -232,14 +222,13 @@ public class TestJavadocTaggedNode extends TestCase
         assertEquals("javadoc tagged comment #0 target end location",   new Location(8, 59),      jtn.getTarget().end);
     }
 
-    public void testQuotedTarget()
-    {
+    public void testQuotedTarget() {
         String text = "@tag Something#foo(int, double, float)";
 
         // starts at line 11, column 8:
         Location          start = new Location(8, 3);
-        Location          end   = new Location(8, 3 + text.length() - 1);
-        JavadocTaggedNode jtn   = new JavadocTaggedNode(text, start, end);
+        Location          end = new Location(8, 3 + text.length() - 1);
+        JavadocTaggedNode jtn = JavadocTaggedNode.create(text, start, end);
 
         assertNotNull("javadoc tagged node",                                                      jtn);
         assertEquals("javadoc tagged comment description text",         text,                     jtn.text);
@@ -257,14 +246,13 @@ public class TestJavadocTaggedNode extends TestCase
         assertEquals("javadoc tagged comment #0 target end location",   new Location(start.line, start.column + 5 + 32), jtn.getTarget().end);
     }
 
-    public void testQuotedTargetNoEnd()
-    {
+    public void testQuotedTargetNoEnd() {
         String text = "@tag Something#foo(int, double";
 
         // starts at line 11, column 8:
         Location          start = new Location(8, 3);
-        Location          end   = new Location(8, 3 + text.length() - 1);
-        JavadocTaggedNode jtn   = new JavadocTaggedNode(text, start, end);
+        Location          end = new Location(8, 3 + text.length() - 1);
+        JavadocTaggedNode jtn = JavadocTaggedNode.create(text, start, end);
 
         assertNotNull("javadoc tagged node",                                                      jtn);
         assertEquals("javadoc tagged comment description text",         text,                     jtn.text);

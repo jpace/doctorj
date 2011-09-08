@@ -14,7 +14,7 @@ public class TestJavadocParser extends TestCase {
     }
 
     public static List<Point> parse(String text) {
-        return JavadocParser.parse(text);
+        return JavadocParser.parse(text, 1, 1);
     }
 
     public void testBasic() {

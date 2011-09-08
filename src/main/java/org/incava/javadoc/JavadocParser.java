@@ -25,10 +25,10 @@ public class JavadocParser {
             // store line positions, for converting string positions (which are
             // 0-based) to line:column (which are 1-based)
 
-            LineMapping lines = new LineMapping(text, startLine, startColumn);
+            LineMapping lines       = new LineMapping(text, startLine, startColumn);
+            Location    endLocation = lines.getLocation(text.length() - 1);
 
-            Location endLocation = lines.getLocation(text.length() - 1);
-            JavadocDescriptionNode description = null;
+            JavadocDescriptionNode  description = null;
             List<JavadocTaggedNode> taggedNodes = new ArrayList<JavadocTaggedNode>();
 
             if (subs.size() > 0) {
@@ -53,10 +53,10 @@ public class JavadocParser {
                 }
 
                 for (int i = 0; it.hasNext(); ++i) {
-                    Point      pos       = it.next();
-                    TextRange  locations = lines.getLocations(pos);
+                    Point      point     = it.next();
+                    TextRange  locations = lines.getLocations(point);
                     
-                    taggedNodes.add(new JavadocTaggedNode(text.substring(pos.x, pos.y), locations.getStart(), locations.getEnd()));
+                    taggedNodes.add(JavadocTaggedNode.create(text.substring(point.x, point.y), locations.getStart(), locations.getEnd()));
                 }
             }
 
@@ -65,14 +65,6 @@ public class JavadocParser {
 
             return new JavadocNode(description, taggedNodes.toArray(new JavadocTaggedNode[taggedNodes.size()]), start, end);
         }
-    }
-    
-    /**
-     * Parses the Javadoc in the text. Assumes a start line of 1 and a start
-     * column of 1.
-     */
-    public static List<Point> parse(String text) {
-        return parse(text, 1, 1);
     }
 
     private static TextLocation skipWhitespace(String text, int pos, int len) {
@@ -116,12 +108,15 @@ public class JavadocParser {
     public static List<Point> parse(String text, int startLine, int startColumn) {
         int len = text.length();
         List<Point> ary = new ArrayList<Point>();
+
+        TextLocation tl = skipWhitespace(text, 0, len);
         
-        int pos = skipWhitespace(text, 0, len).getPosition();
+        int pos = tl.getPosition();
 
         if (pos + 3 < len && text.startsWith("/**")) {  // unmangle Emacs: */
             // tr.Ace.log("got comment start");
-            pos = skipCommentCharacters(text, pos + 3, len).getPosition();
+            tl = skipCommentCharacters(text, pos + 3, len);
+            pos = tl.getPosition();
 
             // rewind end through comment characters
 
@@ -138,7 +133,8 @@ public class JavadocParser {
                 }
                 else {
                     tr.Ace.log("at description start: " + pos);
-                    pos = readDescription(ary, text, pos, len).getPosition();
+                    tl = readDescription(ary, text, pos, len);
+                    pos = tl.getPosition();
                 }
 
                 // now, the tagged comments:
