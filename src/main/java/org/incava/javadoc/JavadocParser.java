@@ -73,52 +73,57 @@ public class JavadocParser {
         return parse(text, 1, 1);
     }
 
-    private static int skipWhitespace(String text, int pos, int len) {
+    private static TextLocation skipWhitespace(String text, int pos, int len) {
         while (pos < len && Character.isWhitespace(text.charAt(pos))) {
             ++pos;
         }
-        return pos;
+        return new TextLocation(pos, 0, 0);
     }
 
     private static boolean isCommentCharacter(String text, int pos) {
         return Character.isWhitespace(text.charAt(pos)) || text.charAt(pos) == '*';
     }
     
-    private static int skipCommentCharacters(String text, int pos, int len) {
+    private static TextLocation skipCommentCharacters(String text, int pos, int len) {
         while (pos < len && isCommentCharacter(text, pos)) {
             ++pos;
         }
-        return pos;
+        return new TextLocation(pos, 0, 0);
+    }
+
+    private static int getEndOfCommentLocation(String text, int idx) {
+        while (idx >= 0) {
+            tr.Ace.log("char[" + idx + "]: '" + text.charAt(idx) + "'");
+            if (isCommentCharacter(text, idx)) {
+                tr.Ace.log("star or WS; (text: '" + text.charAt(idx) + "')");
+                --idx;
+            }
+            else if (idx > 0 && text.startsWith("*/", idx - 1)) {
+                tr.Ace.yellow("at end of comment");
+                idx -= 2;
+            }
+            else {
+                break;
+            }
+        }
+        // this will be the first character *beyond* the string, that is, equal
+        // to the last, and not the index of the final character.
+        return idx + 1;
     }
 
     public static List<Point> parse(String text, int startLine, int startColumn) {
         int len = text.length();
         List<Point> ary = new ArrayList<Point>();
         
-        int pos = skipWhitespace(text, 0, len);
+        int pos = skipWhitespace(text, 0, len).getPosition();
 
         if (pos + 3 < len && text.startsWith("/**")) {  // unmangle Emacs: */
             // tr.Ace.log("got comment start");
-            pos = skipCommentCharacters(text, pos + 3, len);
+            pos = skipCommentCharacters(text, pos + 3, len).getPosition();
 
             // rewind end through comment characters
 
-            --len;
-            while (len >= 0) {
-                tr.Ace.log("char[" + len + "]: '" + text.charAt(len) + "'");
-                if (isCommentCharacter(text, len)) {
-                    tr.Ace.log("star or WS; (text: '" + text.charAt(len) + "')");
-                    --len;
-                }
-                else if (len > 0 && text.startsWith("*/", len - 1)) {
-                    tr.Ace.yellow("at end of comment");
-                    len -= 2;
-                }
-                else {
-                    break;
-                }
-            }
-            ++len;
+            len = getEndOfCommentLocation(text, len - 1);
 
             // tr.Ace.log("pos: " + pos + "; len: " + len);
             
@@ -131,7 +136,7 @@ public class JavadocParser {
                 }
                 else {
                     tr.Ace.log("at description start: " + pos);
-                    pos = readDescription(ary, text, pos, len);
+                    pos = readDescription(ary, text, pos, len).getPosition();
                 }
 
                 // now, the tagged comments:
@@ -148,7 +153,7 @@ public class JavadocParser {
         }
     }
 
-    private static int readDescription(List<Point> ary, String text, int pos, int len) {
+    private static TextLocation readDescription(List<Point> ary, String text, int pos, int len) {
         Point desc = new Point(pos, -1);
         
         pos = read(desc, text, pos, len);
@@ -157,7 +162,7 @@ public class JavadocParser {
 
         ary.add(desc);
 
-        return pos;
+        return new TextLocation(pos, 0, 0);
     }
 
     private static int readTagList(List<Point> ary, String text, int pos, int len) {
@@ -205,7 +210,7 @@ public class JavadocParser {
             }
 
             // now, we're at the start of a new line:
-            pos = skipCommentCharacters(text, pos, len);
+            pos = skipCommentCharacters(text, pos, len).getPosition();
         }
 
         ++pt.y;
