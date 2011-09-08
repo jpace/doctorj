@@ -64,17 +64,17 @@ public class LineMapping extends ArrayList<LineMapping.PositionToLocation> {
     /**
      * Converts the string position to a line:column start and end location.
      */
-    public Location[] getLocations(Point pos) {
+    public TextRange getLocations(Point pos) {
         return getLocations(pos.x, pos.y);
     }
 
     /**
      * Converts the string position to a line:column start and end location.
      */
-    public Location[] getLocations(int startPos, int endPos) {
+    public TextRange getLocations(int startPos, int endPos) {
         // tr.Ace.log("parsing description");
-        Location start = null;
-        Location end = null;
+        TextLocation start = null;
+        TextLocation end = null;
         
         // go backward
         ListIterator<PositionToLocation> lit = listIterator(size());
@@ -89,13 +89,13 @@ public class LineMapping extends ArrayList<LineMapping.PositionToLocation> {
         }
 
         // attn Sun: tuples, please!
-        return new Location[] { start, end };
+        return new TextRange(start, end);
     }
     
     /**
      * Converts the string position to a line:column location.
      */
-    public Location getLocation(int pos) {
+    public TextLocation getLocation(int pos) {
         // go backward
         ListIterator<PositionToLocation> lit = listIterator(size());
         while (lit.hasPrevious()) {

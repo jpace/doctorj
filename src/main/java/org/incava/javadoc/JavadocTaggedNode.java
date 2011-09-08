@@ -159,10 +159,10 @@ public class JavadocTaggedNode extends JavadocElement {
 
                 // even unbalanced HTML or double-quoted strings will get a target:
 
-                Location[] targetLocations = lines.getLocations(targetStart, pos - 1);
+                TextRange tgtRange = lines.getLocations(targetStart, pos - 1);
 
                 // tr.Ace.log("creating target ...");
-                target = new JavadocElement(text.substring(targetStart, pos), targetLocations[0], targetLocations[1]);
+                target = new JavadocElement(text.substring(targetStart, pos), tgtRange.getStart(), tgtRange.getEnd());
                 // tr.Ace.log("target: " + target);
 
                 // skip non text
@@ -174,14 +174,14 @@ public class JavadocTaggedNode extends JavadocElement {
                     // no description beyond target
                     // tr.Ace.log("no description beyond target");
                     descriptionNonTarget = null;
-                    description = new JavadocElement(text.substring(targetStart, len), targetLocations[0], end);
+                    description = new JavadocElement(text.substring(targetStart, len), tgtRange.getStart(), end);
                 }
                 else if (pos < len && !Character.isWhitespace(text.charAt(pos))) {
                     // tr.Ace.log("creating description non-target");
                     Location dntStart = lines.getLocation(pos);
                     descriptionNonTarget = new JavadocElement(text.substring(pos, len), dntStart, end);
                     // tr.Ace.log("created description non-target: " + descriptionNonTarget);
-                    description = new JavadocElement(text.substring(targetStart, len), targetLocations[0], end);
+                    description = new JavadocElement(text.substring(targetStart, len), tgtRange.getStart(), end);
                 }
             }
         }

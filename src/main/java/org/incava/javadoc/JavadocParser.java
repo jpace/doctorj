@@ -36,7 +36,7 @@ public class JavadocParser {
 
                 Point descPos = it.next();
                 if (descPos != null) {
-                    Location[] descLocations = lines.getLocations(descPos);
+                    TextRange descRange = lines.getLocations(descPos);
 
                     // we could trim whitespace, so that the following descriptions are equivalent:
 
@@ -49,15 +49,15 @@ public class JavadocParser {
                     //   * @tag something
                     //   */
 
-                    description = new JavadocDescriptionNode(text.substring(descPos.x, descPos.y), descLocations[0], descLocations[1]);
+                    description = new JavadocDescriptionNode(text.substring(descPos.x, descPos.y), descRange.getStart(), descRange.getEnd());
                 }
 
                 taggedNodes = new JavadocTaggedNode[subs.size() - 1];
                 for (int i = 0; it.hasNext(); ++i) {
                     Point      pos       = it.next();
-                    Location[] locations = lines.getLocations(pos);
+                    TextRange  locations = lines.getLocations(pos);
                     
-                    taggedNodes[i] = new JavadocTaggedNode(text.substring(pos.x, pos.y), locations[0], locations[1]);
+                    taggedNodes[i] = new JavadocTaggedNode(text.substring(pos.x, pos.y), locations.getStart(), locations.getEnd());
                 }
             }
 
