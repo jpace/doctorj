@@ -100,13 +100,11 @@ public class LineMapping extends ArrayList<LineMapping.PositionToLocation> {
      * Converts the string position to a line:column location.
      */
     public Location getLocation(int pos) {
-        Location location = null;
-        
         // go backward
-        ListIterator lit = listIterator(size());
-        while (location == null && lit.hasPrevious()) {
-            PositionToLocation pl = (PositionToLocation)lit.previous();
-            if (location == null && pos >= pl.position) {
+        ListIterator<PositionToLocation> lit = listIterator(size());
+        while (lit.hasPrevious()) {
+            PositionToLocation pl = lit.previous();
+            if (pos >= pl.position) {
                 // tr.Ace.log("creating location");
                 return new Location(pl.line, pl.column + pos - pl.position);
             }

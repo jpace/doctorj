@@ -3,8 +3,6 @@ package org.incava.javadoc;
 import java.awt.Point;
 import java.io.*;
 import java.util.*;
-import org.incava.text.LineMapping;
-import org.incava.text.Location;
 
 
 /**
