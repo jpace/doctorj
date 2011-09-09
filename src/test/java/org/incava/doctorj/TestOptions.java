@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 import org.incava.analysis.Violation;
 
 
-public class TestOptions extends Tester {
+public class TestOptions extends AbstractDoctorJTestCase {
     
     public TestOptions(String name) {
         super(name);

@@ -3,7 +3,7 @@ package org.incava.doctorj;
 import junit.framework.TestCase;
 
 
-public class TestTypeDocAnalyzer extends Tester {
+public class TestTypeDocAnalyzer extends AbstractDoctorJTestCase {
 
     public TestTypeDocAnalyzer(String name) {
         super(name);

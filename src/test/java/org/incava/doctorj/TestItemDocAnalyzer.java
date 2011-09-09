@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 import org.incava.analysis.Violation;
 
 
-public class TestItemDocAnalyzer extends Tester {
+public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
 
     static {
         ItemDocAnalyzer.spellChecker.addDictionary("/home/jpace/proj/doctorj/etc/words.en_US");

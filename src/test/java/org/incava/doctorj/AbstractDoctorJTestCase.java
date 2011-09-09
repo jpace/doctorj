@@ -8,9 +8,9 @@ import org.incava.analysis.*;
 import org.incava.java.*;
 
 
-public class Tester extends TestCase {
+public class AbstractDoctorJTestCase extends TestCase {
 
-    public Tester(String name) {
+    public AbstractDoctorJTestCase(String name) {
         super(name);
         
         Options.warningLevel = Options.MAXIMUM_WARNING_LEVEL;

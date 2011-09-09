@@ -8,7 +8,7 @@ import org.incava.analysis.*;
 import org.incava.java.*;
 
 
-public class TestStringAnalyzer extends Tester {
+public class TestStringAnalyzer extends AbstractDoctorJTestCase {
     
     // static {
     //     ItemDocAnalyzer.spellChecker.addDictionary("/home/jpace/proj/doctorj/etc/words.en_US");

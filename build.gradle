@@ -38,7 +38,7 @@ jar {
 }
 
 test {
-    excludes = [ '**/Abstract*', '**/.#*', '**/org/incava/doctorj/Tester.*' ]
+    excludes = [ '**/Abstract*', '**/.#*' ]
 }
 
 manifest.mainAttributes("Main-Class" : "org.incava.doctorj.DoctorJ")

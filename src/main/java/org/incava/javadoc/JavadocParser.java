@@ -67,7 +67,8 @@ public class JavadocParser {
         }
     }
 
-    private static TextLocation skipWhitespace(String text, int pos, int len) {
+    private static TextLocation skipWhitespace(String text, TextLocation tl, int len) {
+        int pos = tl.getPosition();
         while (pos < len && Character.isWhitespace(text.charAt(pos))) {
             ++pos;
         }
@@ -109,7 +110,9 @@ public class JavadocParser {
         int len = text.length();
         List<Point> ary = new ArrayList<Point>();
 
-        TextLocation tl = skipWhitespace(text, 0, len);
+        TextLocation tl = new TextLocation(0, startLine, startColumn);
+
+        tl = skipWhitespace(text, tl, len);
         
         int pos = tl.getPosition();
 
@@ -153,14 +156,18 @@ public class JavadocParser {
 
     private static TextLocation readDescription(List<Point> ary, String text, int pos, int len) {
         Point desc = new Point(pos, -1);
+
+        TextLocation tl = new TextLocation(pos, TextLocation.UNDEFINED, TextLocation.UNDEFINED);
         
-        pos = read(desc, text, pos, len);
+        tl = read(desc, text, tl, len);
+
+        pos = tl.getPosition();
                     
         tr.Ace.log("at end, pos: " + pos + "; desc pos   : " + desc);
 
         ary.add(desc);
 
-        return new TextLocation(pos, 0, 0);
+        return new TextLocation(pos, TextLocation.UNDEFINED, TextLocation.UNDEFINED);
     }
 
     private static int readTagList(List<Point> ary, String text, int pos, int len) {
@@ -170,8 +177,12 @@ public class JavadocParser {
             Point tag = new Point(pos, -1);
             
             ++pos;
+
+            TextLocation tl = new TextLocation(pos, TextLocation.UNDEFINED, TextLocation.UNDEFINED);
             
-            pos = read(tag, text, pos, len);
+            tl = read(tag, text, tl, len);
+
+            pos = tl.getPosition();
             
             tr.Ace.log("tag pos   : " + tag);
             
@@ -184,11 +195,13 @@ public class JavadocParser {
     /**
      * Reads to the next Javadoc field, or to the end of the comment.
      */
-    private static int read(Point pt, String text, int pos, int len) {
+    private static TextLocation read(Point pt, String text, TextLocation tl, int len) {
         tr.Ace.cyan("pt", pt);
         tr.Ace.cyan("text", text);
-        tr.Ace.cyan("pos", pos);
+        tr.Ace.cyan("tl", tl);
         tr.Ace.cyan("len", len);
+
+        int pos = tl.getPosition();
         
         pt.y = pos;
         while (pos < len && (text.charAt(pos) != '@' || (pos >= 0 && text.charAt(pos - 1) == '{'))) {
@@ -218,7 +231,7 @@ public class JavadocParser {
         tr.Ace.cyan("pos", pos);
         tr.Ace.cyan("len", len);
 
-        return pos;
+        return new TextLocation(pos, tl.getLine(), tl.getColumn());
     }
 
 }
