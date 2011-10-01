@@ -4,7 +4,7 @@ package org.incava.text;
 /**
  * Code location.
  */
-public class Location {
+public class Location implements Comparable<Location> {
 
     public final int line;
     
@@ -32,7 +32,16 @@ public class Location {
     }
 
     public boolean equals(Location other) {
-        return other.line == line && other.column == column;
+        return compareTo(other) == 0;
+    }
+
+    public int compareTo(Location other) {
+        int cmp = new Integer(this.line).compareTo(other.getLine());
+        if (cmp == 0) {
+            cmp = new Integer(this.column).compareTo(other.getColumn());
+        }
+
+        return cmp;
     }
 
 }
