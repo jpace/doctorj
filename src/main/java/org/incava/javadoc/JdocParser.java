@@ -2,6 +2,7 @@ package org.incava.javadoc;
 
 import java.util.*;
 import org.incava.text.TextLocation;
+import static org.incava.ijdk.util.IUtil.*;
 
 
 /**
@@ -10,7 +11,6 @@ import org.incava.text.TextLocation;
 public class JdocParser {
 
     // protected final static List<Character> WSCHARS = Arrays.asList(new Character[] { '\r', "\n", "\t", "\f", " " };
-
 
     private String str;
 
@@ -28,6 +28,14 @@ public class JdocParser {
         this.lastNonCommentWhitespace = null;
         this.atBeginningOfLine = true;
         this.length = 0;
+    }
+
+    public String getString() {
+        return this.str;
+    }
+
+    public TextLocation getLocation() {
+        return this.location;
     }
 
     protected void updateLocation(int posOffset, int lnumOffset, int colOffset) {
@@ -69,17 +77,229 @@ public class JdocParser {
         return charIs(1, ch);
     }
 
-    protected boolean isCurrentCharWhitespace() {
+    public boolean isCurrentCharWhitespace() {
         Character curr = currentChar();
         return curr != null && Character.isWhitespace(curr);
     }
 
-    protected boolean isCurrentCharCommentOrWhitespace() {
+    public boolean isCurrentCharCommentOrWhitespace() {
         return isCurrentCharWhitespace() || (this.atBeginningOfLine && currentCharIs('*'));
     }
 
     protected boolean hasMore() {
         return getPosition() < this.length;
+    }
+
+    protected boolean atCommentEnd() {
+        return currentCharIs('*') && nextCharIs('/');
+    }
+
+    protected void gotoNextChar() {
+        if (currentCharIs('\n')) {
+            if (nextCharIs('\r')) {
+                updateLocation(1, 0, 0);
+            }
+
+            setAtBeginningOfLine();
+        }
+        else if (currentCharIs('\n')) {
+            setAtBeginningOfLine();
+        }
+        else {
+            if (!currentCharIs(' ') && !(this.atBeginningOfLine && currentCharIs('*'))) {
+                lastNonCommentWhitespace = this.location;
+            }
+            
+            // to next column
+            updateLocation(0, 0, 1);
+        }
+
+        updateLocation(1, 0, 0);
+    }
+
+    protected boolean gotoJdocStart() {
+        while (hasMore()) {
+            while (isCurrentCharWhitespace()) {
+                gotoNextChar();
+            }
+            
+            // this can be simplified ...
+
+            if (currentCharIs('/')) {
+                gotoNextChar();
+
+                if (currentCharIs('*')) {
+                    gotoNextChar();
+
+                    if (currentCharIs('*')) {
+                        gotoNextChar();
+
+                        if (currentCharIs('/')) {
+                            // end of comment
+                            break;
+                        }
+                        else {
+                            while (isCurrentCharWhitespace()) {
+                                gotoNextChar();
+                            }
+                        }
+                        return true;
+                    }
+                    else {
+                        break;
+                    }
+                }
+                else {
+                    break;
+                }
+            }
+        }
+        
+        return false;
+    }
+
+    protected JdocElement getDescription() {
+        TextLocation descStart = null;
+        TextLocation descEnd = null;
+        
+        while (hasMore() && !atCommentEnd()) {
+            if (isCurrentCharCommentOrWhitespace()) {
+                gotoNextChar();
+            }
+            else if (currentCharIs('@')) {
+                break;
+            }
+            else {
+                descEnd = this.location;
+
+                // should be
+                descStart = elvis(descStart, this.location);
+
+                gotoNextChar();
+            }
+        }
+
+        if (descStart != null) {
+            return new JdocElement(this.str, descStart, descEnd);
+        }
+        else {
+            return null;
+        }
+    }
+
+    protected List<JdocTaggedNode> getTaggedComments() {
+        List<JdocTaggedNode> taggedNodes = new ArrayList<JdocTaggedNode>();
+
+        while (hasMore() && !atCommentEnd()) {
+            if (currentCharIs('@')) {
+                JdocTaggedNode jtn = getTaggedComment();
+                tr.Ace.cyan("jtn", jtn);
+
+                taggedNodes.add(jtn);
+            }
+            else {
+                gotoNextChar();
+            }
+        }
+
+        return taggedNodes;
+    }
+
+    protected JdocTaggedNode getTaggedComment() {
+        // we assume we're at a @
+
+        TextLocation tagStart = this.location;
+        tr.Ace.cyan("tagStart", tagStart);
+        TextLocation tagEnd = this.location;
+        tr.Ace.cyan("tagEnd", tagEnd);
+
+        while (hasMore() && !isCurrentCharCommentOrWhitespace()) {
+            tagEnd = this.location;
+            tr.Ace.cyan("tagEnd", tagEnd);
+            gotoNextChar();
+        }
+
+        JdocElement tag = new JdocElement(this.str, tagStart, tagEnd);
+        tr.Ace.cyan("tag", tag);
+        
+        while (hasMore() && !atCommentEnd() && isCurrentCharCommentOrWhitespace()) {
+            gotoNextChar();
+        }
+        
+        JdocElement tgt = atCommentEnd() ? null : getTarget();
+        tr.Ace.cyan("tgt", tgt);
+
+        JdocElement desc = null;
+        JdocElement fullDesc = null;
+
+        if (isTrue(tgt)) {
+            if (!atCommentEnd()) {
+                while (isCurrentCharWhitespace()) {
+                    gotoNextChar();
+                }
+            }
+        
+            TextLocation descStart = null;            
+            tr.Ace.cyan("descStart", descStart);
+        
+            // now, to end of line or end of comment.
+            while (hasMore() && !atCommentEnd() && !atEndOfLine()) {
+                descStart = elvis(descStart, this.location);
+                tr.Ace.cyan("descStart", descStart);
+                gotoNextChar();
+            }
+
+            if (isTrue(descStart) && descStart.getPosition() < lastNonCommentWhitespace.getPosition()) {
+                desc = new JdocElement(this.str, descStart, lastNonCommentWhitespace);
+                tr.Ace.cyan("desc", desc);
+            }
+        
+            fullDesc = new JdocElement(this.str, tgt.getStartLocation(), lastNonCommentWhitespace);
+            tr.Ace.cyan("fullDesc", fullDesc);
+        }
+
+        return new JdocTaggedNode(tag, tgt, desc, fullDesc);
+    }
+
+    protected JdocElement getTarget() {
+        tr.Ace.magenta("this", this);
+        return new JdocTargetParser(this).parse();
+    }
+
+    public JdocComment parse(String str) {
+        this.location = new TextLocation(0, 1, 1);
+
+        this.str = str;
+
+        this.length = this.str.length();
+
+        TextLocation jdocNodeStart = null;
+        TextLocation jdocNodeEnd = null;
+
+        JdocElement jdocDesc = null;
+
+        List<JdocTaggedNode> jdocTaggedCmts = new ArrayList<JdocTaggedNode>();
+
+        if (gotoJdocStart()) {
+            jdocNodeStart = this.location;
+            tr.Ace.cyan("jdocNodeStart", jdocNodeStart);
+      
+            jdocDesc = getDescription();
+            tr.Ace.cyan("jdocDesc", jdocDesc);
+
+            jdocTaggedCmts = getTaggedComments();
+            tr.Ace.cyan("jdocTaggedCmts", jdocTaggedCmts);
+
+            jdocNodeEnd = lastNonCommentWhitespace;
+        }
+        else {
+            return null;
+        }    
+
+        JdocComment jdc = new JdocComment(this.str, jdocNodeStart, jdocNodeEnd, jdocDesc, jdocTaggedCmts);
+        tr.Ace.cyan("jdc", jdc);
+        
+        return jdc;
     }
 
 }
