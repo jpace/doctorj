@@ -88,13 +88,13 @@ public class JavadocParser {
 
     private static int getEndOfCommentLocation(String text, int idx) {
         while (idx >= 0) {
-            tr.Ace.log("char[" + idx + "]: '" + text.charAt(idx) + "'");
+            // tr.Ace.log("char[" + idx + "]: '" + text.charAt(idx) + "'");
             if (isCommentCharacter(text, idx)) {
-                tr.Ace.log("star or WS; (text: '" + text.charAt(idx) + "')");
+                // tr.Ace.log("star or WS; (text: '" + text.charAt(idx) + "')");
                 --idx;
             }
             else if (idx > 0 && text.startsWith("*/", idx - 1)) {
-                tr.Ace.yellow("at end of comment");
+                // tr.Ace.yellow("at end of comment");
                 idx -= 2;
             }
             else {
@@ -130,12 +130,12 @@ public class JavadocParser {
             if (pos < len) {
                 // the description
                 if (text.charAt(pos) == '@') {
-                    tr.Ace.log("got tag start -- no description");
+                    // tr.Ace.log("got tag start -- no description");
                     // null means no description
                     ary.add(null);
                 }
                 else {
-                    tr.Ace.log("at description start: " + pos);
+                    // tr.Ace.log("at description start: " + pos);
                     tl = readDescription(ary, text, pos, len);
                     pos = tl.getPosition();
                 }
@@ -163,7 +163,7 @@ public class JavadocParser {
 
         pos = tl.getPosition();
                     
-        tr.Ace.log("at end, pos: " + pos + "; desc pos   : " + desc);
+        // tr.Ace.log("at end, pos: " + pos + "; desc pos   : " + desc);
 
         ary.add(desc);
 
@@ -172,7 +172,7 @@ public class JavadocParser {
 
     private static int readTagList(List<Point> ary, String text, int pos, int len) {
         while (pos < len && text.charAt(pos) == '@') {
-            tr.Ace.log("tag starting.");
+            // tr.Ace.log("tag starting.");
             
             Point tag = new Point(pos, -1);
             
@@ -184,7 +184,7 @@ public class JavadocParser {
 
             pos = tl.getPosition();
             
-            tr.Ace.log("tag pos   : " + tag);
+            // tr.Ace.log("tag pos   : " + tag);
             
             ary.add(tag);
         }
@@ -196,10 +196,10 @@ public class JavadocParser {
      * Reads to the next Javadoc field, or to the end of the comment.
      */
     private static TextLocation read(Point pt, String text, TextLocation tl, int len) {
-        tr.Ace.cyan("pt", pt);
-        tr.Ace.cyan("text", text);
-        tr.Ace.cyan("tl", tl);
-        tr.Ace.cyan("len", len);
+        // tr.Ace.cyan("pt", pt);
+        // tr.Ace.cyan("text", text);
+        // tr.Ace.cyan("tl", tl);
+        // tr.Ace.cyan("len", len);
 
         int pos = tl.getPosition();
         
@@ -226,10 +226,10 @@ public class JavadocParser {
 
         ++pt.y;
 
-        tr.Ace.cyan("pt", pt);
-        tr.Ace.cyan("text", text);
-        tr.Ace.cyan("pos", pos);
-        tr.Ace.cyan("len", len);
+        // tr.Ace.cyan("pt", pt);
+        // tr.Ace.cyan("text", text);
+        // tr.Ace.cyan("pos", pos);
+        // tr.Ace.cyan("len", len);
 
         return new TextLocation(pos, tl.getLine(), tl.getColumn());
     }

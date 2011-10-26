@@ -23,9 +23,12 @@ public abstract class FunctionDocAnalyzer extends ItemDocAnalyzer {
         super.checkJavadoc(javadoc);
 
         SimpleNode encNode = getEnclosingNode();
+        tr.Ace.log("encNode", encNode);
         int        chkLevel = SimpleNodeUtil.getLevel(encNode);
+        tr.Ace.log("chkLevel", chkLevel);
 
         ExceptionDocAnalyzer eda = new ExceptionDocAnalyzer(getReport(), javadoc, getNode(), chkLevel);
+        tr.Ace.log("eda", eda);
         eda.run();
 
         ASTFormalParameters  params = getParameterList();

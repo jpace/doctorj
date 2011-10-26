@@ -31,7 +31,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
     
     private static Map<String, Boolean> excToRuntime = new HashMap<String, Boolean>();
 
-    private static Collection<String> reportedExceptions = new ArrayList<String>();
+    private final Collection<String> reportedExceptions;
 
     protected final static String[] KNOWN_RUNTIME_EXCEPTIONS = new String[] {
         "java.awt.color.CMMException",
@@ -125,6 +125,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
          this.nodeLevel = nodeLevel;
          this.importMap = null;
          this.documentedExceptions = new ArrayList<String>();
+         this.reportedExceptions = new ArrayList<String>();
     }
     
     public void run() {
@@ -149,10 +150,13 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
         JavadocTaggedNode[] taggedComments = this.javadoc.getTaggedComments();
         for (int ti = 0; ti < taggedComments.length; ++ti) {
             JavadocTaggedNode jtn = taggedComments[ti];            
+            tr.Ace.log("jtn", jtn);
             JavadocTag        tag = jtn.getTag();
+            tr.Ace.log("tag", tag);
 
             if (tag.text.equals(JavadocTags.EXCEPTION) || tag.text.equals(JavadocTags.THROWS)) {
                 JavadocElement tgt = jtn.getTarget();
+                tr.Ace.log("tgt", tgt);
 
                 if (tgt == null) {
                     if (Options.warningLevel >= CHKLVL_TAG_CONTENT + this.nodeLevel) {
@@ -297,13 +301,20 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
 
     protected void checkAgainstCode(JavadocTag tag, JavadocElement tgt, String shortExcName, String fullExcName, Class excClass) {
         ASTName name = getMatchingException(shortExcName);
+        tr.Ace.log("name", name);
         if (name == null) {
             name = getClosestMatchingException(shortExcName);
+            tr.Ace.log("name", name);
             if (name == null) {
+                tr.Ace.log("name", name);
                 if (isRuntimeException(excClass)) {
+                    tr.Ace.log("excClass", excClass);
                     // don't report it.
                 }
                 else if (excClass != null || !reportedExceptions.contains(fullExcName)) {
+                    tr.Ace.log("reportedExceptions", reportedExceptions);
+
+                    tr.Ace.onRed("fullExcName", fullExcName);
                     // this violation is an error, not a warning:
                     addViolation(MSG_EXCEPTION_NOT_IN_THROWS_LIST, tgt.start, tgt.end);
                     
@@ -311,8 +322,11 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
                     reportedExceptions.add(fullExcName);
                 }
                 else {
+                    tr.Ace.onRed("fullExcName", fullExcName);
+                    tr.Ace.onRed("shortExcName", shortExcName);
+
                     // we don't report exceptions when we don't know if they're
-                    // run - time exceptions, or when they've already been
+                    // run-time exceptions, or when they've already been
                     // reported.
                 }
             }

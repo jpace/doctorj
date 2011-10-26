@@ -10,9 +10,11 @@ public class TestExceptionDocAnalyzer extends AbstractDoctorJTestCase {
 
     public TestExceptionDocAnalyzer(String name) {
         super(name);
+
+        tr.Ace.setVerbose(true);
     }
 
-    public void xtestMethodExceptionWithoutTag() {
+    public void testMethodExceptionWithoutTag() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -26,7 +28,7 @@ public class TestExceptionDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void xtestMethodExceptionUndocumented() {
+    public void testMethodExceptionUndocumented() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -39,7 +41,7 @@ public class TestExceptionDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void xtestMethodExceptionMisspelled() {
+    public void testMethodExceptionMisspelled() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -52,7 +54,7 @@ public class TestExceptionDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
     
-    public void xtestMethodExceptionAsNameMisspelled() {
+    public void testMethodExceptionAsNameMisspelled() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -65,7 +67,7 @@ public class TestExceptionDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
     
-    public void xtestMethodExceptionDocumentedButNotInCode() {
+    public void testMethodExceptionDocumentedButNotInCode() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -90,7 +92,7 @@ public class TestExceptionDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void xtestMethodExceptionNotDocumented() {
+    public void testMethodExceptionNotDocumented() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -132,7 +134,7 @@ public class TestExceptionDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void xtestMethodExceptionNotAlphabetical() {
+    public void testMethodExceptionNotAlphabetical() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -159,7 +161,7 @@ public class TestExceptionDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
     
-    public void xtestCtorExceptionWithoutTag() {
+    public void testCtorExceptionWithoutTag() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -173,7 +175,7 @@ public class TestExceptionDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void xtestCtorExceptionUndocumented() {
+    public void testCtorExceptionUndocumented() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -186,7 +188,7 @@ public class TestExceptionDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void xtestCtorExceptionMisspelled() {
+    public void testCtorExceptionMisspelled() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -199,7 +201,7 @@ public class TestExceptionDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
     
-    public void xtestCtorExceptionAsNameMisspelled() {
+    public void testCtorExceptionAsNameMisspelled() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -212,7 +214,7 @@ public class TestExceptionDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
     
-    public void xtestCtorExceptionDocumentedButNotInCode() {
+    public void testCtorExceptionDocumentedButNotInCode() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -237,7 +239,7 @@ public class TestExceptionDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void xtestCtorExceptionNotDocumented() {
+    public void testCtorExceptionNotDocumented() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -279,7 +281,7 @@ public class TestExceptionDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void xtestCtorExceptionNotAlphabetical() {
+    public void testCtorExceptionNotAlphabetical() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -306,7 +308,7 @@ public class TestExceptionDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void xtestCtorExceptionRuntimeExceptionNotDeclared() {
+    public void testCtorExceptionRuntimeExceptionNotDeclared() {
         List<String> runtimeExceptions = new ArrayList<String>();
         runtimeExceptions.addAll(Arrays.asList(new String[] {
                                                    "java.awt.color.CMMException",
@@ -378,7 +380,7 @@ public class TestExceptionDocAnalyzer extends AbstractDoctorJTestCase {
         }
     }
 
-    public void xtestFullNameNotImported() {
+    public void testFullNameNotImported() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -391,7 +393,7 @@ public class TestExceptionDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void xtestShortNameImportedSingle() {
+    public void testShortNameImportedSingle() {
         evaluate("import java.util.NoSuchElementException;\n" +
                  "/** This is a description.\n" +
                  "  */\n" +
@@ -405,7 +407,7 @@ public class TestExceptionDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void xtestShortNameImportedOnDemand() {
+    public void testShortNameImportedOnDemand() {
         evaluate("import java.util.*;\n" +
                  "/** This is a description.\n" +
                  "  */\n" +
@@ -419,7 +421,7 @@ public class TestExceptionDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void xtestShortNameImportedOnDemandJava1415() {
+    public void testShortNameImportedOnDemandJava1415() {
         evaluate("import org.apache.xml.utils.*;\n" +                  // 1.4
                  "import com.sun.org.apache.xml.internal.utils.*;\n" + // 1.5
                  "/** This is a description.\n" +
@@ -434,7 +436,7 @@ public class TestExceptionDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testUnknownExceptionReportOnce() {
+    public void testUnknownExceptionReportEachTime() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -449,7 +451,8 @@ public class TestExceptionDocAnalyzer extends AbstractDoctorJTestCase {
                  "    public void bar() {}\n" +
                  "}\n",
                  new Violation[] { 
-                     new Violation(ExceptionDocAnalyzer.MSG_EXCEPTION_NOT_DOCUMENTED, 5, 20, 5, 60)
+                     new Violation(ExceptionDocAnalyzer.MSG_EXCEPTION_NOT_DOCUMENTED, 5, 20, 5, 60),
+                     new Violation(ExceptionDocAnalyzer.MSG_EXCEPTION_NOT_DOCUMENTED, 10, 20, 10, 60)
                  });
     }
 
