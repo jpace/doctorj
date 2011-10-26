@@ -16,7 +16,7 @@ public class TestSpellChecker extends AbstractTestSpellChecker {
     }
 
     public SpellChecker createSpellChecker() {
-        return new SpellChecker();
+        return new SpellChecker(SpellChecker.CaseType.CASE_SENSITIVE);
     }
 
     public Collection<Pair<String, String>> getSameWords() {

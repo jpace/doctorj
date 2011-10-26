@@ -14,7 +14,18 @@ public class TestNoCaseSpellChecker extends AbstractTestSpellChecker {
     }
 
     public SpellChecker createSpellChecker() {
-        return new NoCaseSpellChecker();
+        return new SpellChecker(SpellChecker.CaseType.CASE_INSENSITIVE);
+    }
+
+    public void assertEditDistance(SpellChecker sc, int expDist, String from, String to, Integer max) {
+        String msg = "from: " + from + "; to: " + to + "; max: " + max;
+
+        String fstr = from.toLowerCase();
+        String tstr = to.toLowerCase();
+
+        // tr.Ace.yellow("msg", msg);
+        int actDist = max == null ? Spelling.getEditDistance(fstr, tstr) : Spelling.getEditDistance(fstr, tstr, max);
+        assertEquals(msg, expDist, actDist);
     }
 
     public Collection<Pair<String, String>> getSameWords() {

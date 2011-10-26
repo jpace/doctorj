@@ -5,7 +5,9 @@ import net.sourceforge.pmd.ast.*;
 import org.incava.analysis.Report;
 import org.incava.javadoc.*;
 import org.incava.pmdx.*;
+import org.incava.ijdk.lang.MathExt;
 import org.incava.text.spell.SpellChecker;
+import org.incava.text.spell.Spelling;
 
 
 /**
@@ -391,17 +393,16 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
             return null;
         }
         else {
-            SpellChecker spellChecker = new SpellChecker();
-            int          bestDistance = -1;
-            ASTName      bestName = null;
-            ASTName[]    names = ThrowsUtil.getNames(this.throwsList);
+            int       bestDistance = -1;
+            ASTName   bestName = null;
+            ASTName[] names = ThrowsUtil.getNames(this.throwsList);
             
             for (int ni = 0; ni < names.length; ++ni) {
                 ASTName name = names[ni];
                 Token   nameToken = name.getLastToken();
-                int     dist = spellChecker.editDistance(nameToken.image, str);
+                int     dist = Spelling.getEditDistance(nameToken.image, str);
             
-                if (dist >= 0 && dist <= SpellChecker.DEFAULT_MAX_DISTANCE && (bestDistance == -1 || dist < bestDistance)) {
+                if (MathExt.isWithin(dist, 0, SpellChecker.DEFAULT_MAX_DISTANCE) && (bestDistance == -1 || dist < bestDistance)) {
                     bestDistance = dist;
                     bestName = name;
                 }

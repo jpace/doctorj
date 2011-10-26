@@ -268,7 +268,7 @@ public class Options extends OptionSet {
         List<String> dictList = this.dictOpt.getValue();
         if (dictList != null) {
             for (String dict : dictList) {
-                ItemDocAnalyzer.spellChecker.addDictionary(dict);
+                SpellingAnalyzer.getInstance().addDictionary(dict);
             }
         }
 

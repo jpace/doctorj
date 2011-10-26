@@ -33,7 +33,7 @@ public abstract class AbstractTestSpellChecker extends TestCase {
         String msg = "from: " + from + "; to: " + to + "; max: " + max;
 
         // tr.Ace.yellow("msg", msg);
-        int actDist = max == null ? sc.editDistance(from, to) : sc.editDistance(from, to, max);
+        int actDist = max == null ? Spelling.getEditDistance(from, to) : Spelling.getEditDistance(from, to, max);
         assertEquals(msg, expDist, actDist);
     }
     
@@ -70,7 +70,7 @@ public abstract class AbstractTestSpellChecker extends TestCase {
     }
 
     public void testDictionary() {
-        SpellChecker sc = new SpellChecker();
+        SpellChecker sc = new SpellChecker(SpellChecker.CaseType.CASE_SENSITIVE);
         sc.addDictionary("/home/jpace/proj/doctorj/etc/words.en_US");
 
         for (String word : getDictionaryWords()) {

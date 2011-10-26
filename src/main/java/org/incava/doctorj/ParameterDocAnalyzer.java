@@ -5,10 +5,12 @@ import java.util.*;
 import net.sourceforge.pmd.ast.*;
 import org.incava.analysis.*;
 import org.incava.javadoc.*;
+import org.incava.ijdk.lang.MathExt;
 import org.incava.pmdx.ParameterUtil;
 import org.incava.pmdx.SimpleNodeUtil;
 import org.incava.text.Location;
 import org.incava.text.spell.SpellChecker;
+import org.incava.text.spell.Spelling;
 
 
 /**
@@ -271,7 +273,6 @@ public class ParameterDocAnalyzer extends DocAnalyzer {
             return - 1;
         }
         else {
-            SpellChecker         spellChecker = new SpellChecker();
             int                  bestDistance = -1;
             int                  bestIndex    = -1;
             ASTFormalParameter[] params = ParameterUtil.getParameters(this.parameterList);
@@ -280,11 +281,11 @@ public class ParameterDocAnalyzer extends DocAnalyzer {
                 tr.Ace.log("parameter", params[ni]);
                 ASTFormalParameter param = params[ni];
                 Token              nameTk = ParameterUtil.getParameterName(param);
-                int                dist = spellChecker.editDistance(nameTk.image, str);
+                int                dist = Spelling.getEditDistance(nameTk.image, str);
 
                 // tr.Ace.log("edit distance(param: '" + paramTkn.image + "', str: '" + str + "'): " + dist);
             
-                if (dist >= 0 && dist <= SpellChecker.DEFAULT_MAX_DISTANCE && (bestDistance == -1 || dist < bestDistance)) {
+                if (MathExt.isWithin(dist, 0, SpellChecker.DEFAULT_MAX_DISTANCE) && (bestDistance == -1 || dist < bestDistance)) {
                     bestDistance = dist;
                     bestIndex = ni;
                 }

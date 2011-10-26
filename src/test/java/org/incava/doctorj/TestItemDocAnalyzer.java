@@ -9,7 +9,7 @@ import org.incava.analysis.Violation;
 public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
 
     static {
-        ItemDocAnalyzer.spellChecker.addDictionary("/home/jpace/proj/doctorj/etc/words.en_US");
+        ItemDocAnalyzer.addDictionary("/home/jpace/proj/doctorj/etc/words.en_US");
     }
     
     public TestItemDocAnalyzer(String name) {
