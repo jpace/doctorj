@@ -1,11 +1,9 @@
 package org.incava.text.spell;
 
-import java.io.*;
-import java.util.*;
-
 
 /**
- * Calculates the edit distance between two strings.
+ * Calculates the edit distance between two strings, being completely
+ * insensitive as regards to case.
  */
 public class NoCaseSpellChecker extends SpellChecker {
 

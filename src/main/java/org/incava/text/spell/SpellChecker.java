@@ -2,6 +2,7 @@ package org.incava.text.spell;
 
 import java.io.*;
 import java.util.*;
+import org.incava.ijdk.lang.MathExt;
 import org.incava.ijdk.util.MultiMap;
 
 
@@ -118,8 +119,6 @@ public class SpellChecker {
 
     /**
      * @param nearMatches a map from edit distances to matches.
-     * 
-     * $$$ todo replace nearMatches with MultiMap<Integer, String>
      */
     public boolean isCorrect(String word, int maxEditDistance, MultiMap<Integer, String> nearMatches) {
         if (hasWord(word)) {
@@ -131,6 +130,7 @@ public class SpellChecker {
             String             key       = getKey(word);        
             Collection<String> wds       = this.words.get(key);
 
+            //$$$ here is a good place for iterator(...)
             if (wds != null) {
                 for (String w : wds) {
                     int ed = editDistance(word, w, maxEditDistance);
@@ -166,20 +166,13 @@ public class SpellChecker {
     
         for (int i = 1; i <= len1; ++i) {
             for (int j = 1; j <= len2; ++j) {
-                distance[i][j] = min3(distance[i - 1][j - 1] + (str1.charAt(i - 1) == str2.charAt(j - 1) ? 0 : CHANGE),
-                                      distance[i][j - 1] + ADDITION,
-                                      distance[i - 1][j] + DELETION);
+                distance[i][j] = MathExt.min(distance[i - 1][j - 1] + (str1.charAt(i - 1) == str2.charAt(j - 1) ? 0 : CHANGE),
+                                             distance[i][j - 1] + ADDITION,
+                                             distance[i - 1][j] + DELETION);
             }
         }
         
         return distance[len1][len2];
-    }
-
-    /**
-     * $$$ todo move to idjk/lang/MathExt
-     */
-    protected static int min3(int x, int y, int z) {
-        return (x < y) ? (x < z ? x : z) : (y < z ? y : z);
     }
 
 }

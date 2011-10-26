@@ -1,7 +1,5 @@
 package org.incava.doctorj;
 
-import java.io.*;
-import java.util.*;
 import org.incava.text.spell.*;
 
 

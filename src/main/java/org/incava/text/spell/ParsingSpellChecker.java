@@ -1,8 +1,6 @@
 package org.incava.text.spell;
 
-import java.io.*;
 import java.util.*;
-import org.incava.ijdk.io.FileExt;
 import org.incava.ijdk.util.MultiMap;
 
 
@@ -20,17 +18,17 @@ public class ParsingSpellChecker {
     private final SpellChecker checker;
 
     /**
-     * The current description we're working on.
+     * The current string we're working on.
      */
-    private String desc;
+    private String str;
 
     /**
-     * The length of the current description.
+     * The length of the current string.
      */
     private int len;
 
     /**
-     * The current position within the description.
+     * The current position within the string.
      */
     private int pos;
     
@@ -49,10 +47,10 @@ public class ParsingSpellChecker {
         this.canCheck = true;
     }
 
-    public void check(String description) {
+    public void check(String str) {
         if (this.canCheck) {
-            this.desc = description;
-            this.len = this.desc.length();
+            this.str = str;
+            this.len = this.str.length();
             this.pos = 0;
     
             while (hasMore()) {
@@ -89,7 +87,7 @@ public class ParsingSpellChecker {
     }
     
     protected void skipBlanks() {
-        while (this.pos + 2 < this.len && currentChar() != '<' && !this.desc.substring(this.pos, this.pos + 2).equals("{@") && !Character.isLetterOrDigit(currentChar())) {
+        while (this.pos + 2 < this.len && currentChar() != '<' && !this.str.substring(this.pos, this.pos + 2).equals("{@") && !Character.isLetterOrDigit(currentChar())) {
             ++this.pos;
         }
     }
@@ -102,9 +100,12 @@ public class ParsingSpellChecker {
     }
 
     protected void checkWord(String word, int position) {
+        tr.Ace.yellow("word", word);
+        tr.Ace.log("position", "" + position);
         MultiMap<Integer, String> nearMatches = new MultiMap<Integer, String>();
         boolean valid = this.checker.isCorrect(word, nearMatches);
         if (!valid) {
+            // tr.Ace.yellow("nearMatches", nearMatches);
             wordMisspelled(word, position, nearMatches);
         }
     }
@@ -114,8 +115,10 @@ public class ParsingSpellChecker {
         final int printGoal = 15;
         for (int i = 0; nPrinted < printGoal && i < 4; ++i) { // 4 == max edit distance
             Collection<String> matches = nearMatches.get(i);
+            tr.Ace.log("matches", matches);
             if (matches != null) {
                 for (String match : matches) {
+                    tr.Ace.log("match", match);
                     // This is not debugging output -- this is actually wanted. 
                     // But I often run "glark '^\s*System.out' to find all my
                     // print statements, so we'll hide this very sneakily:
@@ -128,7 +131,7 @@ public class ParsingSpellChecker {
 
     protected boolean consume(String what) {
         skipBlanks();
-        if (this.pos + what.length() < this.len && this.desc.substring(this.pos).startsWith(what)) {
+        if (this.pos + what.length() < this.len && this.str.substring(this.pos).startsWith(what)) {
             this.pos += what.length();
             return true;
         }
@@ -138,14 +141,14 @@ public class ParsingSpellChecker {
     }
 
     protected void consumeTo(String what) {
-        int len = this.desc.length();
-        while (this.pos < len && this.pos + what.length() < len && !this.desc.substring(this.pos).startsWith(what)) {
+        int len = this.str.length();
+        while (this.pos < len && this.pos + what.length() < len && !this.str.substring(this.pos).startsWith(what)) {
             ++this.pos;
         }
     }
 
     protected Character currentChar() {
-        return this.desc.charAt(this.pos);
+        return this.str.charAt(this.pos);
     }
 
     protected boolean hasMore() {
@@ -184,7 +187,7 @@ public class ParsingSpellChecker {
             }
             else {
                 // must be punctuation, which we can check it if there's nothing
-                // but punctuation up to the next space or end of description.
+                // but punctuation up to the next space or end of string.
                 if (this.pos + 1 == this.len) {
                     // that's OK to check
                     break;
