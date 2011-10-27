@@ -3,6 +3,7 @@ package org.incava.analysis;
 import java.io.*;
 import java.util.*;
 import net.sourceforge.pmd.ast.Token;
+import org.incava.ijdk.lang.ObjectExt;
 
 
 /**
@@ -13,7 +14,7 @@ public class Violation implements Comparable {
 
     /**
      * The message for this violation. This should be only one line, because it
-     * is used in single - line reports.
+     * is used in single-line reports.
      */
     private String message;
    
@@ -120,7 +121,7 @@ public class Violation implements Comparable {
      * their beginning locations, then their end locations.
      *
      * @param obj The violation to compare this to.
-     * @return - 1, 0, or 1, for less than, equivalent to, or greater than.
+     * @return -1, 0, or 1, for less than, equivalent to, or greater than.
      */
     public int compareTo(Object obj) {
         if (equals(obj)) {
@@ -158,7 +159,8 @@ public class Violation implements Comparable {
         return (this.beginLine == v.getBeginLine()   &&
                 this.beginColumn == v.getBeginColumn() &&
                 this.endLine == v.getEndLine()     &&
-                this.endColumn == v.getEndColumn());
+                this.endColumn == v.getEndColumn() && 
+                ObjectExt.areEqual(this.message, v.getMessage()));
     }
 
     /**

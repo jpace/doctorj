@@ -451,8 +451,8 @@ public class TestExceptionDocAnalyzer extends AbstractDoctorJTestCase {
                  "    public void bar() {}\n" +
                  "}\n",
                  new Violation[] { 
-                     new Violation(ExceptionDocAnalyzer.MSG_EXCEPTION_NOT_DOCUMENTED, 5, 20, 5, 60),
-                     new Violation(ExceptionDocAnalyzer.MSG_EXCEPTION_NOT_DOCUMENTED, 10, 20, 10, 60)
+                     new Violation(ExceptionDocAnalyzer.MSG_EXCEPTION_NOT_IN_THROWS_LIST, 5, 20, 5, 60),
+                     new Violation(ExceptionDocAnalyzer.MSG_EXCEPTION_NOT_IN_THROWS_LIST, 10, 20, 10, 60)
                  });
     }
 

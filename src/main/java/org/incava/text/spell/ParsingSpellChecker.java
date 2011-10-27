@@ -100,12 +100,9 @@ public class ParsingSpellChecker {
     }
 
     protected void checkWord(String word, int position) {
-        tr.Ace.yellow("word", word);
-        tr.Ace.log("position", "" + position);
         MultiMap<Integer, String> nearMatches = new MultiMap<Integer, String>();
         boolean valid = this.checker.isCorrect(word, nearMatches);
         if (!valid) {
-            // tr.Ace.yellow("nearMatches", nearMatches);
             wordMisspelled(word, position, nearMatches);
         }
     }
@@ -115,10 +112,8 @@ public class ParsingSpellChecker {
         final int printGoal = 15;
         for (int i = 0; nPrinted < printGoal && i < 4; ++i) { // 4 == max edit distance
             Collection<String> matches = nearMatches.get(i);
-            tr.Ace.log("matches", matches);
             if (matches != null) {
                 for (String match : matches) {
-                    tr.Ace.log("match", match);
                     // This is not debugging output -- this is actually wanted. 
                     // But I often run "glark '^\s*System.out' to find all my
                     // print statements, so we'll hide this very sneakily:

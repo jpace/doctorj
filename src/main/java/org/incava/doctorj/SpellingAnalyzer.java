@@ -28,7 +28,7 @@ public class SpellingAnalyzer extends ParsingSpellChecker {
     private LineMapping lines;
 
     public SpellingAnalyzer() {
-        super(new NoCaseSpellChecker());
+        super(new SpellChecker(SpellChecker.CaseType.CASE_INSENSITIVE));
     }
 
     public void check(Analyzer analyzer, JavadocElement desc) {
@@ -40,33 +40,39 @@ public class SpellingAnalyzer extends ParsingSpellChecker {
     }
     
     protected String makeMessage(String word, MultiMap<Integer, String> nearMatches) {
-        StringBuffer buf = new StringBuffer("Word '" + word + "' appears to be misspelled. ");
+        StringBuilder sb = new StringBuilder("Word '" + word + "' appears to be misspelled. ");
         if (nearMatches.size() == 0) {
-            buf.append("No close matches");
+            sb.append("No close matches");
         }
         else {
-            buf.append("Closest matches: ");
-            
-            Iterator<Collection<String>> it = nearMatches.values().iterator();
+            sb.append("Closest matches: ");
+
             List<String> msgWords = new ArrayList<String>();
-            
-            while (it.hasNext() && msgWords.size() < NUM_CLOSEST_MATCHES) {
-                Collection<String> matches = it.next();
-                Iterator<String> mit = matches.iterator();
-                
-                while (mit.hasNext() && msgWords.size() < NUM_CLOSEST_MATCHES) {
-                    String w = mit.next();
-                    msgWords.add(w);
+            Set<Integer> eds = new TreeSet<Integer>(nearMatches.keySet());
+            for (Integer ed : eds) {
+                List<String> matches = new ArrayList<String>(new TreeSet<String>(nearMatches.get(ed)));
+                int maxNewWords = NUM_CLOSEST_MATCHES - msgWords.size();
+                if (maxNewWords <= 0) {
+                    break;
                 }
+
+                int nNew = Math.min(maxNewWords, matches.size());
+                msgWords.addAll(matches.subList(0, nNew));
             }
 
-            buf.append(StringExt.join(msgWords, ", "));
+            sb.append(StringExt.join(msgWords, ", "));
         }
-        return buf.toString();
+
+        return sb.toString();
     }
 
     protected void wordMisspelled(String word, int position, MultiMap<Integer, String> nearMatches) {
         tr.Ace.log("word", word);
+
+        if (this.desc == null) {
+            tr.Ace.stack(tr.Ace.RED, "this.desc", this.desc);
+            return;
+        }
 
         if (this.lines == null) {
             this.lines = new LineMapping(this.desc.text, this.desc.start.line, this.desc.start.column);

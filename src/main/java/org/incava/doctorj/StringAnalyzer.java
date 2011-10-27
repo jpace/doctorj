@@ -15,14 +15,14 @@ public class StringAnalyzer extends JavaParserVisitorAdapter {
 
     private final Report report;
 
-    private final ParsingSpellChecker spellChecker;
+    private final SpellingAnalyzer spellingAnalyzer;
 
     public StringAnalyzer(Report r) {
         this.report = r;
         tr.Ace.setVerbose(true);
 
-        this.spellChecker = new ParsingSpellChecker(new NoCaseSpellChecker());
-        this.spellChecker.addDictionary("/home/jpace/proj/doctorj/etc/words.en_US");
+        this.spellingAnalyzer = new SpellingAnalyzer();
+        this.spellingAnalyzer.addDictionary("/home/jpace/proj/doctorj/etc/words.en_US");
     }
 
     public Object visit(SimpleJavaNode node, Object data) {
@@ -49,7 +49,7 @@ public class StringAnalyzer extends JavaParserVisitorAdapter {
             String content = mat.group(1);
             tr.Ace.log("content", content);
 
-            this.spellChecker.check(content);
+            this.spellingAnalyzer.check(content);
         }
 
         return visit((SimpleJavaNode)node, data);

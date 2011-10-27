@@ -36,7 +36,7 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer {
 
     protected final static int CHKLVL_VALID_TAGS = 0;
 
-    private static SpellingAnalyzer spellingAnalzyer = SpellingAnalyzer.getInstance();
+    private static SpellingAnalyzer spellingAnalzyer = new SpellingAnalyzer();
 
     private final SimpleNode node;
     
@@ -85,7 +85,7 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer {
         if (javadoc == null) {
             if (isCheckable(encNode, CHKLVL_DOC_EXISTS)) {
                 tr.Ace.log("no Javadoc");
-                StringBuffer desc = new StringBuffer("Undocumented ");
+                StringBuilder desc = new StringBuilder("Undocumented ");
                 if (SimpleNodeUtil.hasLeadingToken(encNode, JavaParserConstants.PUBLIC)) {
                     desc.append("public ");
                 }
@@ -119,110 +119,108 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer {
      */
     protected abstract void addUndocumentedViolation(String desc);
 
+    protected void checkSummarySentence(JavadocNode javadoc) {
+        JavadocElement desc = javadoc.getDescription();
+        if (desc == null) {
+            addViolation(MSG_NO_SUMMARY_SENTENCE, javadoc.getStartLine(), javadoc.getStartColumn(), javadoc.getEndLine(), javadoc.getEndColumn());
+        }
+        else {
+            String descStr = desc.text;
+            int    dotPos = descStr.indexOf('.');
+            int    len = descStr.length();
+
+            // skip sequences like '127.0.0.1', i.e., whitespace must follow the dot:
+            while (dotPos != -1 && dotPos + 1 < len && !Character.isWhitespace(descStr.charAt(dotPos + 1))) {
+                dotPos = descStr.indexOf('.', dotPos + 1);
+            }
+
+            if (dotPos == -1) {
+                LineMapping lines = new LineMapping(descStr, desc.start.line, desc.start.column);
+                Location    end   = lines.getLocation(descStr.length() - 1);
+                addViolation(MSG_SUMMARY_SENTENCE_DOES_NOT_END_WITH_PERIOD, desc.start, end);
+            }
+            else {
+                String summarySentence = descStr.substring(0, dotPos + 1);
+                int nSpaces = 0;
+                int spacePos = -1;
+                while ((spacePos = summarySentence.indexOf(' ', spacePos + 1)) != -1) {
+                    ++nSpaces;
+                }
+                if (nSpaces < 3) {
+                    LineMapping lines = new LineMapping(descStr, desc.start.line, desc.start.column);
+                    Location    end = lines.getLocation(dotPos);
+                    addViolation(MSG_SUMMARY_SENTENCE_TOO_SHORT, desc.start, end);
+                }
+            }
+
+            spellingAnalzyer.check(this, desc);
+        }
+    }
+
+    protected void checkMisorderedTag(JavadocNode javadoc) {
+        tr.Ace.log("checking for misordered tags");
+        int previousOrderIndex = -1;
+        JavadocTaggedNode[] taggedComments = javadoc.getTaggedComments();
+        for (int ti = 0; ti < taggedComments.length; ++ti) {
+            JavadocTag tag = taggedComments[ti].getTag();
+            int        index = JavadocTags.getIndex(tag.text);
+            tr.Ace.log("index of '" + tag.text + "': " + index);
+            if (index < previousOrderIndex) {
+                addViolation(MSG_TAG_IMPROPER_ORDER, tag.start, tag.end);
+                break;
+            }
+            previousOrderIndex = index;
+        }
+    }
+
+    protected void checkTagValidity(JavadocNode javadoc) {
+        tr.Ace.log("checking for valid tags");
+        List<String>        validTags = getValidTags();
+        JavadocTaggedNode[] taggedComments = javadoc.getTaggedComments();
+        for (int ti = 0; ti < taggedComments.length; ++ti) {
+            JavadocTag tag = taggedComments[ti].getTag();
+            if (!validTags.contains(tag.text)) {
+                addViolation("Tag not valid for " + getItemType(), tag.start, tag.end);
+            }
+        }
+    }
+
+    protected void checkTagContent(JavadocNode javadoc) {
+        JavadocTaggedNode[] taggedComments = javadoc.getTaggedComments();
+        for (int ti = 0; ti < taggedComments.length; ++ti) {
+            JavadocTag tag = taggedComments[ti].getTag();
+            tr.Ace.log("checking tag: " + tag);
+            if (tag.text.equals(JavadocTags.SEE)) {
+                checkForTagDescription(taggedComments[ti], MSG_SEE_WITHOUT_REFERENCE);
+            }
+            else if (tag.text.equals(JavadocTags.SINCE)) {
+                checkForTagDescription(taggedComments[ti], MSG_SINCE_WITHOUT_TEXT);
+            }
+            else if (tag.text.equals(JavadocTags.DEPRECATED)) {
+                checkForTagDescription(taggedComments[ti], MSG_DEPRECATED_WITHOUT_TEXT);
+            }
+        }
+    }
+
     protected void checkJavadoc(JavadocNode javadoc) {
         // check for short summary sentence and spell check the description.
 
         SimpleNode encNode = getEnclosingNode();
 
         if (isCheckable(encNode, CHKLVL_SUMMARY_SENTENCE)) {
-            JavadocElement desc = javadoc.getDescription();
-            if (desc == null) {
-                addViolation(MSG_NO_SUMMARY_SENTENCE, javadoc.getStartLine(), javadoc.getStartColumn(), javadoc.getEndLine(), javadoc.getEndColumn());
-            }
-            else {
-                String descStr = desc.text;
-                // tr.Ace.log("desc: '" + descStr + "'");
-                int    dotPos = descStr.indexOf('.');
-                int    len = descStr.length();
-                
-                // tr.Ace.log("dotPos: " + dotPos);
-
-                // skip sequences like '127.0.0.1', i.e., whitespace must follow the dot:
-                while (dotPos != -1 && dotPos + 1 < len && !Character.isWhitespace(descStr.charAt(dotPos + 1))) {
-                    dotPos = descStr.indexOf('.', dotPos + 1);
-                }
-
-                if (dotPos == -1) {
-                    LineMapping lines = new LineMapping(descStr, desc.start.line, desc.start.column);
-                    Location    end = lines.getLocation(descStr.length() - 1);
-                    addViolation(MSG_SUMMARY_SENTENCE_DOES_NOT_END_WITH_PERIOD, desc.start, end);
-                }
-                else {
-                    String summarySentence = descStr.substring(0, dotPos + 1);
-                    tr.Ace.log("summary: '" + summarySentence + "'");
-                    int    nSpaces = 0;
-                    int    spacePos        = -1;
-                    while ((spacePos = summarySentence.indexOf(' ', spacePos + 1)) != -1) {
-                        ++nSpaces;
-                    }
-                    if (nSpaces < 3) {
-                        LineMapping lines = new LineMapping(descStr, desc.start.line, desc.start.column);
-                        Location    end = lines.getLocation(dotPos);
-                        addViolation(MSG_SUMMARY_SENTENCE_TOO_SHORT, desc.start, end);
-                    }
-                }
-
-                spellingAnalzyer.check(this, desc);
-            }
-        }
-        else {
-            tr.Ace.log("NOT checking summary sentence");
+            checkSummarySentence(javadoc);
         }
 
         if (isCheckable(encNode, CHKLVL_MISORDERED_TAGS)) {
-            tr.Ace.log("checking for misordered tags");
-            int previousOrderIndex = -1;
-            JavadocTaggedNode[] taggedComments = javadoc.getTaggedComments();
-            for (int ti = 0; ti < taggedComments.length; ++ti) {
-                JavadocTag tag = taggedComments[ti].getTag();
-                int        index = JavadocTags.getIndex(tag.text);
-                tr.Ace.log("index of '" + tag.text + "': " + index);
-                if (index < previousOrderIndex) {
-                    addViolation(MSG_TAG_IMPROPER_ORDER, tag.start, tag.end);
-                    break;
-                }
-                previousOrderIndex = index;
-            }
-        }
-        else {
-            tr.Ace.log("skipping check for misordered tags");
+            checkMisorderedTag(javadoc);
         }
 
-        // check for proper tags for this type of item
         if (isCheckable(encNode, CHKLVL_VALID_TAGS)) {
-            tr.Ace.log("checking for valid tags");
-            List<String>        validTags = getValidTags();
-            JavadocTaggedNode[] taggedComments = javadoc.getTaggedComments();
-            for (int ti = 0; ti < taggedComments.length; ++ti) {
-                JavadocTag tag = taggedComments[ti].getTag();
-                if (!validTags.contains(tag.text)) {
-                    addViolation("Tag not valid for " + getItemType(), tag.start, tag.end);
-                }
-            }
-        }        
-        else {
-            tr.Ace.log("skipping check for valid tags");
+            checkTagValidity(javadoc);
         }
 
-        // check each tag for this item
         if (isCheckable(encNode, CHKLVL_TAG_CONTENT)) {
-            JavadocTaggedNode[] taggedComments = javadoc.getTaggedComments();
-            for (int ti = 0; ti < taggedComments.length; ++ti) {
-                JavadocTag tag = taggedComments[ti].getTag();
-                tr.Ace.log("checking tag: " + tag);
-                if (tag.text.equals(JavadocTags.SEE)) {
-                    checkForTagDescription(taggedComments[ti], MSG_SEE_WITHOUT_REFERENCE);
-                }
-                else if (tag.text.equals(JavadocTags.SINCE)) {
-                    checkForTagDescription(taggedComments[ti], MSG_SINCE_WITHOUT_TEXT);
-                }
-                else if (tag.text.equals(JavadocTags.DEPRECATED)) {
-                    checkForTagDescription(taggedComments[ti], MSG_DEPRECATED_WITHOUT_TEXT);
-                }
-            }
-        }
-        else {
-            tr.Ace.log("skipping check for tag content");
+            checkTagContent(javadoc);
         }
     }
 

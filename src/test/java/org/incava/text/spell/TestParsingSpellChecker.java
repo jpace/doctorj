@@ -1,17 +1,20 @@
-package org.incava.doctorj;
+package org.incava.text.spell;
 
 import java.io.*;
 import java.util.*;
 import junit.framework.TestCase;
 import org.incava.ijdk.util.MultiMap;
-import org.incava.text.spell.Misspelling;
 
 
-public class TestCommentSpellCheck extends TestCase {
+public class TestParsingSpellChecker extends TestCase {
 
-    static class TestableCommentSpellCheck extends CommentSpellCheck {
+    static class TestableParsingSpellChecker extends ParsingSpellChecker {
         
         private List<Misspelling> misspellings = new ArrayList<Misspelling>();
+
+        public TestableParsingSpellChecker() {
+            super(new NoCaseSpellChecker());
+        }
 
         public void check(String desc) {
             misspellings = new ArrayList<Misspelling>();
@@ -23,13 +26,13 @@ public class TestCommentSpellCheck extends TestCase {
         }
     }
 
-    private static TestableCommentSpellCheck tcsc = new TestableCommentSpellCheck();
+    private static TestableParsingSpellChecker tcsc = new TestableParsingSpellChecker();
     
     static {
         tcsc.addDictionary("/home/jpace/proj/doctorj/etc/words.en_US");
     }
     
-    public TestCommentSpellCheck(String name) {
+    public TestParsingSpellChecker(String name) {
         super(name);
 
         tr.Ace.setVerbose(true);
@@ -58,31 +61,28 @@ public class TestCommentSpellCheck extends TestCase {
     }
 
     public void testOKPreBlock() {
-        runSpellTest(
-            "/** This is a comment.\n" +
-            "  *\n" +
-            "  *<pre>\n" +
-            "  * nuffim eh?\n" +
-            "  *</pre>\n" +
-            "  */\n",
-            0);
+        runSpellTest("/** This is a comment.\n" +
+                     "  *\n" +
+                     "  *<pre>\n" +
+                     "  * nuffim eh?\n" +
+                     "  *</pre>\n" +
+                     "  */\n",
+                     0);
             
-        runSpellTest(
-            "/** This is a comment.\n" +
-            "  *\n" +
-            "  *<pre>\n" +
-            "  * nuttin in heer shuld bie checkt\n" +
-            "  *</pre>\n" +
-            "  */\n",
-            0);
+        runSpellTest("/** This is a comment.\n" +
+                     "  *\n" +
+                     "  *<pre>\n" +
+                     "  * nuttin in heer shuld bie checkt\n" +
+                     "  *</pre>\n" +
+                     "  */\n",
+                     0);
 
-        runSpellTest(
-            "/** This is a comment.\n" +
-            "  *\n" +
-            "  *<pre>\n" +
-            "  * This pre block has no end.\n" +
-            "  */\n",
-            0);
+        runSpellTest("/** This is a comment.\n" +
+                     "  *\n" +
+                     "  *<pre>\n" +
+                     "  * This pre block has no end.\n" +
+                     "  */\n",
+                     0);
     }
 
     public void testOKCodeBlock() {
@@ -96,16 +96,15 @@ public class TestCommentSpellCheck extends TestCase {
     }
 
     public void testOKPreThenCode() {
-        runSpellTest(
-            "/** This is a comment.\n" +
-            "  *\n" +
-            "  *<pre>\n" +
-            "  * nuffim eh?\n" +
-            "  *</pre>\n" +
-            "  *<code>\n" +
-            "  * rredd eh?\n" +
-            "  *</code>\n" +
-            "  */\n",
-            0);
+        runSpellTest("/** This is a comment.\n" +
+                     "  *\n" +
+                     "  *<pre>\n" +
+                     "  * nuffim eh?\n" +
+                     "  *</pre>\n" +
+                     "  *<code>\n" +
+                     "  * rredd eh?\n" +
+                     "  *</code>\n" +
+                     "  */\n",
+                     0);
     }
 }

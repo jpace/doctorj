@@ -18,7 +18,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
 
     // presence of Javadoc
 
-    public void testDocumentedOuterConcreteNonPublicClass() {
+    public void xtestDocumentedOuterConcreteNonPublicClass() {
         evaluate("class Test {\n" +
                  "}\n",
                  new Violation[] { 
@@ -26,7 +26,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testDocumentedOuterConcretePublicClass() {
+    public void xtestDocumentedOuterConcretePublicClass() {
         evaluate("public class TestHasJavadoc {\n" +
                  "}\n",
                  new Violation[] { 
@@ -34,7 +34,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testDocumentedOuterAbstractNonPublicClass() {
+    public void xtestDocumentedOuterAbstractNonPublicClass() {
         evaluate("abstract class TestHasJavadoc {\n" +
                  "}\n",
                  new Violation[] { 
@@ -42,7 +42,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testDocumentedOuterAbstractPublicClass() {
+    public void xtestDocumentedOuterAbstractPublicClass() {
         evaluate("public abstract class TestHasJavadoc {\n" +
                  "}\n",
                  new Violation[] { 
@@ -50,7 +50,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testDocumentedOuterNonPublicInterface() {
+    public void xtestDocumentedOuterNonPublicInterface() {
         evaluate("interface TestHasJavadoc {\n" +
                  "}\n",
                  new Violation[] { 
@@ -58,7 +58,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testDocumentedOuterPublicInterface() {
+    public void xtestDocumentedOuterPublicInterface() {
         evaluate("public interface TestHasJavadoc {\n" +
                  "}\n",
                  new Violation[] { 
@@ -66,7 +66,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testDocumentedInnerConcreteNonPublicClass() {
+    public void xtestDocumentedInnerConcreteNonPublicClass() {
         evaluate("/** this class is commented. */\n" +
                  "class Test {\n" +
                  "    class InnerTestHasJavadoc {\n" +
@@ -77,7 +77,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testDocumentedInnerConcretePublicClass() {
+    public void xtestDocumentedInnerConcretePublicClass() {
         evaluate("/** this class is commented. */\n" +
                  "class Test {\n" +
                  "    public class InnerTestHasJavadoc {\n" +
@@ -88,7 +88,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testDocumentedInnerAbstractNonPublicClass() {
+    public void xtestDocumentedInnerAbstractNonPublicClass() {
         evaluate("/** this class is commented. */\n" +
                  "class Test {\n" +
                  "    abstract class InnerTestHasJavadoc {\n" +
@@ -99,7 +99,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testDocumentedInnerAbstractPublicClass() {
+    public void xtestDocumentedInnerAbstractPublicClass() {
         evaluate("/** this class is commented. */\n" +
                  "class Test {\n" +
                  "    public abstract class InnerTestHasJavadoc {\n" +
@@ -110,7 +110,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testDocumentedInnerNonPublicInterface() {
+    public void xtestDocumentedInnerNonPublicInterface() {
         evaluate("/** this interface is commented. */\n" +
                  "interface TestHasJavadoc {\n" +
                  "    interface InnerTestHasJavadoc {\n" +
@@ -121,7 +121,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testDocumentedInnerPublicInterface() {
+    public void xtestDocumentedInnerPublicInterface() {
         evaluate("/** this interface is commented. */\n" +
                  "interface TestHasJavadoc {\n" +
                  "    public interface InnerTestHasJavadoc {\n" +
@@ -132,7 +132,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testDocumentedNonPublicConstructor() {
+    public void xtestDocumentedNonPublicConstructor() {
         evaluate("/** this class is commented. */\n" +
                  "public class TestHasJavadoc {\n" +
                  "    Test() {} \n" +
@@ -142,7 +142,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testDocumentedPublicConstructor() {
+    public void xtestDocumentedPublicConstructor() {
         evaluate("/** this class is commented. */\n" +
                  "public class TestHasJavadoc {\n" +
                  "    public TestHasJavadoc() {} \n" +
@@ -152,7 +152,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testDocumentedNonPublicMethod() {
+    public void xtestDocumentedNonPublicMethod() {
         evaluate("/** this class is commented. */\n" +
                  "public class TestHasJavadoc {\n" +
                  "    void f() {} \n" +
@@ -162,7 +162,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testDocumentedPublicMethod() {
+    public void xtestDocumentedPublicMethod() {
         evaluate("/** this class is commented. */\n" +
                  "public class TestHasJavadoc {\n" +
                  "    public void f() {} \n" +
@@ -172,7 +172,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testDocumentedNonPublicField() {
+    public void xtestDocumentedNonPublicField() {
         evaluate("/** this class is commented. */\n" +
                  "public class TestHasJavadoc {\n" +
                  "    String s;\n" +
@@ -182,7 +182,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testDocumentedPublicField() {
+    public void xtestDocumentedPublicField() {
         evaluate("/** this class is commented. */\n" +
                  "public class TestHasJavadoc {\n" +
                  "    public String s;\n" +
@@ -192,7 +192,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testDocumentedPublicFieldMultipleVariables() {
+    public void xtestDocumentedPublicFieldMultipleVariables() {
         evaluate("/** this class is commented. */\n" +
                  "public class TestHasJavadoc {\n" +
                  "    public String s, t, u, v = \"foo\";\n" +
@@ -204,7 +204,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
 
     // deprecated
     
-    public void testDeprecatedClassWithText() {
+    public void xtestDeprecatedClassWithText() {
         evaluate("/** This is a description.\n" +
                  "  * @deprecated Use something else.\n" +
                  "  */\n" +
@@ -214,7 +214,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testDeprecatedClassWithoutText() {
+    public void xtestDeprecatedClassWithoutText() {
         evaluate("/** This is a description.\n" +
                  "  * @deprecated\n" +
                  "  */\n" +
@@ -225,7 +225,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
     
-    public void testDeprecatedClassWithoutTextSpaces() {
+    public void xtestDeprecatedClassWithoutTextSpaces() {
         evaluate("/** This is a description.\n" +
                  "  * @deprecated   \n" +
                  "  */\n" +
@@ -236,7 +236,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testDeprecatedInterfaceWithText() {
+    public void xtestDeprecatedInterfaceWithText() {
         evaluate("/** This is a description.\n" +
                  "  * @deprecated Use something else.\n" +
                  "  */\n" +
@@ -246,7 +246,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testDeprecatedInterfaceWithoutText() {
+    public void xtestDeprecatedInterfaceWithoutText() {
         evaluate("/** This is a description.\n" +
                  "  * @deprecated\n" +
                  "  */\n" +
@@ -257,7 +257,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
     
-    public void testDeprecatedInterfaceWithoutTextSpaces() {
+    public void xtestDeprecatedInterfaceWithoutTextSpaces() {
         evaluate("/** This is a description.\n" +
                  "  * @deprecated   \n" +
                  "  */\n" +
@@ -268,7 +268,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testDeprecatedMethodWithText() {
+    public void xtestDeprecatedMethodWithText() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -281,7 +281,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testDeprecatedMethodWithoutText() {
+    public void xtestDeprecatedMethodWithoutText() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -295,7 +295,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
     
-    public void testDeprecatedMethodWithoutTextSpaces() {
+    public void xtestDeprecatedMethodWithoutTextSpaces() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -309,7 +309,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testDeprecatedFieldWithText() {
+    public void xtestDeprecatedFieldWithText() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -322,7 +322,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testDeprecatedFieldWithoutText() {
+    public void xtestDeprecatedFieldWithoutText() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -336,7 +336,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
     
-    public void testDeprecatedFieldWithoutTextSpaces() {
+    public void xtestDeprecatedFieldWithoutTextSpaces() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -352,7 +352,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
 
     // see
 
-    public void testSeeClassWithText() {
+    public void xtestSeeClassWithText() {
         evaluate("/** This is a description.\n" +
                  "  * @see something else\n" +
                  "  */\n" +
@@ -370,7 +370,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testSeeClassWithoutText() {
+    public void xtestSeeClassWithoutText() {
         evaluate("/** This is a description.\n" +
                  "  * @see\n" +
                  "  */\n" +
@@ -381,7 +381,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
     
-    public void testSeeClassWithoutTextSpaces() {
+    public void xtestSeeClassWithoutTextSpaces() {
         evaluate("/** This is a description.\n" +
                  "  * @see   \n" +
                  "  */\n" +
@@ -392,7 +392,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testSeeInterfaceWithText() {
+    public void xtestSeeInterfaceWithText() {
         evaluate("/** This is a description.\n" +
                  "  * @see something else\n" +
                  "  */\n" +
@@ -410,7 +410,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testSeeInterfaceWithoutText() {
+    public void xtestSeeInterfaceWithoutText() {
         evaluate("/** This is a description.\n" +
                  "  * @see\n" +
                  "  */\n" +
@@ -421,7 +421,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
     
-    public void testSeeInterfaceWithoutTextSpaces() {
+    public void xtestSeeInterfaceWithoutTextSpaces() {
         evaluate("/** This is a description.\n" +
                  "  * @see   \n" +
                  "  */\n" +
@@ -432,7 +432,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testSeeMethodWithText() {
+    public void xtestSeeMethodWithText() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -456,7 +456,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testSeeMethodWithoutText() {
+    public void xtestSeeMethodWithoutText() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -470,7 +470,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
     
-    public void testSeeMethodWithoutTextSpaces() {
+    public void xtestSeeMethodWithoutTextSpaces() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -484,7 +484,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testSeeFieldWithText() {
+    public void xtestSeeFieldWithText() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -508,7 +508,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testSeeFieldWithoutText() {
+    public void xtestSeeFieldWithoutText() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -522,7 +522,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
     
-    public void testSeeFieldWithoutTextSpaces() {
+    public void xtestSeeFieldWithoutTextSpaces() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -538,7 +538,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
 
     // since
 
-    public void testSinceClassWithText() {
+    public void xtestSinceClassWithText() {
         evaluate("/** This is a description.\n" +
                  "  * @since some version\n" +
                  "  */\n" +
@@ -556,7 +556,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testSinceClassWithoutText() {
+    public void xtestSinceClassWithoutText() {
         evaluate("/** This is a description.\n" +
                  "  * @since\n" +
                  "  */\n" +
@@ -567,7 +567,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
     
-    public void testSinceClassWithoutTextSpaces() {
+    public void xtestSinceClassWithoutTextSpaces() {
         evaluate("/** This is a description.\n" +
                  "  * @since   \n" +
                  "  */\n" +
@@ -578,7 +578,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testSinceInterfaceWithText() {
+    public void xtestSinceInterfaceWithText() {
         evaluate("/** This is a description.\n" +
                  "  * @since some version\n" +
                  "  */\n" +
@@ -596,7 +596,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testSinceInterfaceWithoutText() {
+    public void xtestSinceInterfaceWithoutText() {
         evaluate("/** This is a description.\n" +
                  "  * @since\n" +
                  "  */\n" +
@@ -607,7 +607,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
     
-    public void testSinceInterfaceWithoutTextSpaces() {
+    public void xtestSinceInterfaceWithoutTextSpaces() {
         evaluate("/** This is a description.\n" +
                  "  * @since   \n" +
                  "  */\n" +
@@ -618,7 +618,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testSinceMethodWithText() {
+    public void xtestSinceMethodWithText() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -642,7 +642,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testSinceMethodWithoutText() {
+    public void xtestSinceMethodWithoutText() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -656,7 +656,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
     
-    public void testSinceMethodWithoutTextSpaces() {
+    public void xtestSinceMethodWithoutTextSpaces() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -670,7 +670,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testSinceFieldWithText() {
+    public void xtestSinceFieldWithText() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -694,7 +694,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testSinceFieldWithoutText() {
+    public void xtestSinceFieldWithoutText() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -708,7 +708,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
     
-    public void testSinceFieldWithoutTextSpaces() {
+    public void xtestSinceFieldWithoutTextSpaces() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -724,7 +724,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
 
     // tag order
 
-    public void testNoTags() {
+    public void xtestNoTags() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "}\n",
@@ -732,7 +732,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testProperOrder() {
+    public void xtestProperOrder() {
         evaluate("/**\n" +
                  "  * This is a description. \n" +
                  "  * @author me \n" +
@@ -767,7 +767,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testImproperOrder() {
+    public void xtestImproperOrder() {
         evaluate("/**\n" +
                  "  * This is a description. \n" +
                  "  * @version 0.1.2 \n" +
@@ -805,7 +805,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
 
     // tag validity
 
-    public void testValidityClassTags() {
+    public void xtestValidityClassTags() {
         evaluate("/** This is a description.\n" +
                  "  * @author me\n" +
                  "  * @version 1.10\n" +
@@ -833,7 +833,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testValidityInnerClassTags() {
+    public void xtestValidityInnerClassTags() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -867,7 +867,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testValidityInterfaceTags() {
+    public void xtestValidityInterfaceTags() {
         evaluate("/** This is a description.\n" +
                  "  * @author me\n" +
                  "  * @version 1.10\n" +
@@ -895,7 +895,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testValidityInnerInterfaceTags() {
+    public void xtestValidityInnerInterfaceTags() {
         evaluate("/** This is a description. */\n" +
                  "interface Outer {\n" +
                  "    /** This is a description.\n" +
@@ -929,7 +929,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testValidityMethodTags() {
+    public void xtestValidityMethodTags() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -959,7 +959,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testValidityCtorTags() {
+    public void xtestValidityCtorTags() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -1007,7 +1007,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testValidityFieldTags() {
+    public void xtestValidityFieldTags() {
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
                  "    /** This is a description.\n" +
@@ -1039,7 +1039,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
 
     // summary sentence length
 
-    public void testSummarySufficientLength() {
+    public void xtestSummarySufficientLength() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -1048,7 +1048,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
     
-    public void testSummaryNoSummarySentence() {
+    public void xtestSummaryNoSummarySentence() {
         evaluate("/** \n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -1058,7 +1058,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
     
-    public void testSummaryNoEndingPeriod() {
+    public void xtestSummaryNoEndingPeriod() {
         evaluate("/** \n" +
                  "  * This doesn't have an ending period\n" +
                  "  */\n" +
@@ -1069,7 +1069,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
     
-    public void testSummaryShortSentence() {
+    public void xtestSummaryShortSentence() {
         evaluate("/** \n" +
                  "  * Too short.\n" +
                  "  */\n" +
@@ -1101,7 +1101,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
 
     // spelling
 
-    public void testSpellingOK() {
+    public void xtestSpellingOK() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -1111,10 +1111,10 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
     }
 
     public void testSpellingOneMistake() {
-        final String msg = (
-            "Word 'descriptino' appears to be misspelled. " +
-            "Closest matches: description, descriptions, descriptor, description's, descriptive, descriptors"
-);
+        tr.Ace.setVerbose(true);
+        
+        final String msg = ("Word 'descriptino' appears to be misspelled. " +
+                            "Closest matches: description, descriptions, descriptor, description's, descriptive, descriptors");
         evaluate("/** This is a descriptino.\n" +
                  "  */\n" +
                  "class Test {\n" +
@@ -1124,16 +1124,12 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testSpellingTwoMistakes() {
-        final String msg0 = (
-            "Word 'exampel' appears to be misspelled. " +
-            "Closest matches: example, expel, enamel, exam, examen, exampled"
-);
+    public void xtestSpellingTwoMistakes() {
+        final String msg0 = ("Word 'exampel' appears to be misspelled. " +
+                             "Closest matches: example, expel, enamel, exam, examen, example");
 
-        final String msg1 = (
-            "Word 'badd' appears to be misspelled. " +
-            "Closest matches: bad, baddy, ba, ba, badder, baddie"
-);
+        final String msg1 = ("Word 'badd' appears to be misspelled. " +
+                             "Closest matches: bad, baddy, ba, ba, badder, baddie");
 
         evaluate("/** This is an exampel of\n" +
                  "  * badd spelling.\n" +
@@ -1146,7 +1142,7 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  });
     }
 
-    public void testSpellingEgregiousMistake() {
+    public void xtestSpellingEgregiousMistake() {
         evaluate("/** This is an egreejish misspelling.\n" +
                  "  */\n" +
                  "class Test {\n" +
