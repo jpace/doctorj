@@ -130,10 +130,8 @@ public class Options extends OptionSet {
 
         Boolean emacs = new Boolean(emacsOutput);
         String emacsProperty = System.getProperty("doctorj.emacs");
-        tr.Ace.log("emacs property: " + emacsProperty);
         if (emacsProperty != null) {
             emacs = new Boolean(emacsProperty);
-            tr.Ace.log("emacs: " + emacs);
         }
 
         Integer lvl = new Integer(warningLevel);
@@ -160,14 +158,10 @@ public class Options extends OptionSet {
 
         List<String> wordLists = new ArrayList<String>();
         String dirProperty = System.getProperty("doctorj.dir");
-        tr.Ace.log("dirProperty: " + dirProperty);
         
         if (dirProperty != null) {
             Locale locale = Locale.getDefault();
-            tr.Ace.log("locale: " + locale);
-            
             String wordListFile = dirProperty + "/words." + locale;
-            tr.Ace.log("wordListFile: " + wordListFile);
             
             wordLists.add(wordListFile);
         }
@@ -176,11 +170,8 @@ public class Options extends OptionSet {
         tr.Ace.log("dictProperty", dictProperty);
         
         if (dictProperty != null) {
-            List<String>     list = StringExt.listify(dictProperty);
-            Iterator it = list.iterator();
-            while (it.hasNext()) {
-                String s = (String)it.next();
-                wordLists.add(s);
+            for (String wl : StringExt.listify(dictProperty)) {
+                wordLists.add(wl);
             }
         }
         
