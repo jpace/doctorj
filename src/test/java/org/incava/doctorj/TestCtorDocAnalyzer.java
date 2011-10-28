@@ -1,6 +1,5 @@
 package org.incava.doctorj;
 
-import junit.framework.TestCase;
 import org.incava.analysis.Violation;
 
 
@@ -18,9 +17,7 @@ public class TestCtorDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    Test() {}\n" +
                  "}\n",
-                 new Violation[] {
-                     new Violation("Tag not valid for constructor", 4, 9, 4, 15)
-                 });
+                 new Violation("Tag not valid for constructor", 4, 9, 4, 15));
     }
 
 }

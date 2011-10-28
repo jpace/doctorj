@@ -17,9 +17,7 @@ public class TestFunctionDocAnalyzer extends AbstractDoctorJTestCase {
                  "      * @serialData Something.\n" +
                  "      */\n" +
                  "    void f() {}\n" +
-                 "}\n",
-                 new Violation[] { 
-                 });
+                 "}\n");
     }
 
     public void testCtorSerialDataOK() {
@@ -29,9 +27,7 @@ public class TestFunctionDocAnalyzer extends AbstractDoctorJTestCase {
                  "      * @serialData Something.\n" +
                  "      */\n" +
                  "    Test() {}\n" +
-                 "}\n",
-                 new Violation[] { 
-                 });
+                 "}\n");
     }
 
     public void testMethodSerialDataUndescribed() {
@@ -42,9 +38,7 @@ public class TestFunctionDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    void f() {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(FunctionDocAnalyzer.MSG_SERIALDATA_WITHOUT_DESCRIPTION, 4, 9, 4, 19)
-                 });
+                 new Violation(FunctionDocAnalyzer.MSG_SERIALDATA_WITHOUT_DESCRIPTION, 4, 9, 4, 19));
     }
 
     public void testCtorSerialDataUndescribed() {
@@ -55,9 +49,7 @@ public class TestFunctionDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    Test() {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(FunctionDocAnalyzer.MSG_SERIALDATA_WITHOUT_DESCRIPTION, 4, 9, 4, 19)
-                 });
+                 new Violation(FunctionDocAnalyzer.MSG_SERIALDATA_WITHOUT_DESCRIPTION, 4, 9, 4, 19));
     }
     
 }

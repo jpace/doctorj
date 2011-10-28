@@ -17,9 +17,7 @@ public class TestMethodDocAnalyzer extends AbstractDoctorJTestCase {
                  "      * @return What this method returns.\n" +
                  "      */\n" +
                  "    int f() { return 1; }\n" +
-                 "}\n",
-                 new Violation[] { 
-                 });
+                 "}\n");
     }
 
     public void testReturnFromVoid() {
@@ -30,9 +28,7 @@ public class TestMethodDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    void f() {}\n" +
                  "}\n",
-                 new Violation[] {
-                     new Violation(MethodDocAnalyzer.MSG_RETURN_FOR_VOID_METHOD, 4, 9, 4, 15)
-                 });
+                 new Violation(MethodDocAnalyzer.MSG_RETURN_FOR_VOID_METHOD, 4, 9, 4, 15));
     }
 
     public void testReturnUndescribed() {
@@ -43,9 +39,7 @@ public class TestMethodDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    int f() { return 1; }\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(MethodDocAnalyzer.MSG_RETURN_WITHOUT_DESCRIPTION, 4, 9, 4, 15)
-                 });
+                 new Violation(MethodDocAnalyzer.MSG_RETURN_WITHOUT_DESCRIPTION, 4, 9, 4, 15));
     }
 
     public void testReturnTypeUsed() {
@@ -56,9 +50,7 @@ public class TestMethodDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    int f() { return 1; }\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(MethodDocAnalyzer.MSG_RETURN_TYPE_USED, 4, 17, 4, 19)
-                 });
+                 new Violation(MethodDocAnalyzer.MSG_RETURN_TYPE_USED, 4, 17, 4, 19));
     }
 
     public void testJava15OK() {
@@ -78,10 +70,7 @@ public class TestMethodDocAnalyzer extends AbstractDoctorJTestCase {
                  "        return result;\n" +
                  "    }\n" +
                  "}\n",
-                 new Violation[] { 
-                 },
                  "1.5");
-        
     }
     
 }

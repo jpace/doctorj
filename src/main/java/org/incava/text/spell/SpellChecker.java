@@ -2,7 +2,9 @@ package org.incava.text.spell;
 
 import java.io.*;
 import java.util.*;
+import org.incava.ijdk.io.FileExt;
 import org.incava.ijdk.lang.MathExt;
+import org.incava.ijdk.lang.StringExt;
 import org.incava.ijdk.util.MultiMap;
 import static org.incava.ijdk.util.IUtil.*;
 
@@ -16,12 +18,12 @@ public class SpellChecker {
 
     public enum CaseType { CASE_SENSITIVE, CASE_INSENSITIVE };
 
-    private final MultiMap<String, String> words;
+    private final MultiMap<Character, String> words;
 
     private final CaseType caseType;
 
     public SpellChecker(CaseType caseType) {
-        this.words = new MultiMap<String, String>();
+        this.words = new MultiMap<Character, String>();
         this.caseType = caseType;
     }
 
@@ -46,57 +48,51 @@ public class SpellChecker {
     public boolean addDictionary(String dictionary) {
         tr.Ace.log("adding dictionary: " + dictionary);
 
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(dictionary));
-            
-            while (true) {
-                String word = br.readLine();
-                if (word == null) {
-                    break;
-                }
-                else {
-                    addWord(word);
-                }
+        for (String line : FileExt.readLines(dictionary)) {
+            if (isTrue(line)) {
+                addWord(line);
             }
-            return true;
         }
-        catch (IOException ioe) {
-            tr.Ace.log("ioe", ioe);
-            return false;
-        }
-    }
 
-    public String getKey(String word) {
-        char[] chars = word.toCharArray();
-        if (chars.length > 1) {
-            char c0 = chars[0];
-            char c1 = chars[1];
-            if (c0 > c1) {
-                char t = c0;
-                c0 = c1;
-                c1 = t;
-            }
-            return "" + c0 + c1;
-        }
-        else if (chars.length > 0) {
-            return "" + chars[0];
-        }
-        else {
-            return null;
-        }
+        return true;
     }
 
     public void addWord(String word) {
         String wstr = getString(word);
-        String key = getKey(wstr);
-        this.words.put(key, wstr);
+        addByCharacter(wstr, 0);
+        addByCharacter(wstr, 1);
+    }
+
+    private void addByCharacter(String wstr, int index) {
+        Character ch = StringExt.charAt(wstr, index);
+        if (ch != null) {
+            this.words.put(ch, wstr);
+        }
+    }
+
+    private Collection<String> getByCharacter(String wstr, int index) {
+        Character ch = StringExt.charAt(wstr, index);
+        Collection<String> atLtr = null;
+
+        if (ch != null) {
+            atLtr = this.words.get(ch);
+        }
+
+        return atLtr == null ? new ArrayList<String>() : atLtr;
     }
 
     public boolean hasWord(String word) {
         String wstr = getString(word);
-        String key = getKey(wstr);
-        Collection<String> atLtrs = this.words.get(key);
-        return atLtrs != null && atLtrs.contains(wstr);
+        return getWordsForMatch(wstr).contains(wstr);
+    }
+
+    private Collection<String> getWordsForMatch(String wstr) {
+        Set<String> matches = new TreeSet<String>();
+
+        matches.addAll(getByCharacter(wstr, 0));
+        matches.addAll(getByCharacter(wstr, 1));
+
+        return matches;
     }
 
     /**
@@ -110,12 +106,8 @@ public class SpellChecker {
             return true;
         }
         else if (nearMatches != null) {
-            char[]             wordChars = wstr.toCharArray();
-            int                wordLen   = wordChars.length;
-            String             key       = getKey(wstr);        
-            Collection<String> wds       = this.words.get(key);
-
-            for (String w : iter(wds)) {
+            Collection<String> matches = getWordsForMatch(wstr);
+            for (String w : matches) {
                 int ed = Spelling.getEditDistance(wstr, w, maxEditDistance);
                 if (ed >= 0 && ed <= maxEditDistance) {
                     nearMatches.put(ed, w);

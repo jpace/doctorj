@@ -125,35 +125,33 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer {
             addViolation(MSG_NO_SUMMARY_SENTENCE, javadoc.getStartLine(), javadoc.getStartColumn(), javadoc.getEndLine(), javadoc.getEndColumn());
         }
         else {
-            String descStr = desc.text;
-            int    dotPos = descStr.indexOf('.');
-            int    len = descStr.length();
+            int dotPos = desc.text.indexOf('.');
+            int len = desc.text.length();
+            LineMapping lines = new LineMapping(desc.text, desc.start.line, desc.start.column);
 
             // skip sequences like '127.0.0.1', i.e., whitespace must follow the dot:
-            while (dotPos != -1 && dotPos + 1 < len && !Character.isWhitespace(descStr.charAt(dotPos + 1))) {
-                dotPos = descStr.indexOf('.', dotPos + 1);
+            while (dotPos != -1 && dotPos + 1 < len && !Character.isWhitespace(desc.text.charAt(dotPos + 1))) {
+                dotPos = desc.text.indexOf('.', dotPos + 1);
             }
 
             if (dotPos == -1) {
-                LineMapping lines = new LineMapping(descStr, desc.start.line, desc.start.column);
-                Location    end   = lines.getLocation(descStr.length() - 1);
+                Location end = lines.getLocation(desc.text.length() - 1);
                 addViolation(MSG_SUMMARY_SENTENCE_DOES_NOT_END_WITH_PERIOD, desc.start, end);
             }
             else {
-                String summarySentence = descStr.substring(0, dotPos + 1);
+                String summarySentence = desc.text.substring(0, dotPos + 1);
                 int nSpaces = 0;
                 int spacePos = -1;
                 while ((spacePos = summarySentence.indexOf(' ', spacePos + 1)) != -1) {
                     ++nSpaces;
                 }
                 if (nSpaces < 3) {
-                    LineMapping lines = new LineMapping(descStr, desc.start.line, desc.start.column);
-                    Location    end = lines.getLocation(dotPos);
+                    Location end = lines.getLocation(dotPos);
                     addViolation(MSG_SUMMARY_SENTENCE_TOO_SHORT, desc.start, end);
                 }
             }
 
-            spellingAnalzyer.check(this, desc);
+            spellingAnalzyer.check(this, lines, desc.text);
         }
     }
 

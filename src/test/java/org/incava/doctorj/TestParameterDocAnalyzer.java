@@ -18,9 +18,7 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "    /** This is a description.\n" +
                  "      */\n" +
                  "    void method() {}\n" +
-                 "}\n",
-                 new Violation[] { 
-                 });
+                 "}\n");
 
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
@@ -28,9 +26,7 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      * @param i This describes the i parameter.\n" +
                  "      */\n" +
                  "    void method(int i) {}\n" +
-                 "}\n",
-                 new Violation[] { 
-                 });
+                 "}\n");
     }
 
     public void testMethodParametersNoParamsInCode() {
@@ -41,9 +37,7 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    void method() {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, 4, 9, 4, 14)
-                 });
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, 4, 9, 4, 14));
 
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
@@ -52,9 +46,7 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    void method() {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, 4, 9, 4, 14)
-                 });
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, 4, 9, 4, 14));
 
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
@@ -63,9 +55,7 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    void method() {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, 4, 9, 4, 14)
-                 });
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, 4, 9, 4, 14));
 
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
@@ -75,10 +65,8 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    void method() {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     // should be only one error:
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, 4, 9, 4, 14)
-                 });
+                 // should be only one error:
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, 4, 9, 4, 14));
 
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
@@ -91,10 +79,8 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    void method() {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     // should be only one error:
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, 4, 9, 4, 14)
-                 });
+                 // should be only one error:
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, 4, 9, 4, 14));
     }
 
     public void testMethodParametersParamWithoutTarget() {
@@ -105,10 +91,8 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    void method(int i) {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETER_WITHOUT_NAME, 4, 9, 4, 14),
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_DOCUMENTED, 6, 21, 6, 21)
-                 });
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETER_WITHOUT_NAME, 4, 9, 4, 14),
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_DOCUMENTED, 6, 21, 6, 21));
     }
 
     public void testMethodParametersParamMisspelled() {
@@ -119,9 +103,7 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    void method(String str) {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETER_MISSPELLED, 4, 16, 4, 17)
-                 });
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETER_MISSPELLED, 4, 16, 4, 17));
 
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
@@ -130,9 +112,7 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    void method(String str) {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETER_MISSPELLED, 4, 16, 4, 16)
-                 });
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETER_MISSPELLED, 4, 16, 4, 16));
     }
 
     public void testMethodParametersParamNotDocumented() {
@@ -143,9 +123,7 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    void method(String str, Comparator comp) {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_DOCUMENTED, 6, 24, 6, 26)
-                 });
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_DOCUMENTED, 6, 24, 6, 26));
 
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
@@ -154,10 +132,8 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    void method(String str, int price, Comparator comp) {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_DOCUMENTED, 6, 24, 6, 26),
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_DOCUMENTED, 6, 51, 6, 54)
-                 });
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_DOCUMENTED, 6, 24, 6, 26),
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_DOCUMENTED, 6, 51, 6, 54));
     }
 
     public void testMethodParametersMisordered() {
@@ -169,9 +145,7 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    void method(String str, Comparator comp) {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_IN_CODE_ORDER, 5, 16, 5, 18)
-                 });
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_IN_CODE_ORDER, 5, 16, 5, 18));
 
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
@@ -182,9 +156,7 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    void method(java.awt.Dimension size, String str, Comparator comp) {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_IN_CODE_ORDER, 6, 16, 6, 18)
-                 });
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_IN_CODE_ORDER, 6, 16, 6, 18));
     }
 
     public void testMethodParametersTypeUsed() {
@@ -195,9 +167,7 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    void method(String str) {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETER_TYPE_USED, 4, 16, 4, 21)
-                 });
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETER_TYPE_USED, 4, 16, 4, 21));
 
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
@@ -207,10 +177,8 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    void method(String str, Comparator comp) {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETER_TYPE_USED, 4, 16, 4, 21),
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETER_TYPE_USED, 5, 16, 5, 25)
-                 });
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETER_TYPE_USED, 4, 16, 4, 21),
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETER_TYPE_USED, 5, 16, 5, 25));
     }
 
     // Same as above, but for constructors.
@@ -221,9 +189,7 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "    /** This is a description.\n" +
                  "      */\n" +
                  "    Test() {}\n" +
-                 "}\n",
-                 new Violation[] { 
-                 });
+                 "}\n");
 
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
@@ -231,9 +197,7 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      * @param i This describes the i parameter.\n" +
                  "      */\n" +
                  "    Test(int i) {}\n" +
-                 "}\n",
-                 new Violation[] { 
-                 });
+                 "}\n");
     }
 
     public void testCtorParametersNoParamsInCode() {
@@ -244,9 +208,7 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    Test() {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, 4, 9, 4, 14)
-                 });
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, 4, 9, 4, 14));
 
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
@@ -255,9 +217,7 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    Test() {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, 4, 9, 4, 14)
-                 });
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, 4, 9, 4, 14));
 
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
@@ -266,9 +226,7 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    Test() {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, 4, 9, 4, 14)
-                 });
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, 4, 9, 4, 14));
 
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
@@ -278,10 +236,8 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    Test() {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     // should be only one error:
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, 4, 9, 4, 14)
-                 });
+                 // should be only one error:
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, 4, 9, 4, 14));
 
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
@@ -294,10 +250,8 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    Test() {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     // should be only one error:
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, 4, 9, 4, 14)
-                 });
+                 // should be only one error:
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, 4, 9, 4, 14));
     }
 
     public void testCtorParametersParamWithoutTarget() {
@@ -308,10 +262,8 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    Test(int i) {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETER_WITHOUT_NAME, 4, 9, 4, 14),
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_DOCUMENTED, 6, 14, 6, 14)
-                 });
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETER_WITHOUT_NAME, 4, 9, 4, 14),
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_DOCUMENTED, 6, 14, 6, 14));
     }
 
     public void testCtorParametersParamMisspelled() {
@@ -322,9 +274,7 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    Test(String str) {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETER_MISSPELLED, 4, 16, 4, 17)
-                 });
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETER_MISSPELLED, 4, 16, 4, 17));
 
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
@@ -333,9 +283,7 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    Test(String str) {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETER_MISSPELLED, 4, 16, 4, 16)
-                 });
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETER_MISSPELLED, 4, 16, 4, 16));
     }
 
     public void testCtorParametersParamNotDocumented() {
@@ -346,9 +294,7 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    Test(String str, Comparator comp) {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_DOCUMENTED, 6, 17, 6, 19)
-                 });
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_DOCUMENTED, 6, 17, 6, 19));
 
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
@@ -357,10 +303,8 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    Test(String str, int price, Comparator comp) {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_DOCUMENTED, 6, 17, 6, 19),
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_DOCUMENTED, 6, 44, 6, 47)
-                 });
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_DOCUMENTED, 6, 17, 6, 19),
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_DOCUMENTED, 6, 44, 6, 47));
     }
 
     public void testCtorParametersMisordered() {
@@ -372,9 +316,7 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    Test(String str, Comparator comp) {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_IN_CODE_ORDER, 5, 16, 5, 18)
-                 });
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_IN_CODE_ORDER, 5, 16, 5, 18));
 
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
@@ -385,9 +327,7 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    Test(java.awt.Dimension size, String str, Comparator comp) {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_IN_CODE_ORDER, 6, 16, 6, 18)
-                 });
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_IN_CODE_ORDER, 6, 16, 6, 18));
     }
 
     public void testCtorParametersTypeUsed() {
@@ -398,9 +338,7 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    Test(String str) {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETER_TYPE_USED, 4, 16, 4, 21)
-                 });
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETER_TYPE_USED, 4, 16, 4, 21));
 
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
@@ -410,10 +348,8 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    Test(String str, Comparator comp) {}\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETER_TYPE_USED, 4, 16, 4, 21),
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETER_TYPE_USED, 5, 16, 5, 25)
-                 });
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETER_TYPE_USED, 4, 16, 4, 21),
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETER_TYPE_USED, 5, 16, 5, 25));
     }
 
     public void testParamterNotInCode() {
@@ -432,10 +368,7 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "    }\n" +
                  "\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_IN_CODE, 8, 15, 8, 19)
-                 },
-                 "1.5");
+                 "1.5",
+                 new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_IN_CODE, 8, 15, 8, 19));
     }
 }
-

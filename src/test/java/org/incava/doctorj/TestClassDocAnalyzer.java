@@ -15,25 +15,19 @@ public class TestClassDocAnalyzer extends TestTypeDocAnalyzer {
                  "  * @author e. e. cummings\n" +
                  "  */\n" +
                  "class Test {\n" +
-                 "}\n",
-                 new Violation[] { 
-                 });
+                 "}\n");
 
         evaluate("/** This is a description.\n" +
                  "  * @author I\n" +
                  "  */\n" +
                  "class Test {\n" +
-                 "}\n",
-                 new Violation[] { 
-                 });
+                 "}\n");
 
         evaluate("/** This is a description.\n" +
                  "  * @author fred\n" +
                  "  */\n" +
                  "class Test {\n" +
-                 "}\n",
-                 new Violation[] { 
-                 });
+                 "}\n");
     }
 
     public void testClassAuthorWithoutText() {
@@ -42,9 +36,7 @@ public class TestClassDocAnalyzer extends TestTypeDocAnalyzer {
                  "  */\n" +
                  "class Test {\n" +
                  "}\n",
-                 new Violation[] {
-                     new Violation(TypeDocAnalyzer.MSG_AUTHOR_WITHOUT_NAME, 2, 5, 2, 11)
-                 });
+                 new Violation(TypeDocAnalyzer.MSG_AUTHOR_WITHOUT_NAME, 2, 5, 2, 11));
     }
     
     public void testClassAuthorWithoutTextSpaces() {
@@ -53,18 +45,14 @@ public class TestClassDocAnalyzer extends TestTypeDocAnalyzer {
                  "  */\n" +
                  "class Test {\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(TypeDocAnalyzer.MSG_AUTHOR_WITHOUT_NAME, 2, 5, 2, 11)
-                 });
+                 new Violation(TypeDocAnalyzer.MSG_AUTHOR_WITHOUT_NAME, 2, 5, 2, 11));
 
         evaluate("/** This is a description.\n" +
                  "  * @author \n" +
                  "  */\n" +
                  "class Test {\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(TypeDocAnalyzer.MSG_AUTHOR_WITHOUT_NAME, 2, 5, 2, 11)
-                 });
+                 new Violation(TypeDocAnalyzer.MSG_AUTHOR_WITHOUT_NAME, 2, 5, 2, 11));
     }
 
     public void testClassVersionWithText() {
@@ -72,17 +60,13 @@ public class TestClassDocAnalyzer extends TestTypeDocAnalyzer {
                  "  * @version 1.1.2\n" +
                  "  */\n" +
                  "class Test {\n" +
-                 "}\n",
-                 new Violation[] { 
-                 });
+                 "}\n");
 
         evaluate("/** This is a description.\n" +
                  "  * @version 1\n" +
                  "  */\n" +
                  "class Test {\n" +
-                 "}\n",
-                 new Violation[] { 
-                 });
+                 "}\n");
     }
 
     public void testClassVersionWithoutText() {
@@ -91,9 +75,7 @@ public class TestClassDocAnalyzer extends TestTypeDocAnalyzer {
                  "  */\n" +
                  "class Test {\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(TypeDocAnalyzer.MSG_VERSION_WITHOUT_TEXT, 2, 5, 2, 12)
-                 });
+                 new Violation(TypeDocAnalyzer.MSG_VERSION_WITHOUT_TEXT, 2, 5, 2, 12));
     }
     
     public void testClassVersionWithoutTextSpaces() {
@@ -102,18 +84,14 @@ public class TestClassDocAnalyzer extends TestTypeDocAnalyzer {
                  "  */\n" +
                  "class Test {\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(TypeDocAnalyzer.MSG_VERSION_WITHOUT_TEXT, 2, 5, 2, 12)
-                 });
+                 new Violation(TypeDocAnalyzer.MSG_VERSION_WITHOUT_TEXT, 2, 5, 2, 12));
 
         evaluate("/** This is a description.\n" +
                  "  * @version \n" +
                  "  */\n" +
                  "class Test {\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(TypeDocAnalyzer.MSG_VERSION_WITHOUT_TEXT, 2, 5, 2, 12)
-                 });
+                 new Violation(TypeDocAnalyzer.MSG_VERSION_WITHOUT_TEXT, 2, 5, 2, 12));
     }
 
     public void testClassSerialWithText() {
@@ -121,17 +99,13 @@ public class TestClassDocAnalyzer extends TestTypeDocAnalyzer {
                  "  * @serial This describes the serial field.\n" +
                  "  */\n" +
                  "class Test {\n" +
-                 "}\n",
-                 new Violation[] { 
-                 });
+                 "}\n");
 
         evaluate("/** This is a description.\n" +
                  "  * @serial description\n" +
                  "  */\n" +
                  "class Test {\n" +
-                 "}\n",
-                 new Violation[] { 
-                 });
+                 "}\n");
     }
 
     public void testClassSerialWithoutText() {
@@ -140,9 +114,7 @@ public class TestClassDocAnalyzer extends TestTypeDocAnalyzer {
                  "  */\n" +
                  "class Test {\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(TypeDocAnalyzer.MSG_SERIAL_WITHOUT_TEXT, 2, 5, 2, 11)
-                 });
+                 new Violation(TypeDocAnalyzer.MSG_SERIAL_WITHOUT_TEXT, 2, 5, 2, 11));
     }
     
     public void testClassSerialWithoutTextSpaces() {
@@ -151,18 +123,14 @@ public class TestClassDocAnalyzer extends TestTypeDocAnalyzer {
                  "  */\n" +
                  "class Test {\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(TypeDocAnalyzer.MSG_SERIAL_WITHOUT_TEXT, 2, 5, 2, 11)
-                 });
+                 new Violation(TypeDocAnalyzer.MSG_SERIAL_WITHOUT_TEXT, 2, 5, 2, 11));
 
         evaluate("/** This is a description.\n" +
                  "  * @serial \n" +
                  "  */\n" +
                  "class Test {\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(TypeDocAnalyzer.MSG_SERIAL_WITHOUT_TEXT, 2, 5, 2, 11)
-                 });
+                 new Violation(TypeDocAnalyzer.MSG_SERIAL_WITHOUT_TEXT, 2, 5, 2, 11));
     }
-
+    
 }

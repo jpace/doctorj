@@ -18,8 +18,8 @@ public class AbstractDoctorJTestCase extends TestCase {
 
     protected Report analyze(String contents, String version) {
         StringWriter      reportOutput = new StringWriter();
-        Report            report = new TerseReport(reportOutput);
-        JavaParserVisitor analyzer = new JavadocAnalyzer(report);
+        Report            report       = new TerseReport(reportOutput);
+        JavaParserVisitor analyzer     = new JavadocAnalyzer(report);
         try {
             report.reset(contents);
 
@@ -45,18 +45,18 @@ public class AbstractDoctorJTestCase extends TestCase {
         return report;
     }
 
-    public void evaluate(String contents, Violation[] expectations) {
-        evaluate(contents, expectations, "1.4");
+    public void evaluate(String contents, Violation ... expectations) {
+        evaluate(contents, "1.4", expectations);
     }
 
-    public void evaluate(String contents, Violation[] expectations, String version) {
+    public void evaluate(String contents, String version, Violation ... expectations) {
         tr.Ace.log("expectations", expectations);
         Report report = analyze(contents, version);
         
         Set<Violation> violations = report.getViolations();
         tr.Ace.log("violations", violations);
         
-        assertEquals("number of violations", expectations.length, violations.size());    
+        assertEquals("number of violations", expectations.length, violations.size());
         
         Iterator<Violation> vit = violations.iterator();
         for (int vi = 0; vit.hasNext() && vi < violations.size(); ++vi) {

@@ -5,7 +5,6 @@ import net.sourceforge.pmd.ast.*;
 import org.incava.analysis.Analyzer;
 import org.incava.ijdk.lang.StringExt;
 import org.incava.ijdk.util.MultiMap;
-import org.incava.javadoc.*;
 import org.incava.text.LineMapping;
 import org.incava.text.Location;
 import org.incava.text.spell.*;
@@ -23,20 +22,17 @@ public class SpellingAnalyzer extends ParsingSpellChecker {
 
     private Analyzer analyzer;
 
-    private JavadocElement desc;
-
     private LineMapping lines;
 
     public SpellingAnalyzer() {
         super(new SpellChecker(SpellChecker.CaseType.CASE_INSENSITIVE));
     }
 
-    public void check(Analyzer analyzer, JavadocElement desc) {
+    public void check(Analyzer analyzer, LineMapping lines, String text) {
         this.analyzer = analyzer;
-        this.desc = desc;
-        this.lines = null;
+        this.lines = lines;
         
-        super.check(this.desc.text);
+        super.check(text);
     }
     
     protected String makeMessage(String word, MultiMap<Integer, String> nearMatches) {
@@ -67,16 +63,7 @@ public class SpellingAnalyzer extends ParsingSpellChecker {
     }
 
     protected void wordMisspelled(String word, int position, MultiMap<Integer, String> nearMatches) {
-        tr.Ace.log("word", word);
-
-        if (this.desc == null) {
-            tr.Ace.stack(tr.Ace.RED, "this.desc", this.desc);
-            return;
-        }
-
-        if (this.lines == null) {
-            this.lines = new LineMapping(this.desc.text, this.desc.start.line, this.desc.start.column);
-        }
+        tr.Ace.red("word", word);
         
         Location start = this.lines.getLocation(position);
         Location end = this.lines.getLocation(position + word.length() - 1);

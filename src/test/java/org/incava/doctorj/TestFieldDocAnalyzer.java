@@ -19,9 +19,7 @@ public class TestFieldDocAnalyzer extends AbstractDoctorJTestCase {
                  "    ObjectStreamField[] serialPersistentFields = { \n" +
                  "        new ObjectStreamField(\"one\",  Integer.TYPE) \n" +
                  "    };\n" +
-                 "}\n",
-                 new Violation[] { 
-                 });
+                 "}\n");
     }
 
     public void testSerialFieldNoDoc() {
@@ -34,9 +32,7 @@ public class TestFieldDocAnalyzer extends AbstractDoctorJTestCase {
                  "        new ObjectStreamField(\"one\",  Integer.TYPE) \n" +
                  "    };\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(FieldDocAnalyzer.MSG_SERIALFIELD_WITHOUT_NAME_TYPE_AND_DESCRIPTION, 4, 9, 4, 20)
-                 });
+                 new Violation(FieldDocAnalyzer.MSG_SERIALFIELD_WITHOUT_NAME_TYPE_AND_DESCRIPTION, 4, 9, 4, 20));
 
         evaluate("/** This is a description. */\n" +
                  "class Test {\n" +
@@ -47,9 +43,7 @@ public class TestFieldDocAnalyzer extends AbstractDoctorJTestCase {
                  "        new ObjectStreamField(\"one\",  Integer.TYPE) \n" +
                  "    };\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(FieldDocAnalyzer.MSG_SERIALFIELD_WITHOUT_NAME_TYPE_AND_DESCRIPTION, 4, 9, 4, 20)
-                 });
+                 new Violation(FieldDocAnalyzer.MSG_SERIALFIELD_WITHOUT_NAME_TYPE_AND_DESCRIPTION, 4, 9, 4, 20));
     }
 
     public void testSerialFieldNoDescription() {
@@ -62,9 +56,7 @@ public class TestFieldDocAnalyzer extends AbstractDoctorJTestCase {
                  "        new ObjectStreamField(\"one\",  Integer.TYPE) \n" +
                  "    };\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(FieldDocAnalyzer.MSG_SERIALFIELD_WITHOUT_DESCRIPTION, 4, 22, 4, 29)
-                 });
+                 new Violation(FieldDocAnalyzer.MSG_SERIALFIELD_WITHOUT_DESCRIPTION, 4, 22, 4, 29));
     }
 
     public void testSerialFieldNoTypeNorDescription() {
@@ -77,9 +69,7 @@ public class TestFieldDocAnalyzer extends AbstractDoctorJTestCase {
                  "        new ObjectStreamField(\"one\",  Integer.TYPE) \n" +
                  "    };\n" +
                  "}\n",
-                 new Violation[] { 
-                     new Violation(FieldDocAnalyzer.MSG_SERIALFIELD_WITHOUT_TYPE_AND_DESCRIPTION, 4, 22, 4, 25)
-                 });
+                 new Violation(FieldDocAnalyzer.MSG_SERIALFIELD_WITHOUT_TYPE_AND_DESCRIPTION, 4, 22, 4, 25));
     }
     
 }

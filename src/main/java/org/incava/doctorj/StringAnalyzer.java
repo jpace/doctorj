@@ -1,11 +1,14 @@
 package org.incava.doctorj;
 
 import java.util.*;
-import java.util.regex.*;
 import net.sourceforge.pmd.ast.*;
+import org.incava.analysis.Analyzer;
 import org.incava.analysis.Report;
+import org.incava.ijdk.lang.StringExt;
 import org.incava.pmdx.SimpleNodeUtil;
+import org.incava.text.LineMapping;
 import org.incava.text.spell.*;
+import static org.incava.ijdk.util.IUtil.*;
 
 
 /**
@@ -13,12 +16,16 @@ import org.incava.text.spell.*;
  */
 public class StringAnalyzer extends JavaParserVisitorAdapter {
 
+    private final Analyzer analyzer;
+
     private final Report report;
 
     private final SpellingAnalyzer spellingAnalyzer;
 
     public StringAnalyzer(Report r) {
         this.report = r;
+        this.analyzer = new Analyzer(r);
+        
         tr.Ace.setVerbose(true);
 
         this.spellingAnalyzer = new SpellingAnalyzer();
@@ -31,25 +38,19 @@ public class StringAnalyzer extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTLiteral node, Object data) {
-        tr.Ace.log("node", node);
-        SimpleNodeUtil.dump(node, "");
         String nodeStr = SimpleNodeUtil.toString(node);
         tr.Ace.log("nodeStr", nodeStr);
 
-        String quotedStrPat = "\\A\"(.*)\"\\z";
+        Token st = node.getFirstToken();
+        tr.Ace.log("st", st);
 
-        Pattern pat = Pattern.compile(quotedStrPat);
-        Matcher mat = pat.matcher(nodeStr);
-        tr.Ace.log("mat", mat);
-        tr.Ace.log("mat.match?", "" + mat.matches());
+        if (isTrue(st) && StringExt.charAt(st.image, 0) == '"' && StringExt.charAt(st.image, -1) == '"') {
+            tr.Ace.yellow("st", st);
+            
+            LineMapping lines = new LineMapping(st.image, st.beginLine, st.beginColumn);
+            tr.Ace.log("lines", lines);
 
-        if (mat.matches()) {
-            tr.Ace.log("mat.match?", "" + mat.matches());
-
-            String content = mat.group(1);
-            tr.Ace.log("content", content);
-
-            this.spellingAnalyzer.check(content);
+            this.spellingAnalyzer.check(this.analyzer, lines, st.image);
         }
 
         return visit((SimpleJavaNode)node, data);

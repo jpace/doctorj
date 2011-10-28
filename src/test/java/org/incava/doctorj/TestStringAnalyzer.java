@@ -11,7 +11,7 @@ import org.incava.java.*;
 public class TestStringAnalyzer extends AbstractDoctorJTestCase {
     
     // static {
-    //     ItemDocAnalyzer.spellChecker.addDictionary("/home/jpace/proj/doctorj/etc/words.en_US");
+    //     SpellingAnalyzer.addDictionary("/home/jpace/proj/doctorj/etc/words.en_US");
     // }
     
     public TestStringAnalyzer(String name) {
@@ -21,16 +21,17 @@ public class TestStringAnalyzer extends AbstractDoctorJTestCase {
     }
 
     protected Report analyze(String contents, String version) {
-        StringWriter      reportOutput = new StringWriter();
-        Report            report       = new TerseReport(reportOutput);
-        JavaParserVisitor analyzer     = new StringAnalyzer(report);
+        StringWriter   reportOutput = new StringWriter();
+        Report         report       = new TerseReport(reportOutput);
+        StringAnalyzer analyzer     = new StringAnalyzer(report);
 
         try {
             report.reset(contents);
 
-            Reader             rdr = new StringReader(contents);
-            JavaCharStream     jcs = new JavaCharStream(rdr);
-            JavaParser         parser = new JavaParser(jcs);
+            Reader         rdr    = new StringReader(contents);
+            JavaCharStream jcs    = new JavaCharStream(rdr);
+            JavaParser     parser = new JavaParser(jcs);
+
             if ("1.3".equals(version)) {
                 parser.setJDK13();
             }
@@ -46,34 +47,38 @@ public class TestStringAnalyzer extends AbstractDoctorJTestCase {
             System.out.println("Encountered errors during parse.");
             fail(e.getMessage());
         }
-
+        
         return report;
     }
 
     public void testOKString() {
         String contents = ("class Test {\n" +
-                           "    String s = \"something\";" +
-                           "    int i = 4;" +
-                           "    String t = \"this is a test\";" +
+                           "    String s = \"something\";\n" +
+                           "    int i = 4;\n" +
+                           "    String t = \"this is a test\";\n" +
                            "}\n");
         Report report = analyze(contents, "1.5");
         tr.Ace.log("report", report);
 
         Set<Violation> violations = report.getViolations();
         tr.Ace.yellow("violations", violations);
+
+        assertEquals("# of violations", 0, violations.size());
     }
 
     public void testIncorrectString() {
         String contents = ("class Test {\n" +
-                           "    String s = \"somet hing\";" +
-                           "    int i = 4;" +
-                           "    String t = \"thi si sate st\";" +
+                           "    String s = \"wafle freis\";\n" +
+                           "    int i = 4;\n" +
+                           "    String t = \"horruble ngintmare\";\n" +
                            "}\n");
         Report report = analyze(contents, "1.5");
         tr.Ace.log("report", report);
 
         Set<Violation> violations = report.getViolations();
         tr.Ace.yellow("violations", violations);
+
+        assertEquals("# of violations", 4, violations.size());
     }
 
 }
