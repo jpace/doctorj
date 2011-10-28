@@ -2,6 +2,7 @@ package org.incava.doctorj;
 
 import junit.framework.TestCase;
 import org.incava.analysis.Violation;
+import static org.incava.doctorj.MethodDocAnalyzer.*;
 
 
 public class TestMethodDocAnalyzer extends AbstractDoctorJTestCase {
@@ -28,7 +29,7 @@ public class TestMethodDocAnalyzer extends AbstractDoctorJTestCase {
                  "      */\n" +
                  "    void f() {}\n" +
                  "}\n",
-                 new Violation(MethodDocAnalyzer.MSG_RETURN_FOR_VOID_METHOD, 4, 9, 4, 15));
+                 new Violation(MSG_RETURN_FOR_VOID_METHOD, 4, 9, 4, 15));
     }
 
     public void testReturnUndescribed() {

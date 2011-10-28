@@ -1,5 +1,6 @@
 package org.incava.doctorj;
 
+import java.text.MessageFormat;
 import java.util.*;
 import net.sourceforge.pmd.ast.*;
 import org.incava.analysis.Analyzer;
@@ -12,6 +13,10 @@ import org.incava.text.spell.*;
 
 public class SpellingAnalyzer extends ParsingSpellChecker {
 
+    public final static String MSG_MISSPELLED_NO_MATCHES = "Word ''{0}'' appears to be misspelled. No close matches";
+    
+    public final static String MSG_MISSPELLED_MATCHES = "Word ''{0}'' appears to be misspelled. Closest matches: {1}";
+    
     private static SpellingAnalyzer instance = new SpellingAnalyzer();
 
     public static SpellingAnalyzer getInstance() {
@@ -36,13 +41,10 @@ public class SpellingAnalyzer extends ParsingSpellChecker {
     }
     
     protected String makeMessage(String word, MultiMap<Integer, String> nearMatches) {
-        StringBuilder sb = new StringBuilder("Word '" + word + "' appears to be misspelled. ");
         if (nearMatches.size() == 0) {
-            sb.append("No close matches");
+            return MessageFormat.format(MSG_MISSPELLED_NO_MATCHES, word);
         }
         else {
-            sb.append("Closest matches: ");
-
             List<String> msgWords = new ArrayList<String>();
             Set<Integer> eds = new TreeSet<Integer>(nearMatches.keySet());
             for (Integer ed : eds) {
@@ -56,10 +58,8 @@ public class SpellingAnalyzer extends ParsingSpellChecker {
                 msgWords.addAll(matches.subList(0, nNew));
             }
 
-            sb.append(StringExt.join(msgWords, ", "));
+            return MessageFormat.format(MSG_MISSPELLED_MATCHES, word, StringExt.join(msgWords, ", "));
         }
-
-        return sb.toString();
     }
 
     protected void wordMisspelled(String word, int position, MultiMap<Integer, String> nearMatches) {

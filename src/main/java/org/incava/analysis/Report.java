@@ -35,7 +35,6 @@ public abstract class Report {
      */
     public Report(Writer writer) {
         this.writer = writer;
-        
         this.violations = new TreeSet<Violation>();
     }
 
@@ -56,7 +55,6 @@ public abstract class Report {
      */
     public Report(Writer writer, String source) {
         this(writer);
-
         reset(source);
     }
 
@@ -67,8 +65,7 @@ public abstract class Report {
      * @param file The file, containing source code, to which this report applies.
      */
     public Report(Writer writer, File file) {
-        this(writer);
-        
+        this(writer);        
         reset(file);
     }
 
@@ -79,8 +76,7 @@ public abstract class Report {
      * @param source The source code to which this report applies.
      */
     public Report(OutputStream os, String source) {
-        this(os);
-        
+        this(os);        
         reset(source);
     }
 
@@ -91,8 +87,7 @@ public abstract class Report {
      * @param file The file, containing source code, to which this report applies.
      */
     public Report(OutputStream os, File file) {
-        this(os);
-        
+        this(os);        
         reset(file);
     }
     

@@ -1,5 +1,6 @@
 package org.incava.doctorj;
 
+import java.awt.Point;
 import java.io.*;
 import java.util.*;
 import junit.framework.TestCase;
@@ -14,6 +15,35 @@ public class AbstractDoctorJTestCase extends TestCase {
         super(name);
         
         Options.warningLevel = Options.MAXIMUM_WARNING_LEVEL;
+    }
+
+    public Point loc(int line, int column) {
+        return new Point(line, column);
+    }
+
+    public Point loc(int line, int col, String var) {
+        return loc(line, col + var.length() - 1);
+    }
+
+    public Point loc(Point pt, String var) {
+        return loc(pt.x, pt.y + (var == null ? 0 : var.length() - 1));
+    }
+
+    public void assertViolations(Collection<Violation> expected, Collection<Violation> actual) {
+        tr.Ace.log("expected", expected);
+        tr.Ace.log("actual", actual);
+
+        assertEquals("number of violations", expected.size(), actual.size());
+
+        List<Violation> expList = new ArrayList<Violation>(expected);
+        List<Violation> actList = new ArrayList<Violation>(actual);
+        
+        for (int idx = 0; idx < expList.size(); ++idx) {
+            Violation exp = expList.get(idx);
+            Violation act = actList.get(idx);
+            assertNotNull("violation not null", act);
+            assertEquals("violation[" + idx + "]", exp, act);
+        }
     }
 
     protected Report analyze(String contents, String version) {
@@ -52,21 +82,9 @@ public class AbstractDoctorJTestCase extends TestCase {
     public void evaluate(String contents, String version, Violation ... expectations) {
         tr.Ace.log("expectations", expectations);
         Report report = analyze(contents, version);
-        
-        Set<Violation> violations = report.getViolations();
-        tr.Ace.log("violations", violations);
-        
-        assertEquals("number of violations", expectations.length, violations.size());
-        
-        Iterator<Violation> vit = violations.iterator();
-        for (int vi = 0; vit.hasNext() && vi < violations.size(); ++vi) {
-            Violation violation = vit.next();
-            Violation exp       = expectations[vi];
-                
-            assertNotNull("violation not null", violation);
-            assertEquals("violation[" + vi + "]", exp, violation);
-        }
 
+        assertViolations(Arrays.asList(expectations), report.getViolations());
+        
         report.flush();
     }
     
