@@ -36,7 +36,7 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer {
 
     protected final static int CHKLVL_VALID_TAGS = 0;
 
-    private static SpellingAnalyzer spellingAnalzyer = new SpellingAnalyzer();
+    private static SpellingAnalyzer spellingAnalzyer = SpellingAnalyzer.getInstance();
 
     private final SimpleNode node;
     

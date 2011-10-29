@@ -35,7 +35,10 @@ public class SpellingAnalyzer extends ParsingSpellChecker {
 
     public void check(Analyzer analyzer, LineMapping lines, String text) {
         this.analyzer = analyzer;
+        tr.Ace.log("analyzer", analyzer);
         this.lines = lines;
+        tr.Ace.log("lines", lines);
+        tr.Ace.log("text", text);
         
         super.check(text);
     }

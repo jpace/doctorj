@@ -38,9 +38,19 @@ public class Options extends OptionSet {
     public static boolean emacsOutput = false;
 
     /**
+     * Whether to check comments.
+     */
+    public static boolean checkComments = true;
+
+    /**
+     * Whether to check strings.
+     */
+    public static boolean checkStrings = true;
+
+    /**
      * The version.
      */
-    public static String VERSION = "5.1.2";
+    public static String VERSION = "5.2.0";
 
     /**
      * The Java source version.
@@ -91,6 +101,16 @@ public class Options extends OptionSet {
      * The emacs option.
      */
     private final BooleanOption emacsOpt;
+
+    /**
+     * The comments option.
+     */
+    private final BooleanOption commentsOpt;
+
+    /**
+     * The strings option.
+     */
+    private final BooleanOption stringsOpt;
 
     /**
      * The tab width option.
@@ -191,6 +211,10 @@ public class Options extends OptionSet {
         add(this.verboseOpt = new BooleanOption("verbose",   "whether to run in verbose mode (for debugging)",                         verbose));
         add(this.versionOpt = new BooleanOption("version",   "Displays the version"));
         add(this.sourceOpt = new StringOption("source",     "the Java source version; either 1.3, 1.4 (the default), or 1.5",         source));
+
+        add(this.commentsOpt = new BooleanOption("comments",     "whether to analyze comments; default is true",         checkComments));
+        add(this.stringsOpt = new BooleanOption("strings",     "whether to analyze strings; default is true",         checkStrings));
+
         this.versionOpt.setShortName('v');
         
         addRunControlFile("/etc/doctorj.conf");
@@ -267,6 +291,16 @@ public class Options extends OptionSet {
         if (sourceStr != null) {
             tr.Ace.log("sourceStr", sourceStr);
             source = sourceStr;
+        }
+
+        Boolean commentsBool = this.commentsOpt.getValue();
+        if (commentsBool != null) {
+            checkComments = commentsBool.booleanValue();
+        }
+
+        Boolean stringsBool = this.stringsOpt.getValue();
+        if (stringsBool != null) {
+            checkStrings = stringsBool.booleanValue();
         }
 
         tr.Ace.blue("unprocessed", unprocessed);

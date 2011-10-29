@@ -1,9 +1,6 @@
 package org.incava.doctorj;
 
-import java.util.Iterator;
-import java.util.List;
 import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.Token;
 import org.incava.analysis.Analyzer;
 import org.incava.analysis.Report;
 import org.incava.pmdx.SimpleNodeUtil;

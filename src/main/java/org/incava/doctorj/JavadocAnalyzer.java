@@ -343,6 +343,8 @@ public class JavadocAnalyzer extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTLiteral node, Object data) {
+        LiteralAnalyzer analyzer = new LiteralAnalyzer(this.report, node);
+        analyzer.run();
         return visit((SimpleJavaNode)node, data);
     }
 

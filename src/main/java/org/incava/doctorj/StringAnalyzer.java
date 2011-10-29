@@ -46,11 +46,14 @@ public class StringAnalyzer extends JavaParserVisitorAdapter {
 
         if (isTrue(st) && StringExt.charAt(st.image, 0) == '"' && StringExt.charAt(st.image, -1) == '"') {
             tr.Ace.yellow("st", st);
+
+            String substr = StringExt.get(st.image, 1, -2);
+            tr.Ace.yellow("substr", substr);
             
-            LineMapping lines = new LineMapping(st.image, st.beginLine, st.beginColumn);
+            LineMapping lines = new LineMapping(substr, st.beginLine, st.beginColumn + 1);
             tr.Ace.log("lines", lines);
 
-            this.spellingAnalyzer.check(this.analyzer, lines, st.image);
+            this.spellingAnalyzer.check(this.analyzer, lines, substr);
         }
 
         return visit((SimpleJavaNode)node, data);

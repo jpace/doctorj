@@ -33,11 +33,16 @@ public class AbstractDoctorJTestCase extends TestCase {
         tr.Ace.log("expected", expected);
         tr.Ace.log("actual", actual);
 
+        List<Violation> expList = new ArrayList<Violation>(expected);
+        List<Violation> actList = new ArrayList<Violation>(actual);        
+
+        if (expected.size() != actual.size()) {
+            tr.Ace.red("expList", expList);
+            tr.Ace.red("actList", actList);
+        }
+
         assertEquals("number of violations", expected.size(), actual.size());
 
-        List<Violation> expList = new ArrayList<Violation>(expected);
-        List<Violation> actList = new ArrayList<Violation>(actual);
-        
         for (int idx = 0; idx < expList.size(); ++idx) {
             Violation exp = expList.get(idx);
             Violation act = actList.get(idx);
@@ -73,6 +78,14 @@ public class AbstractDoctorJTestCase extends TestCase {
         }
 
         return report;
+    }
+
+    public void evaluate(Lines lines, Violation ... expectations) {
+        evaluate(lines.toString(), expectations);
+    }
+
+    public void evaluate(Lines lines, String version, Violation ... expectations) {
+        evaluate(lines.toString(), version, expectations);
     }
 
     public void evaluate(String contents, Violation ... expectations) {

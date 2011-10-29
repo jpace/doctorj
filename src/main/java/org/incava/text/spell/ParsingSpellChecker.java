@@ -48,8 +48,12 @@ public class ParsingSpellChecker {
     }
 
     public void check(String str) {
+        tr.Ace.onBlue("str", str);
+        tr.Ace.onBlue("this.canCheck", "" + this.canCheck);
+
         if (this.canCheck) {
             this.str = str;
+            tr.Ace.onBlue("str", str);
             this.len = this.str.length();
             this.pos = 0;
     
