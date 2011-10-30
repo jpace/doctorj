@@ -139,7 +139,7 @@ public class Options extends OptionSet {
 
     private static Options instance = new Options();
 
-    public static Options get() {
+    public static Options getInstance() {
         return instance;
     }
 

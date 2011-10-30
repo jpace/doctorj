@@ -11,12 +11,15 @@ import org.incava.analysis.Report;
 /**
  * Analyzes Javadoc and code.
  */
-public class JavadocAnalyzer extends JavaParserVisitorAdapter {
+public class JavaAnalyzer extends JavaParserVisitorAdapter {
 
     private final Report report;
 
-    public JavadocAnalyzer(Report r) {
+    private final Options options;
+
+    public JavaAnalyzer(Report r, Options options) {
         this.report = r;
+        this.options = options;
     }
 
     public Object visit(SimpleJavaNode node, Object data) {

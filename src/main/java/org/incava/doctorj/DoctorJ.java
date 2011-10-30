@@ -36,7 +36,7 @@ public class DoctorJ {
         this.exitValue = 0;
         this.nFiles = 0;
 
-        Options  opts = Options.get();
+        Options  opts = Options.getInstance();
         String[] names = opts.process(args);
 
         tr.Ace.log("args", args);
@@ -50,7 +50,7 @@ public class DoctorJ {
             this.report = new ContextReport(System.out);
         }
         
-        this.analyzer = new JavadocAnalyzer(this.report);
+        this.analyzer = new JavaAnalyzer(this.report, opts);
 
         for (int ni = 0; ni < names.length; ++ni) {
             String name = names[ni];
@@ -126,7 +126,7 @@ public class DoctorJ {
             
             this.parser = new JavaParser(jcs);
 
-            String src = Options.get().source;
+            String src = Options.getInstance().source;
             if (src.equals("1.3")) {
                 tr.Ace.log("setting as 1.3");
                 this.parser.setJDK13();

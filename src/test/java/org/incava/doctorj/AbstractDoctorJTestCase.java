@@ -54,7 +54,7 @@ public class AbstractDoctorJTestCase extends TestCase {
     protected Report analyze(String contents, String version) {
         StringWriter      reportOutput = new StringWriter();
         Report            report       = new TerseReport(reportOutput);
-        JavaParserVisitor analyzer     = new JavadocAnalyzer(report);
+        JavaParserVisitor analyzer     = new JavaAnalyzer(report, Options.getInstance());
         try {
             report.reset(contents);
 
