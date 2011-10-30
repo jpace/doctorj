@@ -14,7 +14,7 @@ public class TestOptions extends AbstractDoctorJTestCase {
 
     public void runTest(int violationLevel, String[] contents, String[] messages, int[] beginLine, int[] beginColumn, int[] endLine, int[] endColumn) {
         for (int level = -1; level < 9; ++level) {
-            Options.warningLevel = level;
+            Options.getInstance().setWarningLevel(level);
         
             tr.Ace.yellow("level: " + level);
             

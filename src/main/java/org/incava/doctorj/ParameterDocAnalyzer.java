@@ -139,12 +139,14 @@ public class ParameterDocAnalyzer extends DocAnalyzer {
 
                 tr.Ace.yellow("parameter index: " + parameterIndex);
 
+                int warningLevel = Options.getInstance().getWarningLevel();
+
                 if (!SimpleNodeUtil.hasChildren(this.parameterList)) {
                     addViolation(MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, tag.start, tag.end);
                     break;
                 }
                 else if (tgt == null) {
-                    if (Options.warningLevel >= CHKLVL_TAG_CONTENT + this.nodeLevel) {
+                    if (warningLevel >= CHKLVL_TAG_CONTENT + this.nodeLevel) {
                         addViolation(MSG_PARAMETER_WITHOUT_NAME, tag.start, tag.end);
                     }
                     else {
@@ -154,7 +156,7 @@ public class ParameterDocAnalyzer extends DocAnalyzer {
                 else {
                     JavadocElement desc = jtn.getDescriptionNonTarget();
                     if (jtn.getDescriptionNonTarget() == null) {
-                        if (Options.warningLevel >= CHKLVL_TAG_CONTENT + this.nodeLevel) {
+                        if (warningLevel >= CHKLVL_TAG_CONTENT + this.nodeLevel) {
                             addViolation(MSG_PARAMETER_WITHOUT_DESCRIPTION, tgt.start, tgt.end);
                         }
                         else {

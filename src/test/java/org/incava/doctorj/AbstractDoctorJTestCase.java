@@ -14,7 +14,7 @@ public class AbstractDoctorJTestCase extends TestCase {
     public AbstractDoctorJTestCase(String name) {
         super(name);
         
-        Options.warningLevel = Options.MAXIMUM_WARNING_LEVEL;
+        Options.getInstance().setWarningLevel(Options.MAXIMUM_WARNING_LEVEL);
     }
 
     public Point loc(int line, int column) {

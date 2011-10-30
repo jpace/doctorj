@@ -43,7 +43,7 @@ public class DoctorJ {
         tr.Ace.log("names", names);
         tr.Ace.log("properties", System.getProperties());
 
-        if (opts.emacsOutput) {
+        if (opts.getEmacsOutput()) {
             this.report = new TerseReport(System.out);
         }
         else {
@@ -126,7 +126,7 @@ public class DoctorJ {
             
             this.parser = new JavaParser(jcs);
 
-            String src = Options.getInstance().source;
+            String src = Options.getInstance().getSource();
             if (src.equals("1.3")) {
                 tr.Ace.log("setting as 1.3");
                 this.parser.setJDK13();

@@ -21,7 +21,7 @@ public class DocAnalyzer extends Analyzer {
 
     public boolean isCheckable(SimpleNode node, int level) {
         int nodeLevel = SimpleNodeUtil.getLevel(node);
-        return Options.warningLevel >= level + nodeLevel;
+        return Options.getInstance().getWarningLevel() >= level + nodeLevel;
     }
     
 }

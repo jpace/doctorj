@@ -137,6 +137,8 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
         //  - check that target is declared, or is subclass of RuntimeException
         //  - in alphabetical order
 
+        int warningLevel = Options.getInstance().getWarningLevel();
+
         boolean alphabeticalReported = false;
         String  previousException = null;
         
@@ -161,12 +163,12 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
                 tr.Ace.log("tgt", tgt);
 
                 if (tgt == null) {
-                    if (Options.warningLevel >= CHKLVL_TAG_CONTENT + this.nodeLevel) {
+                    if (warningLevel >= CHKLVL_TAG_CONTENT + this.nodeLevel) {
                         addViolation(MSG_EXCEPTION_WITHOUT_CLASS_NAME, tag.start, tag.end);
                     }
                 }
                 else {
-                    if (jtn.getDescriptionNonTarget() == null && Options.warningLevel >= CHKLVL_TAG_CONTENT + this.nodeLevel) {
+                    if (jtn.getDescriptionNonTarget() == null && warningLevel >= CHKLVL_TAG_CONTENT + this.nodeLevel) {
                         addViolation(MSG_EXCEPTION_WITHOUT_DESCRIPTION, tgt.start, tgt.end);
                     }
                     
@@ -206,7 +208,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
                     checkAgainstCode(tag, tgt, shortName, fullName, cls);
 
                     if (!alphabeticalReported && 
-                        Options.warningLevel >= CHKLVL_EXCEPTIONS_ALPHABETICAL + this.nodeLevel && 
+                        warningLevel >= CHKLVL_EXCEPTIONS_ALPHABETICAL + this.nodeLevel && 
                         previousException != null && previousException.compareTo(shortName) > 0) {
                         
                         addViolation(MSG_EXCEPTIONS_NOT_ALPHABETICAL, tgt.start, tgt.end);
@@ -218,7 +220,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
             }
         }
 
-        if (this.throwsList != null && Options.warningLevel >= CHKLVL_EXCEPTION_DOC_EXISTS + this.nodeLevel) {
+        if (this.throwsList != null && warningLevel >= CHKLVL_EXCEPTION_DOC_EXISTS + this.nodeLevel) {
             reportUndocumentedExceptions();
         }            
     }
