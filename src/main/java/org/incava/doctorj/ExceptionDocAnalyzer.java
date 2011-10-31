@@ -8,6 +8,7 @@ import org.incava.pmdx.*;
 import org.incava.ijdk.lang.MathExt;
 import org.incava.text.spell.SpellChecker;
 import org.incava.text.spell.Spelling;
+import static org.incava.ijdk.util.IUtil.*;
 
 
 /**
@@ -93,8 +94,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
     };
 
     static {
-        for (int ki = 0; ki < KNOWN_RUNTIME_EXCEPTIONS.length; ++ki) {
-            String ke = KNOWN_RUNTIME_EXCEPTIONS[ki];
+        for (String ke : KNOWN_RUNTIME_EXCEPTIONS) {
             excToRuntime.put(ke, Boolean.TRUE);
         }
     }
@@ -127,7 +127,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
          this.nodeLevel = nodeLevel;
          this.importMap = null;
          this.documentedExceptions = new ArrayList<String>();
-         this.reportedExceptions = new ArrayList<String>();
+         this.reportedExceptions = new HashSet<String>();
     }
     
     public void run() {
@@ -152,11 +152,8 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
         this.importMap = makeImportMap(imports);
 
         JavadocTaggedNode[] taggedComments = this.javadoc.getTaggedComments();
-        for (int ti = 0; ti < taggedComments.length; ++ti) {
-            JavadocTaggedNode jtn = taggedComments[ti];            
-            tr.Ace.log("jtn", jtn);
-            JavadocTag        tag = jtn.getTag();
-            tr.Ace.log("tag", tag);
+        for (JavadocTaggedNode jtn : taggedComments) {
+            JavadocTag tag = jtn.getTag();
 
             if (tag.text.equals(JavadocTags.EXCEPTION) || tag.text.equals(JavadocTags.THROWS)) {
                 JavadocElement tgt = jtn.getTarget();
@@ -174,36 +171,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
                     
                     String shortName = getShortName(tgt.text);
                     String fullName = tgt.text;
-                    Class  cls = null;
-                    
-                    if (fullName.indexOf('.') >= 0) {
-                        cls = loadClass(fullName);
-                    }
-                    else {
-                        fullName = getExactMatch(fullName);
-                        
-                        if (fullName == null) {
-                            Iterator<String> iit = this.importMap.keySet().iterator();
-                            while (cls == null && iit.hasNext()) {
-                                String impName = iit.next();
-                                String shImpName = getShortName(impName);
-                                if (shImpName.equals("*")) {
-                                    // try to load pkg.name
-                                    fullName = impName.substring(0, impName.indexOf("*")) + shortName;
-                                    cls = loadClass(fullName);
-                                }
-                            }
-                            
-                            if (cls == null) {
-                                // maybe java.lang....
-                                fullName = "java.lang." + shortName;
-                                cls = loadClass(fullName);
-                            }
-                        }
-                        else {
-                            cls = loadClass(fullName);
-                        }
-                    }
+                    Class  cls = resolveClassByName(fullName, shortName);
                     
                     checkAgainstCode(tag, tgt, shortName, fullName, cls);
 
@@ -225,25 +193,58 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
         }            
     }
 
+    protected Class resolveClassByName(String fullName, String shortName) {
+        Class cls = null;
+        if (fullName.indexOf('.') >= 0) {
+            cls = loadClass(fullName);
+        }
+        else {
+            String flNm = getExactMatch(fullName);
+                        
+            if (flNm == null) {
+                Iterator<String> iit = this.importMap.keySet().iterator();
+                while (cls == null && iit.hasNext()) {
+                    String impName = iit.next();
+                    String shImpName = getShortName(impName);
+                    if (shImpName.equals("*")) {
+                        // try to load pkg.name
+                        flNm = impName.substring(0, impName.indexOf("*")) + shortName;
+                        cls = loadClass(flNm);
+                    }
+                }
+                            
+                if (cls == null) {
+                    // maybe java.lang....
+                    flNm = "java.lang." + shortName;
+                    cls = loadClass(flNm);
+                }
+            }
+            else {
+                cls = loadClass(flNm);
+            }
+        }
+
+        return cls;
+    }          
+    
     protected Map<String, ASTImportDeclaration> makeImportMap(ASTImportDeclaration[] imports) {
         Map<String, ASTImportDeclaration> namesToImp = new HashMap<String, ASTImportDeclaration>();
 
-        for (int ii = 0; ii < imports.length; ++ii) {
-            ASTImportDeclaration imp = imports[ii];
-            StringBuffer         buf = new StringBuffer();   
-            Token                tk = imp.getFirstToken().next;
+        for (ASTImportDeclaration imp : imports) {
+            StringBuilder sb = new StringBuilder();   
+            Token         tk = imp.getFirstToken().next;
             
             while (tk != null) {
                 if (tk == imp.getLastToken()) {
                     break;
                 }
                 else {
-                    buf.append(tk.image);
+                    sb.append(tk.image);
                     tk = tk.next;
                 }
             }
 
-            namesToImp.put(buf.toString(), imp);
+            namesToImp.put(sb.toString(), imp);
         }
         
         return namesToImp;
@@ -254,15 +255,12 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
      * java.lang.Integer.
      */
     protected String getShortName(String name) {
-        int    lastDot = name.lastIndexOf('.');
-        String shName = lastDot == -1 ? name : name.substring(lastDot + 1);
-        return shName;
+        int lastDot = name.lastIndexOf('.');
+        return lastDot == -1 ? name : name.substring(lastDot + 1);
     }
 
     protected String getExactMatch(String name) {
-        Iterator<String> iit = this.importMap.keySet().iterator();
-        while (iit.hasNext()) {
-            String impName = iit.next();
+        for (String impName : this.importMap.keySet()) {
             String shImpName = getShortName(impName);
             if (!shImpName.equals("*") && shImpName.equals(name)) {
                 return impName;
@@ -274,11 +272,9 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
     
     protected Class loadClass(String clsName) {
         try {
-            Class cls = Class.forName(clsName);
-            return cls;
+            return Class.forName(clsName);
         }
         catch (Exception e) {
-            // e.printStackTrace();
             return null;
         }
     }
@@ -295,47 +291,26 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
             String  excName = excClass.getName();
             Boolean val = excToRuntime.get(excName);
             if (val == null) {
-                val = new Boolean(RuntimeException.class.isAssignableFrom(excClass) || 
-                                  Error.class.isAssignableFrom(excClass));
+                val = RuntimeException.class.isAssignableFrom(excClass) || Error.class.isAssignableFrom(excClass);
                 excToRuntime.put(excName, val);
             }
-            return val.booleanValue();
+            return val;
         }
     }
 
     protected void checkAgainstCode(JavadocTag tag, JavadocElement tgt, String shortExcName, String fullExcName, Class excClass) {
         ASTName name = getMatchingException(shortExcName);
-        tr.Ace.log("name", name);
         if (name == null) {
             name = getClosestMatchingException(shortExcName);
-            tr.Ace.log("name", name);
             if (name == null) {
-                tr.Ace.log("name", name);
-                if (isRuntimeException(excClass)) {
-                    tr.Ace.log("excClass", excClass);
-                    // don't report it.
-                }
-                else if (excClass != null || !reportedExceptions.contains(fullExcName)) {
-                    tr.Ace.log("reportedExceptions", reportedExceptions);
-
-                    tr.Ace.onRed("fullExcName", fullExcName);
-                    // this violation is an error, not a warning:
+                if (!isRuntimeException(excClass) && (isNotNull(excClass) || !reportedExceptions.contains(fullExcName))) {
                     addViolation(MSG_EXCEPTION_NOT_IN_THROWS_LIST, tgt.start, tgt.end);
                     
                     // report it only once.
                     reportedExceptions.add(fullExcName);
                 }
-                else {
-                    tr.Ace.onRed("fullExcName", fullExcName);
-                    tr.Ace.onRed("shortExcName", shortExcName);
-
-                    // we don't report exceptions when we don't know if they're
-                    // run-time exceptions, or when they've already been
-                    // reported.
-                }
             }
             else {
-                // this violation is an error:
                 addViolation(MSG_EXCEPTION_MISSPELLED, tgt.start, tgt.end);
                 this.documentedExceptions.add(name.getLastToken().image);
             }
@@ -354,7 +329,6 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
             // by using the last token, we disregard the package:
             Token   nameToken = name.getLastToken();
             
-            tr.Ace.log("considering name: " + name + " (" + nameToken + ")");
             if (!this.documentedExceptions.contains(nameToken.image)) {
                 addViolation(MSG_EXCEPTION_NOT_DOCUMENTED, 
                              nameToken.beginLine, nameToken.beginColumn, 
@@ -373,16 +347,13 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
         else {
             ASTName[] names = ThrowsUtil.getNames(this.throwsList);
             
-            for (int ni = 0; ni < names.length; ++ni) {
-                ASTName name = names[ni];
+            for (ASTName name : names) {
                 // (again) by using the last token, we disregard the package:
-                Token   nameToken = name.getLastToken();
-                tr.Ace.log("considering name: " + name + " (" + nameToken + ")");
+                Token nameToken = name.getLastToken();
                 if (nameToken.image.equals(str)) {
                     return name;
                 }
             }
-            tr.Ace.log("no exact match for '" + str + "'");
             return null;
         }
     }
@@ -395,16 +366,15 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
             return null;
         }
         else {
-            int       bestDistance = -1;
+            Integer   bestDistance = null;
             ASTName   bestName = null;
             ASTName[] names = ThrowsUtil.getNames(this.throwsList);
             
-            for (int ni = 0; ni < names.length; ++ni) {
-                ASTName name = names[ni];
-                Token   nameToken = name.getLastToken();
-                int     dist = Spelling.getEditDistance(nameToken.image, str);
-            
-                if (MathExt.isWithin(dist, 0, SpellChecker.DEFAULT_MAX_DISTANCE) && (bestDistance == -1 || dist < bestDistance)) {
+            for (ASTName name : names) {
+                Token nameToken = name.getLastToken();
+                int   dist = Spelling.getEditDistance(nameToken.image, str);
+                
+                if (MathExt.isWithin(dist, 0, SpellChecker.DEFAULT_MAX_DISTANCE) && (isNull(bestDistance) || dist < bestDistance)) {
                     bestDistance = dist;
                     bestName = name;
                 }
@@ -413,5 +383,4 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
             return bestName;
         }
     }
-
 }

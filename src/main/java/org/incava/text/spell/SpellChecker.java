@@ -46,8 +46,6 @@ public class SpellChecker {
      * Adds the given dictionary. Returns whether it could be read and had content.
      */
     public boolean addDictionary(String dictionary) {
-        tr.Ace.log("adding dictionary: " + dictionary);
-
         for (String line : FileExt.readLines(dictionary)) {
             if (isTrue(line)) {
                 addWord(line);
@@ -99,7 +97,6 @@ public class SpellChecker {
      * @param nearMatches a map from edit distances to matches.
      */
     public boolean isCorrect(String word, int maxEditDistance, MultiMap<Integer, String> nearMatches) {
-        tr.Ace.log("word", word);
         String wstr = getString(word);
         
         if (hasWord(wstr)) {

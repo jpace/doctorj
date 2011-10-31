@@ -16,8 +16,6 @@ public class TestStringAnalyzer extends AbstractDoctorJTestCase {
     }
 
     public void testIncorrectString() {
-        //$$$ test with one close match, none, many 
-
         evaluate(new Lines("/** Class documentation that is sufficiently lengthy. */",
                            "class Test {",
                            "    /** Field documentation that is sufficiently lengthy. */",
