@@ -2,7 +2,12 @@ package org.incava.doctorj;
 
 import java.io.*;
 import java.util.*;
-import net.sourceforge.pmd.ast.*;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.JavaCharStream;
+import net.sourceforge.pmd.ast.JavaParser;
+import net.sourceforge.pmd.ast.JavaParserVisitor;
+import net.sourceforge.pmd.ast.ParseException;
+import net.sourceforge.pmd.ast.TokenMgrError;
 import org.incava.analysis.*;
 import org.incava.ijdk.io.Find;
 import org.incava.ijdk.util.TimedEvent;
@@ -12,11 +17,11 @@ import org.incava.pmdx.SimpleNodeUtil;
 
 public class DoctorJ {
 
-    private TimedEventSet totalInit = new TimedEventSet();
+    private final TimedEventSet totalInit;
 
-    private TimedEventSet totalParse = new TimedEventSet();
+    private final TimedEventSet totalParse;
 
-    private TimedEventSet totalAnalysis = new TimedEventSet();
+    private final TimedEventSet totalAnalysis;
 
     private JavaParser parser = null;
 
@@ -34,6 +39,10 @@ public class DoctorJ {
         tr.Ace.set(true, 25, 4, 20, 25);
         tr.Ace.setOutput(tr.Ace.VERBOSE, tr.Ace.LEVEL4);
         tr.Ace.setOutput(tr.Ace.QUIET,   tr.Ace.LEVEL2);
+
+        this.totalInit = new TimedEventSet();
+        this.totalParse = new TimedEventSet();
+        this.totalAnalysis = new TimedEventSet();
 
         this.exitValue = 0;
         this.nFiles = 0;
@@ -56,8 +65,7 @@ public class DoctorJ {
         
         this.analyzer = new JavaAnalyzer(this.report, opts);
 
-        for (int ni = 0; ni < names.length; ++ni) {
-            String name = names[ni];
+        for (String name : names) {
             process(name);
         }
         
@@ -82,8 +90,7 @@ public class DoctorJ {
                 tr.Ace.log("processing directory");
                 String[] contents = fd.list();
                 Arrays.sort(contents);
-                for (int ci = 0; ci < contents.length; ++ci) {
-                    String nm = contents[ci];
+                for (String nm : contents) {
                     String fullName = name + File.separator + nm;
                     File   f = new File(fullName);
                     if (f.isDirectory()) {

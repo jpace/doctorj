@@ -37,9 +37,6 @@ public class SpellingAnalyzer extends ParsingSpellChecker {
         this.analyzer = analyzer;
         this.lines = lines;
         
-        tr.Ace.log("lines", lines);
-        tr.Ace.log("text", text);
-        
         super.check(text);
     }
     
@@ -66,9 +63,6 @@ public class SpellingAnalyzer extends ParsingSpellChecker {
     }
 
     protected void wordMisspelled(String word, int position, MultiMap<Integer, String> nearMatches) {
-        tr.Ace.red("word", word);
-        tr.Ace.red("nearMatches", nearMatches);
-        
         Location start = this.lines.getLocation(position);
         Location end = this.lines.getLocation(position + word.length() - 1);
         String   msg = makeMessage(word, nearMatches);

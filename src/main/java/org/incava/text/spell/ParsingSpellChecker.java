@@ -38,7 +38,7 @@ public class ParsingSpellChecker {
     }
 
     public boolean addDictionary(String dictionary) {
-        tr.Ace.stack(tr.Ace.ON_RED, "dictionary", dictionary);
+        tr.Ace.log("dictionary", dictionary);
         this.canCheck = this.checker.addDictionary(dictionary) || this.canCheck;
         return this.canCheck;
     }
@@ -49,9 +49,6 @@ public class ParsingSpellChecker {
     }
 
     public void check(String str) {
-        tr.Ace.cyan("str", str);
-        tr.Ace.cyan("this.canCheck", "" + this.canCheck);
-        
         if (this.canCheck) {
             this.str = str;
             this.len = this.str.length();
@@ -74,20 +71,25 @@ public class ParsingSpellChecker {
     }
 
     /**
+     * Consumes from one string to another.
+     */
+    protected void consumeFromTo(String from, String to) {
+        if (consume(from)) {
+            consumeTo(to);
+        }
+    }
+
+    /**
      * Skips content between pairs of brackets, a la HTML, such as, oh,
      * "<html>foobar</html>." Doesn't handle slash-gt, such as "<html
      * style="lackthereof" />".
      */
     protected void skipBracketedSection(String section) {
-        if (consume("<" + section + ">")) {
-            consumeTo("</" + section + ">");
-        }
+        consumeFromTo("<" + section + ">", "</" + section + ">");
     }
 
     protected void skipLink() {
-        if (consume("{@link")) {
-            consumeTo("}");
-        }
+        consumeFromTo("{@link", "}");
     }
     
     protected void skipBlanks() {
