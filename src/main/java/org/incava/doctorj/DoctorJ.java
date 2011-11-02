@@ -124,7 +124,6 @@ public class DoctorJ {
         try {
             this.report.reset(new File(fileName));
                 
-            // = fromIsStdin ? new FileReader(FileDescriptor.in) :
             FileReader     rdr = new FileReader(fileName);
             JavaCharStream jcs = new JavaCharStream(rdr);
             
@@ -160,13 +159,11 @@ public class DoctorJ {
         catch (IOException e) {
             System.out.println("Error opening " + fileName + ": " + e);
             this.exitValue = 1;
-
             return false;
         }
         catch (TokenMgrError tme) {
             System.out.println("Error parsing (tokenizing) " + fileName + ": " + tme.getMessage());
             this.exitValue = 1;
-
             return false;
         }
     }
@@ -186,7 +183,6 @@ public class DoctorJ {
         catch (ParseException e) {
             System.out.println("Parse error in " + fileName + ": " + e.getMessage());
             this.exitValue = 1;
-
             return null;
         }
     }
@@ -203,9 +199,7 @@ public class DoctorJ {
 
     public static void main(String[] args) {
         tr.Ace.setVerbose(false);
-        
         DoctorJ drj = new DoctorJ(args);
         System.exit(drj.getExitValue());
     }
-
 }
