@@ -40,8 +40,8 @@ public abstract class TypeDocAnalyzer extends ItemDocAnalyzer {
     /**
      * Creates an analyzer, but does not yet run.
      */
-    public TypeDocAnalyzer(Report r, ASTClassOrInterfaceDeclaration decl) {
-        super(r, decl);
+    public TypeDocAnalyzer(Report r, ASTClassOrInterfaceDeclaration decl, int warningLevel) {
+        super(r, decl, warningLevel);
         
         this.decl = decl;
     }

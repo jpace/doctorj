@@ -40,8 +40,8 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer {
 
     private final SimpleNode node;
     
-    public ItemDocAnalyzer(Report r, SimpleNode node) {
-        super(r);
+    public ItemDocAnalyzer(Report report, SimpleNode node, int warningLevel) {
+        super(report, warningLevel);
         
         this.node = node;
     }

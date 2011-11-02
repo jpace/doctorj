@@ -38,6 +38,7 @@ public class ParsingSpellChecker {
     }
 
     public boolean addDictionary(String dictionary) {
+        tr.Ace.stack(tr.Ace.ON_RED, "dictionary", dictionary);
         this.canCheck = this.checker.addDictionary(dictionary) || this.canCheck;
         return this.canCheck;
     }
@@ -48,6 +49,9 @@ public class ParsingSpellChecker {
     }
 
     public void check(String str) {
+        tr.Ace.cyan("str", str);
+        tr.Ace.cyan("this.canCheck", "" + this.canCheck);
+        
         if (this.canCheck) {
             this.str = str;
             this.len = this.str.length();

@@ -28,6 +28,8 @@ public class DoctorJ {
 
     private int nFiles;
 
+    private final String sourceVersion;
+
     public DoctorJ(String[] args) {
         tr.Ace.set(true, 25, 4, 20, 25);
         tr.Ace.setOutput(tr.Ace.VERBOSE, tr.Ace.LEVEL4);
@@ -36,8 +38,10 @@ public class DoctorJ {
         this.exitValue = 0;
         this.nFiles = 0;
 
-        Options  opts = Options.getInstance();
+        Options  opts = new Options();
         String[] names = opts.process(args);
+
+        this.sourceVersion = opts.getSource();
 
         tr.Ace.log("args", args);
         tr.Ace.log("names", names);
@@ -126,20 +130,19 @@ public class DoctorJ {
             
             this.parser = new JavaParser(jcs);
 
-            String src = Options.getInstance().getSource();
-            if (src.equals("1.3")) {
+            if (sourceVersion.equals("1.3")) {
                 tr.Ace.log("setting as 1.3");
                 this.parser.setJDK13();
             }
-            else if (src.equals("1.4")) {
+            else if (sourceVersion.equals("1.4")) {
                 tr.Ace.log("leaving as 1.4");
             }
-            else if (src.equals("1.5") || src.equals("1.6")) {
+            else if (sourceVersion.equals("1.5") || sourceVersion.equals("1.6")) {
                 tr.Ace.log("setting as 1.5");
                 this.parser.setJDK15();
             }
             else {
-                System.err.println("ERROR: source version '" + src + "' not recognized");
+                System.err.println("ERROR: source version '" + sourceVersion + "' not recognized");
                 System.exit(-1);
             }
             init.end();

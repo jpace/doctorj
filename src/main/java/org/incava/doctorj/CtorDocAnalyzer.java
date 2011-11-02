@@ -16,8 +16,8 @@ public class CtorDocAnalyzer extends FunctionDocAnalyzer {
 
     private final ASTConstructorDeclaration ctor;
     
-    public CtorDocAnalyzer(Report r, ASTConstructorDeclaration ctor) {
-        super(r, ctor);
+    public CtorDocAnalyzer(Report r, ASTConstructorDeclaration ctor, int warningLevel) {
+        super(r, ctor, warningLevel);
         
         this.ctor = ctor;
     }

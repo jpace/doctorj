@@ -22,8 +22,8 @@ public class MethodDocAnalyzer extends FunctionDocAnalyzer {
     
     private final ASTMethodDeclaration method;
     
-    public MethodDocAnalyzer(Report r, ASTMethodDeclaration method) {
-        super(r, method);
+    public MethodDocAnalyzer(Report r, ASTMethodDeclaration method, int warningLevel) {
+        super(r, method, warningLevel);
         
         this.method = method;
     }

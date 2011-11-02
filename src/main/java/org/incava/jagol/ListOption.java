@@ -1,6 +1,5 @@
 package org.incava.jagol;
 
-import java.io.*;
 import java.util.*;
 import org.incava.ijdk.lang.StringExt;
 
@@ -46,7 +45,6 @@ public class ListOption extends Option {
      * comma delimiter
      */
     public void setValue(String value) throws InvalidTypeException {
-        tr.Ace.log("value: '" + value + "'");
         parse(value);
     }
 
@@ -56,11 +54,7 @@ public class ListOption extends Option {
      * comma delimiter.
      */
     public boolean set(String arg, List<? extends Object> args) throws OptionException {
-        tr.Ace.log("arg: " + arg + "; args: " + args);
-     
         if (arg.equals("--" + longName)) {
-            tr.Ace.log("matched long name");
-
             if (args.isEmpty()) {
                 throw new InvalidTypeException(longName + " expects following argument");
             }
@@ -70,11 +64,7 @@ public class ListOption extends Option {
             }
         }
         else if (arg.startsWith("--" + longName + "=")) {
-            tr.Ace.log("matched long name + equals");
-
-            // args.remove(0);
             int pos = ("--" + longName + "=").length();
-            tr.Ace.log("position: " + pos);
             if (pos >= arg.length()) {
                 throw new InvalidTypeException(longName + " expects argument");
             }
@@ -84,8 +74,6 @@ public class ListOption extends Option {
             }
         }
         else if (shortName != 0 && arg.equals("-" + shortName)) {
-            tr.Ace.log("matched short name");
-
             if (args.isEmpty()) {
                 throw new InvalidTypeException(shortName + " expects following argument");
             }
@@ -95,7 +83,6 @@ public class ListOption extends Option {
             }
         }
         else {
-            tr.Ace.log("not a match");
             return false;
         }
         return true;
@@ -108,7 +95,7 @@ public class ListOption extends Option {
      * @see ListOption#convert(String)
      */
     protected void parse(String str) throws InvalidTypeException {
-        List<String> list = StringExt.listify(str);
+        List<String> list = StringExt.toList(str);
         for (String s : list) {
             if (!s.equals("+=")) {
                 value.add(convert(s));
@@ -125,18 +112,6 @@ public class ListOption extends Option {
     }
 
     public String toString() {
-        StringBuffer buf = new StringBuffer();
-        Iterator it = value.iterator();
-        boolean isFirst = true;
-        while (it.hasNext()) {
-            if (isFirst) {
-                isFirst = false;
-            }
-            else {
-                buf.append(", ");
-            }
-            buf.append(it.next());
-        }
-        return buf.toString();
+        return StringExt.join(value, ", ");
     }
 }

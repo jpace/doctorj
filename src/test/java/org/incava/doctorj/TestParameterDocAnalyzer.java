@@ -368,6 +368,7 @@ public class TestParameterDocAnalyzer extends AbstractDoctorJTestCase {
                  "    }\n" +
                  "\n" +
                  "}\n",
+                 WARNING_LEVEL_DEFAULT,
                  "1.5",
                  new Violation(ParameterDocAnalyzer.MSG_PARAMETER_NOT_IN_CODE, 8, 15, 8, 19));
     }

@@ -15,13 +15,21 @@ public class DocAnalyzer extends Analyzer {
     
     protected final static int CHKLVL_TAG_CONTENT = 1;
 
-    public DocAnalyzer(Report r) {
+    private final int warningLevel;
+
+    public DocAnalyzer(Report r, int warningLevel) {
         super(r);
+
+        this.warningLevel = warningLevel;
+    }
+
+    public int getWarningLevel() {
+        return this.warningLevel;
     }
 
     public boolean isCheckable(SimpleNode node, int level) {
         int nodeLevel = SimpleNodeUtil.getLevel(node);
-        return Options.getInstance().getWarningLevel() >= level + nodeLevel;
+        return getWarningLevel() >= level + nodeLevel;
     }
     
 }

@@ -11,10 +11,12 @@ import org.incava.java.*;
 
 public class AbstractDoctorJTestCase extends TestCase {
 
+    public final static int WARNING_LEVEL_DEFAULT = Options.MAXIMUM_WARNING_LEVEL;
+
+    public final static String JAVA_VERSION_DEFAULT = "1.4";
+
     public AbstractDoctorJTestCase(String name) {
         super(name);
-        
-        Options.getInstance().setWarningLevel(Options.MAXIMUM_WARNING_LEVEL);
     }
 
     public Point loc(int line, int column) {
@@ -52,9 +54,17 @@ public class AbstractDoctorJTestCase extends TestCase {
     }
 
     protected Report analyze(String contents, String version) {
-        StringWriter      reportOutput = new StringWriter();
-        Report            report       = new TerseReport(reportOutput);
-        JavaParserVisitor analyzer     = new JavaAnalyzer(report, Options.getInstance());
+        return analyze(contents, version, WARNING_LEVEL_DEFAULT);
+    }
+
+    protected Report analyze(String contents, String version, int warningLevel) {
+        StringWriter reportOutput = new StringWriter();
+        Report       report       = new TerseReport(reportOutput);
+
+        Options      options      = new Options();
+        options.setWarningLevel(warningLevel);
+        
+        JavaParserVisitor analyzer     = new JavaAnalyzer(report, options);
         try {
             report.reset(contents);
 
@@ -80,25 +90,24 @@ public class AbstractDoctorJTestCase extends TestCase {
         return report;
     }
 
-    public void evaluate(Lines lines, Violation ... expectations) {
-        evaluate(lines.toString(), expectations);
+    public void evaluate(Lines lines, int warningLevel, String version, Violation ... expectations) {
+        evaluate(lines.toString(), warningLevel, version, expectations);
     }
 
-    public void evaluate(Lines lines, String version, Violation ... expectations) {
-        evaluate(lines.toString(), version, expectations);
-    }
-
-    public void evaluate(String contents, Violation ... expectations) {
-        evaluate(contents, "1.4", expectations);
-    }
-
-    public void evaluate(String contents, String version, Violation ... expectations) {
-        tr.Ace.log("expectations", expectations);
-        Report report = analyze(contents, version);
+    public void evaluate(String contents, int warningLevel, String version, Violation ... expectations) {
+        Report report = analyze(contents, version, warningLevel);
 
         assertViolations(Arrays.asList(expectations), report.getViolations());
         
         report.flush();
+    }        
+
+    public void evaluate(Lines lines, Violation ... expectations) {
+        evaluate(lines.toString(), WARNING_LEVEL_DEFAULT, JAVA_VERSION_DEFAULT, expectations);
     }
+
+    public void evaluate(String contents, Violation ... expectations) {
+        evaluate(contents, WARNING_LEVEL_DEFAULT, JAVA_VERSION_DEFAULT, expectations);
+    }        
     
 }

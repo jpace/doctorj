@@ -11,8 +11,8 @@ import org.incava.javadoc.*;
  */
 public class InterfaceDocAnalyzer extends TypeDocAnalyzer {
 
-    public InterfaceDocAnalyzer(Report r, ASTClassOrInterfaceDeclaration node) {
-        super(r, node);
+    public InterfaceDocAnalyzer(Report r, ASTClassOrInterfaceDeclaration node, int warningLevel) {
+        super(r, node, warningLevel);
     }
 
     public String getItemType() {

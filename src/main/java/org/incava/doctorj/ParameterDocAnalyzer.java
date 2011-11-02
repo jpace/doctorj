@@ -6,11 +6,13 @@ import net.sourceforge.pmd.ast.*;
 import org.incava.analysis.*;
 import org.incava.javadoc.*;
 import org.incava.ijdk.lang.MathExt;
+import org.incava.ijdk.util.ListExt;
 import org.incava.pmdx.ParameterUtil;
 import org.incava.pmdx.SimpleNodeUtil;
 import org.incava.text.Location;
 import org.incava.text.spell.SpellChecker;
 import org.incava.text.spell.Spelling;
+import static org.incava.ijdk.util.IUtil.*;
 
 
 /**
@@ -91,7 +93,7 @@ public class ParameterDocAnalyzer extends DocAnalyzer {
      */
     private final List<Integer> documentedParameters;
 
-    private int nodeLevel;
+    private final int nodeLevel;
 
     /**
      * Creates and runs the parameter documentation analyzer.
@@ -100,8 +102,8 @@ public class ParameterDocAnalyzer extends DocAnalyzer {
      * @param javadoc  The javadoc for the function. Should not be null.
      * @param function The constructor or method.
      */
-    public ParameterDocAnalyzer(Report report, JavadocNode javadoc, SimpleNode function, ASTFormalParameters parameterList, int nodeLevel) {
-        super(report);
+    public ParameterDocAnalyzer(Report report, JavadocNode javadoc, SimpleNode function, ASTFormalParameters parameterList, int nodeLevel, int warningLevel) {
+        super(report, warningLevel);
 
         this.javadoc = javadoc;
         this.function = function;
@@ -121,25 +123,17 @@ public class ParameterDocAnalyzer extends DocAnalyzer {
         //  - check for description
         //  - in order as in code
 
+        int warningLevel = getWarningLevel();
+
         boolean misorderedReported = false;
         int     parameterIndex = 0;
             
         JavadocTaggedNode[] taggedComments = this.javadoc.getTaggedComments();
-        for (int ti = 0; ti < taggedComments.length; ++ti) {
-            JavadocTaggedNode jtn = taggedComments[ti];
-            tr.Ace.bold("jtn", jtn);
+        for (JavadocTaggedNode jtn : taggedComments) {
             JavadocTag tag = jtn.getTag();
             
-            tr.Ace.yellow("tag", tag);
             if (tag.text.equals(JavadocTags.PARAM)) {
-                tr.Ace.magenta("parameter");
-                
                 JavadocElement tgt = jtn.getTarget();
-                tr.Ace.magenta("tgt", tgt);
-
-                tr.Ace.yellow("parameter index: " + parameterIndex);
-
-                int warningLevel = Options.getInstance().getWarningLevel();
 
                 if (!SimpleNodeUtil.hasChildren(this.parameterList)) {
                     addViolation(MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, tag.start, tag.end);
@@ -149,9 +143,6 @@ public class ParameterDocAnalyzer extends DocAnalyzer {
                     if (warningLevel >= CHKLVL_TAG_CONTENT + this.nodeLevel) {
                         addViolation(MSG_PARAMETER_WITHOUT_NAME, tag.start, tag.end);
                     }
-                    else {
-                        tr.Ace.log("function", this.function);
-                    }
                 }
                 else {
                     JavadocElement desc = jtn.getDescriptionNonTarget();
@@ -159,26 +150,18 @@ public class ParameterDocAnalyzer extends DocAnalyzer {
                         if (warningLevel >= CHKLVL_TAG_CONTENT + this.nodeLevel) {
                             addViolation(MSG_PARAMETER_WITHOUT_DESCRIPTION, tgt.start, tgt.end);
                         }
-                        else {
-                            tr.Ace.log("function", this.function);
-                        }
                     }
 
                     String tgtStr = tgt.text;
                     int    index = getMatchingParameter(tgtStr);
                     
-                    tr.Ace.log("matching parameter: " + index);
-
                     if (index == -1) {
                         index = getClosestMatchingParameter(tgtStr);
-                        tr.Ace.log("closest matching parameter: " + index);
-                        tr.Ace.log("parameter index: " + parameterIndex);
 
                         SimpleNodeUtil.dump(this.parameterList, "pppp");
 
                         if (index == -1) {
                             String paramType = ParameterUtil.getParameterType(this.parameterList, parameterIndex);
-                            tr.Ace.log("paramType: " + paramType + "; tgtStr: " + tgtStr);
 
                             if (tgtStr.equals(paramType)) {
                                 addViolation(MSG_PARAMETER_TYPE_USED, tgt.start, tgt.end);
@@ -201,29 +184,13 @@ public class ParameterDocAnalyzer extends DocAnalyzer {
             }
         }
 
-        tr.Ace.log("documentedParameters", this.documentedParameters);
-
-        if (this.parameterList == null) {
-            tr.Ace.log("no parameters");
-        }
-        else if (isCheckable(this.function, CHKLVL_PARAM_DOC_EXISTS)) {
+        if (isNotNull(this.parameterList) && isCheckable(this.function, CHKLVL_PARAM_DOC_EXISTS)) {
             reportUndocumentedParameters();
         }
-        else {
-            tr.Ace.log("function", this.function);
-        }
-    }
-
-    /**
-     * Returns the last element in the list.
-     * $$$ todo: Move to IDJK/util/ListExt
-     */
-    public static <T> T last(List<T> list) {
-        return list.get(list.size() - 1);
     }
 
     protected void addDocumentedParameter(int index, Location start, Location end) {
-        if (this.documentedParameters.size() > 0 && last(this.documentedParameters) > index) {
+        if (this.documentedParameters.size() > 0 && ListExt.last(this.documentedParameters) > index) {
             addViolation(MSG_PARAMETER_NOT_IN_CODE_ORDER, start, end);
         }
         
@@ -241,7 +208,7 @@ public class ParameterDocAnalyzer extends DocAnalyzer {
         for (int ni = 0; ni < params.length; ++ni) {
             tr.Ace.log("parameter", params[ni]);
             ASTFormalParameter param = params[ni];
-            if (!this.documentedParameters.contains(new Integer(ni))) {
+            if (!this.documentedParameters.contains(ni)) {
                 Token nameTk = ParameterUtil.getParameterName(param);
                 addViolation(MSG_PARAMETER_NOT_DOCUMENTED, nameTk);
             }

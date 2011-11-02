@@ -21,8 +21,8 @@ public class FieldDocAnalyzer extends ItemDocAnalyzer {
     
     private final ASTFieldDeclaration field;
     
-    public FieldDocAnalyzer(Report r, ASTFieldDeclaration field) {
-        super(r, field);
+    public FieldDocAnalyzer(Report r, ASTFieldDeclaration field, int warningLevel) {
+        super(r, field, warningLevel);
         
         this.field = field;
     }

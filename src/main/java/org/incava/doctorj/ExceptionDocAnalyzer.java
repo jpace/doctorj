@@ -117,9 +117,11 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
      * @param report   The report to which to send violations.
      * @param javadoc  The javadoc for the function. Should not be null.
      * @param function The constructor or method.
+     * @param nodeLevel The level of the javadoc node with regard to reporting errors.
+     * @param warningLevel The current level for reporting errors.
      */
-    public ExceptionDocAnalyzer(Report report, JavadocNode javadoc, SimpleNode function, int nodeLevel) {
-        super(report);
+    public ExceptionDocAnalyzer(Report report, JavadocNode javadoc, SimpleNode function, int nodeLevel, int warningLevel) {
+        super(report, warningLevel);
 
          this.javadoc = javadoc;
          this.throwsList = FunctionUtil.getThrowsList(function);
@@ -137,7 +139,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
         //  - check that target is declared, or is subclass of RuntimeException
         //  - in alphabetical order
 
-        int warningLevel = Options.getInstance().getWarningLevel();
+        int warningLevel = getWarningLevel();
 
         boolean alphabeticalReported = false;
         String  previousException = null;

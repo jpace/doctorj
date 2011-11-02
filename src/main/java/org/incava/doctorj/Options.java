@@ -101,13 +101,7 @@ public class Options extends OptionSet {
      */
     private final StringOption sourceOpt;
 
-    private static Options instance = new Options();
-
-    public static Options getInstance() {
-        return instance;
-    }
-
-    protected Options() {
+    public Options() {
         super("doctorj", "Analyzes and validates Java and Javadoc");
 
         // use the doctorj.* equivalent property for each option.
@@ -151,7 +145,7 @@ public class Options extends OptionSet {
         tr.Ace.log("dictProperty", dictProperty);
         
         if (dictProperty != null) {
-            for (String wl : StringExt.listify(dictProperty)) {
+            for (String wl : StringExt.toList(dictProperty)) {
                 wordLists.add(wl);
             }
         }
@@ -193,11 +187,11 @@ public class Options extends OptionSet {
         return this.emacsOutput;
     }
 
-    public boolean getCheckComments() {
+    public boolean checkComments() {
         return this.checkComments;
     }
 
-    public boolean getCheckStrings() {
+    public boolean checkStrings() {
         return this.checkStrings;
     }
 

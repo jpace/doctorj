@@ -15,8 +15,8 @@ public abstract class FunctionDocAnalyzer extends ItemDocAnalyzer {
 
     public final static String MSG_SERIALDATA_WITHOUT_DESCRIPTION = "@serialData without description";
     
-    public FunctionDocAnalyzer(Report r, SimpleNode node) {
-        super(r, node);
+    public FunctionDocAnalyzer(Report r, SimpleNode node, int warningLevel) {
+        super(r, node, warningLevel);
     }
 
     protected void checkJavadoc(JavadocNode javadoc) {
@@ -27,12 +27,16 @@ public abstract class FunctionDocAnalyzer extends ItemDocAnalyzer {
         int        chkLevel = SimpleNodeUtil.getLevel(encNode);
         tr.Ace.log("chkLevel", chkLevel);
 
-        ExceptionDocAnalyzer eda = new ExceptionDocAnalyzer(getReport(), javadoc, getNode(), chkLevel);
+        Report report = getReport();
+        SimpleNode function = getNode();
+        int warningLevel = getWarningLevel();
+
+        ExceptionDocAnalyzer eda = new ExceptionDocAnalyzer(report, javadoc, function, chkLevel, warningLevel);
         tr.Ace.log("eda", eda);
         eda.run();
 
         ASTFormalParameters  params = getParameterList();
-        ParameterDocAnalyzer pda = new ParameterDocAnalyzer(getReport(), javadoc, getNode(), params, chkLevel);
+        ParameterDocAnalyzer pda = new ParameterDocAnalyzer(report, javadoc, function, params, chkLevel, warningLevel);
         pda.run();
 
         if (javadoc == null) {
