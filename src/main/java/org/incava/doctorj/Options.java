@@ -9,7 +9,7 @@ import static org.incava.ijdk.util.IUtil.*;
 
 
 /**
- * Options for Javadoc processing.
+ * Options for processing Javadoc and strings.
  */
 public class Options extends OptionSet {
     
@@ -19,9 +19,6 @@ public class Options extends OptionSet {
 
     public static int DEFAULT_WARNING_LEVEL = 4;
 
-    /**
-     * The version.
-     */
     public final static String VERSION = "5.2.0";
 
     /**
@@ -30,81 +27,47 @@ public class Options extends OptionSet {
     private int warningLevel = DEFAULT_WARNING_LEVEL;
 
     /**
-     * Whether to use single - line (emacs) or multi - line (non - emacs) output
+     * Whether to use single-line (emacs) or multi-line (non-emacs) output
      * format. The emacs form is most suitable for IDEs, which expect
-     * single - line output.
+     * single-line output.
      */
     private boolean emacsOutput = false;
 
-    /**
-     * Whether to check comments.
-     */
     private boolean checkComments = true;
 
-    /**
-     * Whether to check strings.
-     */
     private boolean checkStrings = true;
 
-    /**
-     * The Java source version.
-     */
+    private int minWords = 2;
+
     private String source = "1.4";
 
-    /**
-     * The warning level option.
-     */
     private final IntegerOption levelOpt;
 
-    /**
-     * The warning level option.
-     */
     private final IntegerOption warningOpt;
 
-    /**
-     * The emacs option.
-     */
     private final BooleanOption emacsOpt;
 
-    /**
-     * The comments option.
-     */
     private final BooleanOption commentsOpt;
 
-    /**
-     * The strings option.
-     */
     private final BooleanOption stringsOpt;
 
-    /**
-     * The tab width option.
-     */
     private final IntegerOption tabWidthOpt;
 
-    /**
-     * The verbose option.
-     */
     private final BooleanOption verboseOpt;
 
     /**
-     * The list of word - list (dictionary) files.
+     * The list of word-list (dictionary) files.
      */
     private final ListOption dictOpt;
 
-    /**
-     * The version option.
-     */
     private final BooleanOption versionOpt;
 
-    /**
-     * The source option.
-     */
+    private final IntegerOption minWordsOpt;
+
     private final StringOption sourceOpt;
 
     public Options() {
         super("doctorj", "Analyzes and validates Java and Javadoc");
-
-        // use the doctorj.* equivalent property for each option.
 
         Boolean emacs = this.emacsOutput;
         String emacsProperty = System.getProperty("doctorj.emacs");
@@ -150,19 +113,20 @@ public class Options extends OptionSet {
             }
         }
         
-        add(this.emacsOpt    = new BooleanOption("emacs",     "whether to list violations in Emacs form (single line)",                 emacs));
-        add(this.levelOpt    = new IntegerOption("level",     "the level of warnings to be output, with 0 being to check only errors",  lvl));
-        add(this.warningOpt  = new IntegerOption("warning",   "same as --level",                                                        lvl));
-
-        add(this.tabWidthOpt = new IntegerOption("tabwidth",  "the number of spaces to treat tabs equal to",                            tabWidth));
-        add(this.dictOpt     = new ListOption("dictionaries", "the list of dictionary (word list) files",                               wordLists));
-        add(this.verboseOpt  = new BooleanOption("verbose",   "whether to run in verbose mode (for debugging)",                         verbose));
-        add(this.versionOpt  = new BooleanOption("version",   "Displays the version"));
-        add(this.sourceOpt   = new StringOption("source",     "the Java source version; either 1.3, 1.4 (the default), or 1.5",         this.source));
-
-        add(this.commentsOpt = new BooleanOption("comments",  "whether to analyze comments; default is true",                           this.checkComments));
-        add(this.stringsOpt  = new BooleanOption("strings",   "whether to analyze strings; default is true",                            this.checkStrings));
-
+        this.emacsOpt    = addOption("emacs",     "whether to list violations in Emacs form (single line)",                 emacs);
+        this.levelOpt    = addOption("level",     "the level of warnings to be output, with 0 being to check only errors",  lvl);
+        this.warningOpt  = addOption("warning",   "same as --level",                                                        lvl);
+        
+        this.tabWidthOpt = addOption("tabwidth",  "the number of spaces to treat tabs equal to",                            tabWidth);
+        this.dictOpt     = addOption("dictionaries", "the list of dictionary (word list) files",                               wordLists);
+        this.verboseOpt  = addOption("verbose",   "whether to run in verbose mode (for debugging)",                         verbose);
+        this.versionOpt  = addBooleanOption("version",   "Displays the version");
+        this.sourceOpt   = addOption("source",     "the Java source version; either 1.3, 1.4 (the default), or 1.5",         this.source);
+        
+        this.commentsOpt = addOption("comments",  "whether to analyze comments; default is true",                           this.checkComments);
+        this.stringsOpt  = addOption("strings",   "whether to analyze strings; default is true",                            this.checkStrings);
+        this.minWordsOpt = addOption("minwords",  "the minimum number of words in a string for it to be spell-checked; default is 2", this.minWords);
+        
         this.versionOpt.setShortName('v');
         
         addRunControlFile("/etc/doctorj.conf");

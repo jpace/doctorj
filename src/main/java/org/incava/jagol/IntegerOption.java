@@ -1,14 +1,10 @@
 package org.incava.jagol;
 
-import java.io.*;
-import java.util.*;
-
 
 /**
  * Represents an option that is an integer.
  */
 public class IntegerOption extends NonBooleanOption {
-
     private Integer value;
     
     public IntegerOption(String longName, String description) {
@@ -45,7 +41,7 @@ public class IntegerOption extends NonBooleanOption {
             throw new InvalidTypeException(getLongName() + " expects integer argument, not '" + value + "'");
         }
     }
-
+    
     public String toString() {
         return value == null ? "" : value.toString();
     }
@@ -53,5 +49,4 @@ public class IntegerOption extends NonBooleanOption {
     protected String getType() {
         return "integer";
     }
-
 }

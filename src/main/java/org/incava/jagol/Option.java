@@ -1,7 +1,6 @@
 package org.incava.jagol;
 
-import java.io.*;
-import java.util.*;
+import java.util.List;
 
 
 /**
@@ -12,7 +11,7 @@ public abstract class Option {
 
     protected char shortName;
 
-    private String description;
+    private final String description;
     
     public Option(String longName, String description) {
         this.longName = longName;
@@ -21,10 +20,6 @@ public abstract class Option {
 
     public void setShortName(char shortName) {
         this.shortName = shortName;
-    }
-
-    public void setLongName(String longName) {
-        this.longName = longName;
     }
     
     /**
@@ -49,7 +44,7 @@ public abstract class Option {
     }
 
     /**
-     * Sets from a list of command - line arguments. Returns whether this option
+     * Sets from a list of command-line arguments. Returns whether this option
      * could be set from the current head of the list.
      */
     public abstract boolean set(String arg, List<? extends Object> args) throws OptionException;

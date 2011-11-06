@@ -1,7 +1,6 @@
 package org.incava.jagol;
 
-import java.io.*;
-import java.util.*;
+import java.util.List;
 
 
 /**
@@ -18,6 +17,11 @@ public class BooleanOption extends Option {
         super(longName, description);
         this.value = value;
     }
+
+    // public BooleanOption(String longName, String description, char shortName, Boolean value) {
+    //     super(longName, description, shortName);
+    //     this.value = value;
+    // }
 
     /**
      * Returns the value. This is null if it has not been set.
@@ -37,7 +41,6 @@ public class BooleanOption extends Option {
      * Sets the value from the string, for a boolean type.
      */
     public void setValue(String value) throws InvalidTypeException {
-        tr.Ace.log("value: '" + value + "'");
         String lcvalue = value.toLowerCase();
         if (lcvalue.equals("yes") || lcvalue.equals("true")) {
             setValue(Boolean.TRUE);
@@ -55,18 +58,13 @@ public class BooleanOption extends Option {
      * could be set from the current head of the list.
      */
     public boolean set(String arg, List<? extends Object> args) throws OptionException {
-        tr.Ace.log("arg: " + arg + "; args: " + args);
-        
         if (arg.equals("--" + longName)) {
-            // args.remove(0);
             setValue(Boolean.TRUE);
         }
         else if (arg.equals("--no-" + longName) || arg.equals("--no" + longName)) {
-            // args.remove(0);
             setValue(Boolean.FALSE);
         }
         else if (shortName != 0 && arg.equals("-" + shortName)) {
-            // args.remove(0);
             setValue(Boolean.TRUE);
         }
         else {
@@ -78,5 +76,4 @@ public class BooleanOption extends Option {
     public String toString() {
         return value == null ? "" : value.toString();
     }
-
 }

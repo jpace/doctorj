@@ -1,14 +1,10 @@
 package org.incava.jagol;
 
-import java.io.*;
-import java.util.*;
-
 
 /**
- * Represents an option that is an double.
+ * Represents an option that is a double.
  */
 public class DoubleOption extends NonBooleanOption {
-
     private Double value;
     
     public DoubleOption(String longName, String description) {
@@ -38,7 +34,6 @@ public class DoubleOption extends NonBooleanOption {
      * Sets the value from the string, for a double type.
      */
     public void setValue(String value) throws InvalidTypeException {
-        tr.Ace.log("value: '" + value + "'");
         try {
             setValue(new Double(value));
         }

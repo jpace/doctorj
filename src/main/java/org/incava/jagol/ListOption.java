@@ -1,14 +1,14 @@
 package org.incava.jagol;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import org.incava.ijdk.lang.StringExt;
 
 
 /**
  * Represents a list of objects that comprise this option.
  */
-public class ListOption extends Option {
-    
+public class ListOption extends NonBooleanOption {
     private List<String> value;
     
     /**
@@ -48,44 +48,16 @@ public class ListOption extends Option {
         parse(value);
     }
 
-    /**
-     * Sets from a list of command - line arguments. Returns whether this option
-     * could be set from the current head of the list. Assumes whitespace or
-     * comma delimiter.
-     */
-    public boolean set(String arg, List<? extends Object> args) throws OptionException {
-        if (arg.equals("--" + longName)) {
-            if (args.isEmpty()) {
-                throw new InvalidTypeException(longName + " expects following argument");
-            }
-            else {
-                Object value = args.remove(0);
-                setValue(value.toString());
-            }
+    protected void checkArgList(Object name, List<? extends Object> argList) throws InvalidTypeException {
+        if (argList.isEmpty()) {
+            throw new InvalidTypeException(name + " expects following argument");
         }
-        else if (arg.startsWith("--" + longName + "=")) {
-            int pos = ("--" + longName + "=").length();
-            if (pos >= arg.length()) {
-                throw new InvalidTypeException(longName + " expects argument");
-            }
-            else {
-                String value = arg.substring(pos);
-                setValue(value);
-            }
+    }
+
+    protected void checkArgString(Object name, String arg, int pos) throws InvalidTypeException {
+        if (pos >= arg.length()) {
+            throw new InvalidTypeException(name + " expects argument");
         }
-        else if (shortName != 0 && arg.equals("-" + shortName)) {
-            if (args.isEmpty()) {
-                throw new InvalidTypeException(shortName + " expects following argument");
-            }
-            else {
-                String value = args.remove(0).toString();
-                setValue(value);
-            }
-        }
-        else {
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -113,5 +85,9 @@ public class ListOption extends Option {
 
     public String toString() {
         return StringExt.join(value, ", ");
+    }
+
+    public String getType() {
+        return null;
     }
 }

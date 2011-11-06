@@ -1,14 +1,12 @@
 package org.incava.jagol;
 
-import java.io.*;
-import java.util.*;
+import java.util.List;
 
 
 /**
  * Base class of all options, except for booleans.
  */
-public abstract class NonBooleanOption extends Option {
-    
+public abstract class NonBooleanOption extends Option {    
     public NonBooleanOption(String longName, String description) {
         super(longName, description);
     }
@@ -17,54 +15,47 @@ public abstract class NonBooleanOption extends Option {
      * Sets from a list of command - line arguments. Returns whether this option
      * could be set from the current head of the list.
      */
-    public boolean set(String arg, List<? extends Object> args) throws OptionException {
-        // String arg = (String)args.get(0);
+    public boolean set(String arg, List<? extends Object> argList) throws OptionException {
+        return setFromLongName(arg, argList) || setFromLongNameEq(arg) || setFromShortName(arg, argList);
+    }
+    
+    protected void checkArgList(Object name, List<? extends Object> argList) throws InvalidTypeException {
+        if (argList.isEmpty()) {
+            throw new InvalidTypeException(name + " expects following " + getType() + " argument");
+        }
+    }
 
-        tr.Ace.log("considering: " + arg);
+    protected void checkArgString(Object name, String arg, int pos) throws InvalidTypeException {
+        if (pos >= arg.length()) {
+            throw new InvalidTypeException(name + " expects argument of type " + getType());
+        }
+    }
+
+    protected boolean setFromLongName(String arg, List<? extends Object> argList) throws OptionException {
+        String longName = getLongName();
+        return arg.equals("--" + longName) ? setFromArgList(longName, argList) : false;
+    }
+
+    protected boolean setFromLongNameEq(String arg) throws OptionException {
+        String longNameEq = "--" + getLongName() + "=";
+        return arg.startsWith(longNameEq) ? setFromStringPosition(getLongName(), arg, longNameEq.length()) : false;
+    }
+    
+    protected boolean setFromStringPosition(String name, String arg, int pos) throws InvalidTypeException {
+        checkArgString(name, arg, pos);        
+        setValue(arg.substring(pos));
+        return true;
+    }
+
+    protected boolean setFromShortName(String arg, List<? extends Object> argList) throws OptionException {
+        char shortName = getShortName();
+        return shortName != 0 && arg.equals("-" + shortName) ? setFromArgList(shortName, argList) : false;
+    }
+    
+    protected boolean setFromArgList(Object name, List<? extends Object> argList) throws OptionException {
+        checkArgList(name, argList);
         
-        if (arg.equals("--" + longName)) {
-            tr.Ace.log("matched long name");
-
-            // args.remove(0);
-            if (args.size() == 0) {
-                throw new InvalidTypeException(longName + " expects following " + getType() + " argument");
-            }
-            else {
-                String value = (String)args.remove(0);
-                setValue(value);
-            }
-        }
-        else if (arg.startsWith("--" + longName + "=")) {
-            tr.Ace.log("matched long name + equals");
-
-            // args.remove(0);
-            int pos = ("--" + longName + "=").length();
-            tr.Ace.log("position: " + pos);
-            if (pos >= arg.length()) {
-                throw new InvalidTypeException(longName + " expects argument of type " + getType());
-            }
-            else {
-                String value = arg.substring(pos);
-                setValue(value);
-            }
-        }
-        else if (shortName != 0 && arg.equals("-" + shortName)) {
-            tr.Ace.log("matched short name");
-
-            // args.remove(0);
-            if (args.size() == 0) {
-                throw new InvalidTypeException(shortName + " expects following " + getType() + " argument");
-            }
-            else {
-                String value = (String)args.remove(0);
-                setValue(value);
-            }                
-        }
-        else {
-            tr.Ace.log("not a match");
-            return false;
-        }
-        tr.Ace.log("matched");
+        setValue((String)argList.remove(0));
         return true;
     }
 
@@ -72,5 +63,4 @@ public abstract class NonBooleanOption extends Option {
      * Returns the option type.
      */
     protected abstract String getType();
-
 }

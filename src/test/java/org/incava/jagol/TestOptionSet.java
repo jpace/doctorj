@@ -26,11 +26,11 @@ public class TestOptionSet extends TestCase {
 
         floatOpt.setShortName('f');
         
-        optSet.add(intOpt);
-        optSet.add(stringOpt);
-        optSet.add(floatOpt);
-        optSet.add(doubleOpt);
-        optSet.add(booleanOpt);
+        optSet.addOption(intOpt);
+        optSet.addOption(stringOpt);
+        optSet.addOption(floatOpt);
+        optSet.addOption(doubleOpt);
+        optSet.addOption(booleanOpt);
     }
 
     public void testCommandLine() {

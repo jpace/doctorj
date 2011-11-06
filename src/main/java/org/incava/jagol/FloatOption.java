@@ -1,11 +1,8 @@
 package org.incava.jagol;
 
-import java.io.*;
-import java.util.*;
-
 
 /**
- * Represents an option that is an float.
+ * Represents an option that is a float.
  */
 public class FloatOption extends NonBooleanOption {
     
@@ -38,7 +35,6 @@ public class FloatOption extends NonBooleanOption {
      * Sets the value from the string, for a float type.
      */
     public void setValue(String value) throws InvalidTypeException {
-        tr.Ace.log("value: '" + value + "'");
         try {
             setValue(new Float(value));
         }
@@ -54,5 +50,4 @@ public class FloatOption extends NonBooleanOption {
     protected String getType() {
         return "float";
     }
-
 }

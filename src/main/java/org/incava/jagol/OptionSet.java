@@ -1,7 +1,15 @@
 package org.incava.jagol;
 
-import java.io.*;
-import java.util.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import org.incava.ijdk.io.FileExt;
+import static org.incava.ijdk.util.IUtil.*;
 
 
 /**
@@ -41,8 +49,29 @@ public class OptionSet {
     /**
      * Adds an options to this set.
      */
-    public void add(Option opt) {
+    public <T extends Option> T addOption(T opt) {
         options.add(opt);
+        return opt;
+    }
+
+    public BooleanOption addOption(String name, String desc, Boolean value) {
+        return addOption(new BooleanOption(name, desc, value));
+    }
+
+    public BooleanOption addBooleanOption(String name, String desc) {
+        return addOption(new BooleanOption(name, desc));
+    }
+
+    public IntegerOption addOption(String name, String desc, Integer value) {
+        return addOption(new IntegerOption(name, desc, value));
+    }
+
+    public ListOption addOption(String name, String desc, List<String> value) {
+        return addOption(new ListOption(name, desc, value));
+    }
+
+    public StringOption addOption(String name, String desc, String value) {
+        return addOption(new StringOption(name, desc, value));
     }
 
     /**
@@ -66,36 +95,65 @@ public class OptionSet {
      */
     protected void processRunControlFiles() {
         for (String rcFileName : rcFileNames) {
-            try {
-                Properties props = new Properties();
+            processRunControlFile(rcFileName);
+        }
+    }
 
-                int tildePos = rcFileName.indexOf('~');
-                if (tildePos != -1) {
-                    rcFileName = rcFileName.substring(0, tildePos) + System.getProperty("user.home") + rcFileName.substring(tildePos + 1);
-                }
+    /**
+     * Processes a run control file.
+     */
+    protected void processRunControlFile(String rcFileName) {
+        tr.Ace.setVerbose(true);
+        
+        Properties props = new Properties();
+        tr.Ace.log("props", props);
+        rcFileName = FileExt.resolveFileName(rcFileName);
+        tr.Ace.log("rcFileName", rcFileName);
+        try {
+            props.load(new FileInputStream(rcFileName));
+        }
+        catch (IOException ioe) {
+            return;
+        }
 
-                props.load(new FileInputStream(rcFileName));
-
-                for (Map.Entry<Object, Object> propEntry : props.entrySet()) {                    
-                    Iterator<Option> oit = options.iterator();
-                    boolean processed = false;
-                    while (!processed && oit.hasNext()) {
-                        Option opt = oit.next();
-                        if (opt.getLongName().equals(propEntry.getKey())) {
-                            processed = true;
-                            try {
-                                opt.setValue((String)propEntry.getValue());
-                            }
-                            catch (OptionException oe) {
-                                System.err.println("error: " + oe.getMessage());
-                            }
-                        }
-                    }
-                }
-            }
-            catch (IOException ioe) {
+        for (Map.Entry<Object, Object> propEntry : props.entrySet()) {
+            Option opt = findOptionByLongName((String)propEntry.getKey());
+            if (isTrue(opt)) {
+                setOption(opt, (String)propEntry.getValue());
             }
         }
+    }
+
+    protected void setOption(Option opt, String value) {
+        try {
+            opt.setValue(value);
+        }
+        catch (OptionException oe) {
+            System.err.println("error: " + oe.getMessage());
+        }
+    }
+
+    protected Option findOptionByLongName(String longName) {
+        for (Option opt : options) {
+            if (opt.getLongName().equals(longName)) {
+                return opt;
+            }
+        }
+        return null;
+    }
+
+    protected boolean processArgument(String arg, List<String> argList) {
+        for (Option opt : options) {
+            try {
+                if (opt.set(arg, argList)) {
+                    return true;
+                }
+            }
+            catch (OptionException oe) {
+                System.err.println("error: " + oe.getMessage());
+            }
+        }
+        return false;
     }
 
     /**
@@ -114,30 +172,9 @@ public class OptionSet {
             }
             else if (arg.charAt(0) == '-') {
                 argList.remove(0);
-                
-                Iterator<Option> oit = options.iterator();
-                boolean processed = false;
-                while (!processed && oit.hasNext()) {
-                    Option opt = oit.next();
-                    try {
-                        processed = opt.set(arg, argList);
-                    }
-                    catch (OptionException oe) {
-                        System.err.println("error: " + oe.getMessage());
-                    }
-                }
 
-                if (!processed) {
-                    if (arg.equals("--help") || arg.equals("-h")) {
-                        showUsage();
-                    }
-                    else if (!rcFileNames.isEmpty() && arg.equals("--help-config")) {
-                        showConfig();
-                    }
-                    else {
-                        System.err.println("invalid option: " + arg + " (-h will show valid options)");
-                    }
-                    
+                if (!processArgument(arg, argList)) {
+                    handleBadArgument(arg);
                     break;
                 }
             }
@@ -146,9 +183,19 @@ public class OptionSet {
             }
         }
 
-        String[] unprocessed = argList.toArray(new String[0]);
+        return argList.toArray(new String[argList.size()]);
+    }
 
-        return unprocessed;
+    protected void handleBadArgument(String arg) {
+        if (arg.equals("--help") || arg.equals("-h")) {
+            showUsage();
+        }
+        else if (!rcFileNames.isEmpty() && arg.equals("--help-config")) {
+            showConfig();
+        }
+        else {
+            System.err.println("invalid option: " + arg + " (-h will show valid options)");
+        }
     }
 
     protected void showUsage() {

@@ -1,14 +1,10 @@
 package org.incava.jagol;
 
-import java.io.*;
-import java.util.*;
-
 
 /**
- * Represents an option that is an String.
+ * Represents an option that is a String.
  */
 public class StringOption extends NonBooleanOption {
-
     private String value;
     
     public StringOption(String longName, String description) {
