@@ -105,7 +105,6 @@ public class Options extends OptionSet {
         }
         
         String dictProperty = System.getProperty("doctorj.dictionaries");
-        tr.Ace.log("dictProperty", dictProperty);
         
         if (dictProperty != null) {
             for (String wl : StringExt.toList(dictProperty)) {
@@ -167,7 +166,6 @@ public class Options extends OptionSet {
      * processing.
      */
     public List<String> process(List<String> args) {
-        tr.Ace.log("args: " + args);
         List<String> unprocessed = super.process(args);
 
         Integer tabWidthInt = this.tabWidthOpt.getValue();
@@ -207,7 +205,6 @@ public class Options extends OptionSet {
 
         String sourceStr = this.sourceOpt.getValue();
         if (sourceStr != null) {
-            tr.Ace.log("sourceStr", sourceStr);
             source = sourceStr;
         }
 

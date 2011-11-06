@@ -10,55 +10,36 @@ import org.incava.ijdk.util.Collect;
  * Javadoc tags and the order in which they should appear for each Java type.
  */
 public class JavadocTags {
-
     public static class TagDescription {
-
         String tag;
-
         int index;
-
         boolean isTypeTag;
-
         boolean isCtorTag;
-
         boolean isMethodTag;
-
         boolean isFieldTag;
 
         public TagDescription(String tag, int index, boolean isTypeTag, boolean isCtorTag, boolean isMethodTag, boolean isFieldTag) {
-             this.tag = tag;
-             this.index = index;
-             this.isTypeTag = isTypeTag;
-             this.isCtorTag = isCtorTag;
-             this.isMethodTag = isMethodTag;
-             this.isFieldTag = isFieldTag;
+            this.tag = tag;
+            this.index = index;
+            this.isTypeTag = isTypeTag;
+            this.isCtorTag = isCtorTag;
+            this.isMethodTag = isMethodTag;
+            this.isFieldTag = isFieldTag;
         }
     }
 
     public final static String AUTHOR = "@author";
-
     public final static String VERSION = "@version";
-
     public final static String PARAM = "@param";
-
     public final static String RETURN = "@return";
-
     public final static String EXCEPTION = "@exception";
-
     public final static String THROWS = "@throws";
-
     public final static String SEE = "@see";
-
     public final static String SINCE = "@since";
-
     public final static String SERIAL = "@serial";
-
     public final static String SERIALDATA = "@serialData";
-
     public final static String SERIALFIELD = "@serialField";
-
     public final static String DEPRECATED = "@deprecated";
-
     public final static int CUSTOM_TAG = 999;
 
     private final static Map<String, TagDescription> tags = new HashMap<String, TagDescription>();
@@ -85,13 +66,7 @@ public class JavadocTags {
     }
 
     public static int getIndex(String tag) {
-        if (tags.containsKey(tag)) {
-            TagDescription td = tags.get(tag);
-            return td.index;
-        }
-    else {
-            return - 1;
-        }
+        return tags.containsKey(tag)? tags.get(tag).index : -1;
     }
 
     public static List<String> getTagsAtIndex(int index) {
@@ -122,8 +97,7 @@ public class JavadocTags {
             public final static long serialVersionUID = 1;
             public boolean where(TagDescription td) {
                 return td.isCtorTag;
-    }
-    
+            }
         };
     }
     
@@ -132,8 +106,7 @@ public class JavadocTags {
             public final static long serialVersionUID = 1;
             public boolean where(TagDescription td) {
                 return td.isMethodTag;
-    }
-    
+            }
         };
     }
 
@@ -142,8 +115,7 @@ public class JavadocTags {
             public final static long serialVersionUID = 1;
             public boolean where(TagDescription td) {
                 return td.isFieldTag;
-    }
-    
+            }
         };
     }
 
@@ -152,8 +124,7 @@ public class JavadocTags {
             public final static long serialVersionUID = 1;
             public boolean where(TagDescription td) {
                 return td.isTypeTag;
-    }
-    
+            }
         };
     }
 

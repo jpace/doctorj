@@ -116,76 +116,86 @@ public class ParameterDocAnalyzer extends DocAnalyzer {
      * Analyzes the Javadoc for the parameter list.
      */
     public void run() {
-        tr.Ace.log("function", this.function);
-
         // foreach @throws / @parameter tag:
         //  - check for target
         //  - check for description
         //  - in order as in code
 
-        int warningLevel = getWarningLevel();
-
-        boolean misorderedReported = false;
-        int     parameterIndex = 0;
-            
+        int parameterIndex = 0;
+        boolean done = false;
         JavadocTaggedNode[] taggedComments = this.javadoc.getTaggedComments();
         for (JavadocTaggedNode jtn : taggedComments) {
             JavadocTag tag = jtn.getTag();
             
-            if (tag.text.equals(JavadocTags.PARAM)) {
-                JavadocElement tgt = jtn.getTarget();
-
-                if (!SimpleNodeUtil.hasChildren(this.parameterList)) {
-                    addViolation(MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, tag.start, tag.end);
-                    break;
-                }
-                else if (tgt == null) {
-                    if (warningLevel >= CHKLVL_TAG_CONTENT + this.nodeLevel) {
-                        addViolation(MSG_PARAMETER_WITHOUT_NAME, tag.start, tag.end);
-                    }
-                }
-                else {
-                    JavadocElement desc = jtn.getDescriptionNonTarget();
-                    if (jtn.getDescriptionNonTarget() == null) {
-                        if (warningLevel >= CHKLVL_TAG_CONTENT + this.nodeLevel) {
-                            addViolation(MSG_PARAMETER_WITHOUT_DESCRIPTION, tgt.start, tgt.end);
-                        }
-                    }
-
-                    String tgtStr = tgt.text;
-                    int    index = getMatchingParameter(tgtStr);
-                    
-                    if (index == -1) {
-                        index = getClosestMatchingParameter(tgtStr);
-
-                        SimpleNodeUtil.dump(this.parameterList, "pppp");
-
-                        if (index == -1) {
-                            String paramType = ParameterUtil.getParameterType(this.parameterList, parameterIndex);
-
-                            if (tgtStr.equals(paramType)) {
-                                addViolation(MSG_PARAMETER_TYPE_USED, tgt.start, tgt.end);
-                                addDocumentedParameter(parameterIndex, tgt.start, tgt.end);
-                            }
-                            else {
-                                addViolation(MSG_PARAMETER_NOT_IN_CODE, tgt.start, tgt.end);
-                            }
-                        }
-                        else {
-                            addViolation(MSG_PARAMETER_MISSPELLED, tgt.start, tgt.end);
-                            addDocumentedParameter(index, tgt.start, tgt.end);
-                        }
-                    }
-                    else {
-                        addDocumentedParameter(index, tgt.start, tgt.end);
-                    }   
-                }
+            if (tag.textMatches(JavadocTags.PARAM)) {
+                done = analyzeParameterNode(jtn, parameterIndex);
                 ++parameterIndex;
+            }
+
+            if (done) {
+                break;
             }
         }
 
         if (isNotNull(this.parameterList) && isCheckable(this.function, CHKLVL_PARAM_DOC_EXISTS)) {
             reportUndocumentedParameters();
+        }
+    }
+
+    protected void addParameterViolation(String msg, Location start, Location end) {
+        if (getWarningLevel() >= CHKLVL_TAG_CONTENT + this.nodeLevel) {
+            addViolation(msg, start, end);
+        }
+    }
+
+    protected boolean analyzeParameterNode(JavadocTaggedNode jtn, int parameterIndex) {
+        JavadocTag     tag = jtn.getTag();
+        JavadocElement tgt = jtn.getTarget();
+        int warningLevel = getWarningLevel();
+
+        if (!SimpleNodeUtil.hasChildren(this.parameterList)) {
+            addViolation(MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, tag.start, tag.end);
+            return true;
+        }
+
+        if (tgt == null) {
+            addParameterViolation(MSG_PARAMETER_WITHOUT_NAME, tag.start, tag.end);
+        }
+        else {
+            JavadocElement desc = jtn.getDescriptionNonTarget();
+            if (jtn.getDescriptionNonTarget() == null) {
+                addParameterViolation(MSG_PARAMETER_WITHOUT_DESCRIPTION, tgt.start, tgt.end);
+            }
+
+            analyzeTargetAgainstParameters(tgt, parameterIndex);
+        }
+        return false;
+    }
+
+    protected void analyzeTargetAgainstParameters(JavadocElement tgt, int parameterIndex) {
+        String tgtStr = tgt.text;
+        int    index = getMatchingParameter(tgtStr);
+
+        if (index >= 0) {
+            addDocumentedParameter(index, tgt.start, tgt.end);
+            return;
+        }
+
+        index = getClosestMatchingParameter(tgtStr);
+        if (index >= 0) {
+            addViolation(MSG_PARAMETER_MISSPELLED, tgt.start, tgt.end);
+            addDocumentedParameter(index, tgt.start, tgt.end);
+            return;
+        }
+        
+        String paramType = ParameterUtil.getParameterType(this.parameterList, parameterIndex);
+
+        if (tgtStr.equals(paramType)) {
+            addViolation(MSG_PARAMETER_TYPE_USED, tgt.start, tgt.end);
+            addDocumentedParameter(parameterIndex, tgt.start, tgt.end);
+        }
+        else {
+            addViolation(MSG_PARAMETER_NOT_IN_CODE, tgt.start, tgt.end);
         }
     }
 
@@ -206,7 +216,6 @@ public class ParameterDocAnalyzer extends DocAnalyzer {
         ASTFormalParameter[] params = ParameterUtil.getParameters(this.parameterList);
         
         for (int ni = 0; ni < params.length; ++ni) {
-            tr.Ace.log("parameter", params[ni]);
             ASTFormalParameter param = params[ni];
             if (!this.documentedParameters.contains(ni)) {
                 Token nameTk = ParameterUtil.getParameterName(param);
@@ -222,7 +231,6 @@ public class ParameterDocAnalyzer extends DocAnalyzer {
         ASTFormalParameter[] params = ParameterUtil.getParameters(this.parameterList);
         
         for (int ni = 0; ni < params.length; ++ni) {
-            tr.Ace.log("parameter", params[ni]);
             ASTFormalParameter param = params[ni];
             Token nameTk = ParameterUtil.getParameterName(param);
             if (nameTk.image.equals(str)) {
@@ -230,7 +238,7 @@ public class ParameterDocAnalyzer extends DocAnalyzer {
             }
         }
 
-        return - 1;
+        return -1;
     }
 
     /**
@@ -239,29 +247,25 @@ public class ParameterDocAnalyzer extends DocAnalyzer {
      */
     protected int getClosestMatchingParameter(String str) {
         if (this.parameterList == null) {
-            return - 1;
+            return -1;
         }
-        else {
-            int                  bestDistance = -1;
-            int                  bestIndex    = -1;
-            ASTFormalParameter[] params = ParameterUtil.getParameters(this.parameterList);
         
-            for (int ni = 0; ni < params.length; ++ni) {
-                tr.Ace.log("parameter", params[ni]);
-                ASTFormalParameter param = params[ni];
-                Token              nameTk = ParameterUtil.getParameterName(param);
-                int                dist = Spelling.getEditDistance(nameTk.image, str);
+        int                  bestDistance = -1;
+        int                  bestIndex    = -1;
+        ASTFormalParameter[] params = ParameterUtil.getParameters(this.parameterList);
+        
+        for (int ni = 0; ni < params.length; ++ni) {
+            ASTFormalParameter param  = params[ni];
+            Token              nameTk = ParameterUtil.getParameterName(param);
+            int                dist   = Spelling.getEditDistance(nameTk.image, str);
 
-                // tr.Ace.log("edit distance(param: '" + paramTkn.image + "', str: '" + str + "'): " + dist);
-            
-                if (MathExt.isWithin(dist, 0, SpellChecker.DEFAULT_MAX_DISTANCE) && (bestDistance == -1 || dist < bestDistance)) {
-                    bestDistance = dist;
-                    bestIndex = ni;
-                }
+            if (MathExt.isWithin(dist, 0, SpellChecker.DEFAULT_MAX_DISTANCE) && (bestDistance == -1 || dist < bestDistance)) {
+                bestDistance = dist;
+                bestIndex = ni;
             }
-
-            return bestIndex;
         }
+
+        return bestIndex;
     }
 
 }

@@ -46,7 +46,6 @@ public class SpellChecker {
      * Adds the given dictionary. Returns whether it could be read and had content.
      */
     public boolean addDictionary(String dictionary) {
-        tr.Ace.log("dictionary", dictionary);
         for (String line : FileExt.readLines(dictionary)) {
             if (isTrue(line)) {
                 addWord(line);

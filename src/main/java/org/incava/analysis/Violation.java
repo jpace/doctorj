@@ -54,7 +54,7 @@ public class Violation implements Comparable {
         this.endLine = endLine;
         this.endColumn = endColumn;
 
-        tr.Ace.log("[" + this.beginLine + ":" + this.beginColumn + " .. " + this.endLine + ":" + this.endColumn + "] (" + this.message + ")");
+        // tr.Ace.log("[" + this.beginLine + ":" + this.beginColumn + " .. " + this.endLine + ":" + this.endColumn + "] (" + this.message + ")");
     }
 
     /**
@@ -165,11 +165,8 @@ public class Violation implements Comparable {
 
     /**
      * Returns this violation, as a string.
-     *
-     * @return This violation, as a string.
      */
     public String toString() {
         return "[" + this.beginLine + ":" + this.beginColumn + " .. " + this.endLine + ":" + this.endColumn + "] (" + this.message + ")";
     }
-
 }
