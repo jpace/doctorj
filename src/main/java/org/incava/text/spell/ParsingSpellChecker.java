@@ -38,7 +38,6 @@ public class ParsingSpellChecker {
     }
 
     public boolean addDictionary(String dictionary) {
-        tr.Ace.log("dictionary", dictionary);
         this.canCheck = this.checker.addDictionary(dictionary) || this.canCheck;
         return this.canCheck;
     }

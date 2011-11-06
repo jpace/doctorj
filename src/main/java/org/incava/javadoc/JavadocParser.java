@@ -11,7 +11,6 @@ import org.incava.text.*;
  * description and tagged comments in a Javadoc comment block.
  */
 public class JavadocParser {
-
     /**
      * Parses itself from the given text.
      */
@@ -88,13 +87,10 @@ public class JavadocParser {
 
     private static int getEndOfCommentLocation(String text, int idx) {
         while (idx >= 0) {
-            // tr.Ace.log("char[" + idx + "]: '" + text.charAt(idx) + "'");
             if (isCommentCharacter(text, idx)) {
-                // tr.Ace.log("star or WS; (text: '" + text.charAt(idx) + "')");
                 --idx;
             }
             else if (idx > 0 && text.startsWith("*/", idx - 1)) {
-                // tr.Ace.yellow("at end of comment");
                 idx -= 2;
             }
             else {
@@ -117,25 +113,20 @@ public class JavadocParser {
         int pos = tl.getPosition();
 
         if (pos + 3 < len && text.startsWith("/**")) {  // unmangle Emacs: */
-            // tr.Ace.log("got comment start");
             tl = skipCommentCharacters(text, pos + 3, len);
             pos = tl.getPosition();
 
             // rewind end through comment characters
 
             len = getEndOfCommentLocation(text, len - 1);
-
-            // tr.Ace.log("pos: " + pos + "; len: " + len);
             
             if (pos < len) {
                 // the description
                 if (text.charAt(pos) == '@') {
-                    // tr.Ace.log("got tag start -- no description");
                     // null means no description
                     ary.add(null);
                 }
                 else {
-                    // tr.Ace.log("at description start: " + pos);
                     tl = readDescription(ary, text, pos, len);
                     pos = tl.getPosition();
                 }
@@ -143,13 +134,10 @@ public class JavadocParser {
                 // now, the tagged comments:
                 pos = readTagList(ary, text, pos, len);
             }
-            
-            // tr.Ace.log("returning: " + ary);
 
             return ary;
         }
         else {
-            // tr.Ace.log("no Javadoc comment in this string.");
             return null;
         }
     }
@@ -162,8 +150,6 @@ public class JavadocParser {
         tl = read(desc, text, tl, len);
 
         pos = tl.getPosition();
-                    
-        // tr.Ace.log("at end, pos: " + pos + "; desc pos   : " + desc);
 
         ary.add(desc);
 
@@ -172,8 +158,6 @@ public class JavadocParser {
 
     private static int readTagList(List<Point> ary, String text, int pos, int len) {
         while (pos < len && text.charAt(pos) == '@') {
-            // tr.Ace.log("tag starting.");
-            
             Point tag = new Point(pos, -1);
             
             ++pos;
@@ -183,8 +167,6 @@ public class JavadocParser {
             tl = read(tag, text, tl, len);
 
             pos = tl.getPosition();
-            
-            // tr.Ace.log("tag pos   : " + tag);
             
             ary.add(tag);
         }
@@ -196,11 +178,6 @@ public class JavadocParser {
      * Reads to the next Javadoc field, or to the end of the comment.
      */
     private static TextLocation read(Point pt, String text, TextLocation tl, int len) {
-        // tr.Ace.cyan("pt", pt);
-        // tr.Ace.cyan("text", text);
-        // tr.Ace.cyan("tl", tl);
-        // tr.Ace.cyan("len", len);
-
         int pos = tl.getPosition();
         
         pt.y = pos;
@@ -226,12 +203,6 @@ public class JavadocParser {
 
         ++pt.y;
 
-        // tr.Ace.cyan("pt", pt);
-        // tr.Ace.cyan("text", text);
-        // tr.Ace.cyan("pos", pos);
-        // tr.Ace.cyan("len", len);
-
         return new TextLocation(pos, tl.getLine(), tl.getColumn());
     }
-
 }

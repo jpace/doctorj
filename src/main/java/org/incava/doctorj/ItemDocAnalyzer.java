@@ -84,7 +84,6 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer {
         
         if (javadoc == null) {
             if (isCheckable(encNode, CHKLVL_DOC_EXISTS)) {
-                tr.Ace.log("no Javadoc");
                 StringBuilder desc = new StringBuilder("Undocumented ");
                 if (SimpleNodeUtil.hasLeadingToken(encNode, JavaParserConstants.PUBLIC)) {
                     desc.append("public ");
@@ -103,9 +102,6 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer {
                 desc.append(getItemType());
 
                 addUndocumentedViolation(desc.toString());
-            }
-            else {
-                tr.Ace.log("not checkable");
             }
         }
         else {
@@ -156,13 +152,11 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer {
     }
 
     protected void checkMisorderedTag(JavadocNode javadoc) {
-        tr.Ace.log("checking for misordered tags");
         int previousOrderIndex = -1;
         JavadocTaggedNode[] taggedComments = javadoc.getTaggedComments();
         for (int ti = 0; ti < taggedComments.length; ++ti) {
             JavadocTag tag = taggedComments[ti].getTag();
             int        index = JavadocTags.getIndex(tag.text);
-            tr.Ace.log("index of '" + tag.text + "': " + index);
             if (index < previousOrderIndex) {
                 addViolation(MSG_TAG_IMPROPER_ORDER, tag.start, tag.end);
                 break;
@@ -172,7 +166,6 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer {
     }
 
     protected void checkTagValidity(JavadocNode javadoc) {
-        tr.Ace.log("checking for valid tags");
         List<String>        validTags = getValidTags();
         JavadocTaggedNode[] taggedComments = javadoc.getTaggedComments();
         for (int ti = 0; ti < taggedComments.length; ++ti) {
@@ -187,7 +180,6 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer {
         JavadocTaggedNode[] taggedComments = javadoc.getTaggedComments();
         for (int ti = 0; ti < taggedComments.length; ++ti) {
             JavadocTag tag = taggedComments[ti].getTag();
-            tr.Ace.log("checking tag: " + tag);
             if (tag.text.equals(JavadocTags.SEE)) {
                 checkForTagDescription(taggedComments[ti], MSG_SEE_WITHOUT_REFERENCE);
             }
