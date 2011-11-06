@@ -4,7 +4,6 @@ import java.io.*;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
-import net.sourceforge.pmd.ast.Token;
 
 
 /**
@@ -98,8 +97,6 @@ public abstract class Report {
      * @param file The file associated with the set of violations.
      */
     public void reset(File file) {
-        tr.Ace.log("file", file);
-        
         try {
             fileName = file.getCanonicalPath();
         }
@@ -114,8 +111,6 @@ public abstract class Report {
      * @param source The source code associated with the set of violations.
      */
     public void reset(String source) {
-        tr.Ace.log("source", source);
-        
         fileName = "-";
     }
 
@@ -124,8 +119,6 @@ public abstract class Report {
      */
     public void flush() {
         try {
-            tr.Ace.stack("flushing");
-            
             for (Violation v : this.violations) {
                 String str = toString(v);
                 tr.Ace.log("v", v);
@@ -172,7 +165,6 @@ public abstract class Report {
      * @param str The string to be written.
      */
     protected void write(String str) {
-        tr.Ace.log("str", str);
         try {
             writer.write(str);
         }

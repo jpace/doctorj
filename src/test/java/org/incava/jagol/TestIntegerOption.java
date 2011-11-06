@@ -1,38 +1,34 @@
 package org.incava.jagol;
 
-import java.io.*;
-import java.util.*;
-import junit.framework.TestCase;
+import java.util.ArrayList;
+import java.util.List;
 
-
-public class TestIntegerOption extends TestCase {
-    
-    IntegerOption opt = new IntegerOption("intopt", "this is the description of intopt");
+public class TestIntegerOption extends AbstractJagolTestCase {
+    private IntegerOption opt = new IntegerOption("intopt", "this is the description of intopt");
 
     public TestIntegerOption(String name) {
         super(name);
     }
 
     public void testDefaultNull() {
-        assertEquals("intopt", opt.getLongName());
-        assertEquals("this is the description of intopt", opt.getDescription());
-
-        assertNull("default value", opt.getValue());
+        assertLongName("intopt", opt);
+        assertDescription("this is the description of intopt", opt);
+        assertValue(null, opt);
     }
 
     public void testDefaultValue() {
         IntegerOption opt = new IntegerOption("intopt", "this is the description of intopt", new Integer(1012));
-        assertEquals("default value", new Integer(1012), opt.getValue());
+        assertValue(new Integer(1012), opt);
     }
     
     public void testSetIntegerValue() {
         opt.setValue(new Integer(14));
-        assertEquals("option value", new Integer(14), opt.getValue());
+        assertValue(new Integer(14), opt);
     }
 
     public void testSetInvalidValueString() {
         try {
-            opt.setValue("fred");
+            opt.setValueFromString("fred");
             fail("exception expected");
         }
         catch (InvalidTypeException ite) {
@@ -41,7 +37,7 @@ public class TestIntegerOption extends TestCase {
 
     public void testSetInvalidValueFloatingPoint() {
         try {
-            opt.setValue("1.4");
+            opt.setValueFromString("1.4");
             fail("exception expected");
         }
         catch (InvalidTypeException ite) {
@@ -50,8 +46,8 @@ public class TestIntegerOption extends TestCase {
 
     public void testSetValidValueNegative() {
         try {
-            opt.setValue("-987");
-            assertEquals("option value", new Integer(-987), opt.getValue());
+            opt.setValueFromString("-987");
+            assertValue(new Integer(-987), opt);
         }
         catch (InvalidTypeException ite) {
             fail("exception not expected");
@@ -63,7 +59,7 @@ public class TestIntegerOption extends TestCase {
         try {
             boolean processed = opt.set("--intopt=444", args);
             assertEquals("option processed", true, processed);
-            assertEquals("option value", new Integer(444), opt.getValue());
+            assertValue(new Integer(444), opt);
             assertEquals("argument removed from list", 0, args.size());
         }
         catch (OptionException ite) {
@@ -77,7 +73,7 @@ public class TestIntegerOption extends TestCase {
         try {
             boolean processed = opt.set("--intopt", args);
             assertEquals("option processed", true, processed);
-            assertEquals("option value", new Integer(41), opt.getValue());
+            assertValue(new Integer(41), opt);
             assertEquals("argument removed from list", 0, args.size());
         }
         catch (OptionException ite) {
@@ -91,7 +87,7 @@ public class TestIntegerOption extends TestCase {
         try {
             boolean processed = opt.set("--intopt=666", args);
             assertEquals("option processed", true, processed);
-            assertEquals("option value", new Integer(666), opt.getValue());
+            assertValue(new Integer(666), opt);
             assertEquals("argument removed from list", 1, args.size());
         }
         catch (OptionException ite) {
@@ -106,7 +102,7 @@ public class TestIntegerOption extends TestCase {
         try {
             boolean processed = opt.set("--intopt", args);
             assertEquals("option processed", true, processed);
-            assertEquals("option value", new Integer(1234), opt.getValue());
+            assertValue(new Integer(1234), opt);
             assertEquals("argument removed from list", 1, args.size());
         }
         catch (OptionException ite) {
@@ -124,5 +120,4 @@ public class TestIntegerOption extends TestCase {
         catch (OptionException ite) {
         }
     }
-
 }

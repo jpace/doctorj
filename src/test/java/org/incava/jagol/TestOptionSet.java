@@ -2,25 +2,28 @@ package org.incava.jagol;
 
 import java.io.*;
 import java.util.*;
-import junit.framework.TestCase;
 
+public class TestOptionSet extends AbstractJagolTestCase {    
+    private final OptionSet optSet = new OptionSet("app", "this application does wonderful things");        
+    private final IntegerOption intOpt = new IntegerOption("intopt",            "this option takes an integer argument");
+    private final StringOption  stringOpt = new StringOption("stringopt",      "this option takes a string argument");
+    private final FloatOption   floatOpt = new FloatOption("floatopt",        "this option takes a float argument", 'f');
+    private final DoubleOption  doubleOpt = new DoubleOption("doubleopt",      "this option takes a double argument");
+    private final BooleanOption booleanOpt = new BooleanOption("booleanopt",    "this option takes a boolean argument");
 
-public class TestOptionSet extends TestCase {
-    
-    OptionSet optSet = new OptionSet("app", "this application does wonderful things");
-        
-    IntegerOption intOpt = new IntegerOption("intopt",            "this option takes an integer argument");
-    StringOption  stringOpt = new StringOption("stringopt",      "this option takes a string argument");
-    FloatOption   floatOpt = new FloatOption("floatopt",        "this option takes a float argument");
-    DoubleOption  doubleOpt = new DoubleOption("doubleopt",      "this option takes a double argument");
-    BooleanOption booleanOpt = new BooleanOption("booleanopt",    "this option takes a boolean argument");
+    public static List<String> createList(String ... args) {
+        return Arrays.asList(args);
+    }
 
     public TestOptionSet(String name) {
         super(name);
-
         tr.Ace.log("running");
     }
 
+    protected List<String> process(String ... args) {
+        return optSet.process(createList(args));
+    }
+    
     public void setUp() {
         tr.Ace.log("setting up");
 
@@ -35,75 +38,51 @@ public class TestOptionSet extends TestCase {
 
     public void testCommandLine() {
         tr.Ace.log("testing command line");
-
-        tr.Ace.log("done adding");
         
-        String[] args = new String[] { "--intopt", "1", "--stringopt=two", "-f", "3.1415", "--no-booleanopt", "--doubleopt", "4.14" };
-        
-        args = optSet.process(args);
+        List<String> unprocessed = process("--intopt", "1",
+                                           "--stringopt=two",
+                                           "-f", "3.1415",
+                                           "--no-booleanopt",
+                                           "--doubleopt", "4.14");
 
-        assertEquals(new Integer(1),     intOpt.getValue());
-        assertEquals("two",              stringOpt.getValue());
-        assertEquals(new Float(3.1415F), floatOpt.getValue());
-        assertEquals(new Double(4.14),   doubleOpt.getValue());
-        assertEquals(Boolean.FALSE,      booleanOpt.getValue());
+        assertValue(new Integer(1),     intOpt);
+        assertValue("two",              stringOpt);
+        assertValue(new Float(3.1415F), floatOpt);
+        assertValue(new Double(4.14),   doubleOpt);
+        assertValue(Boolean.FALSE,      booleanOpt);
     }
 
     public void testCommandLineRemainingArgs() {
-        tr.Ace.log("testing command line");
+        List<String> unprocessed = process("--intopt", "1",
+                                           "--stringopt=two",
+                                           "-f", "3.1415",
+                                           "--no-booleanopt",
+                                           "--doubleopt", "4.14",
+                                           "foo",
+                                           "bar", 
+                                           "baz");
 
-        tr.Ace.log("done adding");
-        
-        String[] args = new String[] {
-            "--intopt", "1",
-            "--stringopt=two",
-            "-f", "3.1415",
-            "--no-booleanopt",
-            "--doubleopt", "4.14",
-            "foo",
-            "bar", 
-            "baz"
-        };
-        
-        args = optSet.process(args);
+        assertValue(1,     intOpt);
+        assertValue("two", stringOpt);
+        assertValue(new Float(3.1415F), floatOpt);
+        assertValue(new Double(4.14),   doubleOpt);
+        assertValue(Boolean.FALSE,      booleanOpt);
 
-        assertEquals(new Integer(1),     intOpt.getValue());
-        assertEquals("two",              stringOpt.getValue());
-        assertEquals(new Float(3.1415F), floatOpt.getValue());
-        assertEquals(new Double(4.14),   doubleOpt.getValue());
-        assertEquals(Boolean.FALSE,      booleanOpt.getValue());
-
-        assertEquals(3, args.length);
-        assertEquals("foo", args[0]);
-        assertEquals("bar", args[1]);
-        assertEquals("baz", args[2]);
+        assertEquals(3, unprocessed.size());
+        assertEquals("foo", unprocessed.get(0));
+        assertEquals("bar", unprocessed.get(1));
+        assertEquals("baz", unprocessed.get(2));
     }
 
     public void testUsage() {
-        tr.Ace.log("testing usage");
-
-        String[] args = new String[] { "--help" };
-        optSet.addRunControlFile("/etc/TestOptionSet.conf");
-        optSet.addRunControlFile("~/.TestOptionSet");
-        
-        optSet.process(args);
+        process("--help");
     }
 
     public void testConfig() {
-        tr.Ace.log("testing config help");
-
-        String[] args = new String[] { "--help-config" };
-        optSet.addRunControlFile("/etc/TestOptionSet.conf");
-        optSet.addRunControlFile("~/.TestOptionSet");
-        
-        optSet.process(args);
+        process("--help-config");
     }
 
     public void testRunControlFile() {
-        tr.Ace.log("testing command line");
-
-        tr.Ace.log("done adding");
-
         try {
             String userHome = System.getProperty("user.home");
             String rcFileName = userHome + "/.TestOptionSet";
@@ -119,15 +98,13 @@ public class TestOptionSet extends TestCase {
             
             optSet.addRunControlFile("~/.TestOptionSet");
             
-            String[] args = new String[] { "app" };
-        
-            args = optSet.process(args);
+            process("app");
             
-            assertEquals(new Integer(999),      intOpt.getValue());
-            assertEquals("april",               stringOpt.getValue());
-            assertEquals(new Float(8.41F),      floatOpt.getValue());
-            assertEquals(new Double(66.938432), doubleOpt.getValue());
-            assertEquals(Boolean.FALSE,         booleanOpt.getValue());
+            assertValue(new Integer(999),      intOpt);
+            assertValue("april",               stringOpt);
+            assertValue(new Float(8.41F),      floatOpt);
+            assertValue(new Double(66.938432), doubleOpt);
+            assertValue(Boolean.FALSE,         booleanOpt);
             
             rcFile.delete();
         }
@@ -137,10 +114,6 @@ public class TestOptionSet extends TestCase {
     }
 
     public void testRunControlFileAndCommandLine() {
-        tr.Ace.log("testing command line");
-
-        tr.Ace.log("done adding");
-
         try {
             String userHome = System.getProperty("user.home");
             String rcFileName = userHome + "/.TestOptionSet";
@@ -156,9 +129,7 @@ public class TestOptionSet extends TestCase {
             
             optSet.addRunControlFile("~/.TestOptionSet");
             
-            String[] args = new String[] { "--doubleopt=4.38", "--booleanopt" };
-        
-            args = optSet.process(args);
+            process("--doubleopt=4.38", "--booleanopt");
             
             assertEquals(new Integer(999), intOpt.getValue());
             assertEquals("april",          stringOpt.getValue());

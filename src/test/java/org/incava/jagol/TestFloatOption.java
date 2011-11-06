@@ -1,43 +1,40 @@
 package org.incava.jagol;
 
-import java.io.*;
-import java.util.*;
-import junit.framework.TestCase;
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class TestFloatOption extends TestCase {
-    
-    FloatOption opt = new FloatOption("fltopt", "this is the description of fltopt");
+public class TestFloatOption extends AbstractJagolTestCase {
+    private FloatOption opt = new FloatOption("fltopt", "this is the description of fltopt");
 
     public TestFloatOption(String name) {
         super(name);
     }
 
     public void testDefaultNull() {
-        assertEquals("fltopt", opt.getLongName());
-        assertEquals("this is the description of fltopt", opt.getDescription());
-
-        assertNull("default value", opt.getValue());
+        assertLongName("fltopt", opt);
+        assertDescription("this is the description of fltopt", opt);
+        assertValue(null, opt);
     }
 
     public void testDefaultValue() {
         FloatOption opt = new FloatOption("fltopt", "this is the description of fltopt", new Float(10.12F));
-        assertEquals("default value", new Float(10.12F), opt.getValue());
+        assertValue(new Float(10.12F), opt);
     }
 
     public void testShortName() {
         opt.setShortName('d');
-        assertEquals('d', opt.getShortName());
+        assertShortName('d', opt);
     }
 
     public void testSetFloatValue() {
         opt.setValue(new Float(1.4F));
-        assertEquals("option value", new Float(1.4F), opt.getValue());
+        assertValue(new Float(1.4F), opt);
     }
 
     public void testSetInvalidValueString() {
         try {
-            opt.setValue("fred");
+            opt.setValueFromString("fred");
             fail("exception expected");
         }
         catch (InvalidTypeException ite) {
@@ -46,7 +43,7 @@ public class TestFloatOption extends TestCase {
 
     public void testSetInvalidValue() {
         try {
-            opt.setValue("1.4.8");
+            opt.setValueFromString("1.4.8");
             fail("exception expected");
         }
         catch (InvalidTypeException ite) {
@@ -55,8 +52,8 @@ public class TestFloatOption extends TestCase {
 
     public void testSetValidValueNegative() {
         try {
-            opt.setValue("-9.87");
-            assertEquals("option value", new Float(-9.87F), opt.getValue());
+            opt.setValueFromString("-9.87");
+            assertValue(new Float(-9.87F), opt);
         }
         catch (InvalidTypeException ite) {
             fail("exception not expected");
@@ -65,8 +62,8 @@ public class TestFloatOption extends TestCase {
 
     public void testSetValidValueNoLeadingZero() {
         try {
-            opt.setValue(".87");
-            assertEquals("option value", new Float(0.87F), opt.getValue());
+            opt.setValueFromString(".87");
+            assertValue(new Float(0.87F), opt);
         }
         catch (InvalidTypeException ite) {
             fail("exception not expected");
@@ -78,7 +75,7 @@ public class TestFloatOption extends TestCase {
         try {
             boolean processed = opt.set("--fltopt=4.44", args);
             assertEquals("option processed", true, processed);
-            assertEquals("option value", new Float(4.44F), opt.getValue());
+            assertValue(new Float(4.44F), opt);
             assertEquals("argument removed from list", 0, args.size());
         }
         catch (OptionException ite) {
@@ -92,7 +89,7 @@ public class TestFloatOption extends TestCase {
         try {
             boolean processed = opt.set("--fltopt", args);
             assertEquals("option processed", true, processed);
-            assertEquals("option value", new Float(41.82F), opt.getValue());
+            assertValue(new Float(41.82F), opt);
             assertEquals("argument removed from list", 0, args.size());
         }
         catch (OptionException ite) {
@@ -106,7 +103,7 @@ public class TestFloatOption extends TestCase {
         try {
             boolean processed = opt.set("--fltopt=3.1415", args);
             assertEquals("option processed", true, processed);
-            assertEquals("option value", new Float(3.1415F), opt.getValue());
+            assertValue(new Float(3.1415F), opt);
             assertEquals("argument not removed from list", 1, args.size());
         }
         catch (OptionException ite) {
@@ -121,7 +118,7 @@ public class TestFloatOption extends TestCase {
         try {
             boolean processed = opt.set("--fltopt", args);
             assertEquals("option processed", true, processed);
-            assertEquals("option value", new Float(1234.567890F), opt.getValue());
+            assertValue(new Float(1234.567890F), opt);
             assertEquals("argument removed from list", 1, args.size());
         }
         catch (OptionException ite) {

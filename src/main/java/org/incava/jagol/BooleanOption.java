@@ -6,41 +6,27 @@ import java.util.List;
 /**
  * Represents an option that is an boolean.
  */
-public class BooleanOption extends Option {
-    private Boolean value;
-    
+public class BooleanOption extends Option<Boolean> {
     public BooleanOption(String longName, String description) {
-        this(longName, description, null);
+        this(longName, description, null, null);
     }
 
     public BooleanOption(String longName, String description, Boolean value) {
-        super(longName, description);
-        this.value = value;
+        this(longName, description, null, value);
     }
 
-    // public BooleanOption(String longName, String description, char shortName, Boolean value) {
-    //     super(longName, description, shortName);
-    //     this.value = value;
-    // }
-
-    /**
-     * Returns the value. This is null if it has not been set.
-     */
-    public Boolean getValue() {
-        return value;
+    public BooleanOption(String longName, String description, Character shortName) {
+        this(longName, description, shortName, null);
     }
 
-    /**
-     * Sets the value.
-     */
-    public void setValue(Boolean value) {
-        this.value = value;
+    public BooleanOption(String longName, String description, Character shortName, Boolean value) {
+        super(longName, description, shortName, value);
     }
 
     /**
      * Sets the value from the string, for a boolean type.
      */
-    public void setValue(String value) throws InvalidTypeException {
+    public void setValueFromString(String value) throws InvalidTypeException {
         String lcvalue = value.toLowerCase();
         if (lcvalue.equals("yes") || lcvalue.equals("true")) {
             setValue(Boolean.TRUE);
@@ -54,26 +40,22 @@ public class BooleanOption extends Option {
     }
 
     /**
-     * Sets from a list of command - line arguments. Returns whether this option
+     * Sets from a list of command-line arguments. Returns whether this option
      * could be set from the current head of the list.
      */
-    public boolean set(String arg, List<? extends Object> args) throws OptionException {
+    public boolean set(String arg, List<String> args) throws OptionException {
         if (arg.equals("--" + longName)) {
             setValue(Boolean.TRUE);
         }
         else if (arg.equals("--no-" + longName) || arg.equals("--no" + longName)) {
             setValue(Boolean.FALSE);
         }
-        else if (shortName != 0 && arg.equals("-" + shortName)) {
+        else if (shortName != null && arg.equals("-" + shortName)) {
             setValue(Boolean.TRUE);
         }
         else {
             return false;
         }
         return true;
-    }
-
-    public String toString() {
-        return value == null ? "" : value.toString();
     }
 }

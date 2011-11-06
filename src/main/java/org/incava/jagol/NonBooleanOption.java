@@ -6,20 +6,32 @@ import java.util.List;
 /**
  * Base class of all options, except for booleans.
  */
-public abstract class NonBooleanOption extends Option {    
+public abstract class NonBooleanOption<VarType> extends Option<VarType> {    
     public NonBooleanOption(String longName, String description) {
-        super(longName, description);
+        this(longName, description, null, null);
+    }
+
+    public NonBooleanOption(String longName, String description, VarType value) {
+        this(longName, description, null, value);
+    }
+
+    public NonBooleanOption(String longName, String description, Character shortName) {
+        this(longName, description, shortName, null);
+    }
+
+    public NonBooleanOption(String longName, String description, Character shortName, VarType value) {
+        super(longName, description, shortName, value);
     }
 
     /**
-     * Sets from a list of command - line arguments. Returns whether this option
+     * Sets from a list of command-line arguments. Returns whether this option
      * could be set from the current head of the list.
      */
-    public boolean set(String arg, List<? extends Object> argList) throws OptionException {
+    public boolean set(String arg, List<String> argList) throws OptionException {
         return setFromLongName(arg, argList) || setFromLongNameEq(arg) || setFromShortName(arg, argList);
     }
     
-    protected void checkArgList(Object name, List<? extends Object> argList) throws InvalidTypeException {
+    protected void checkArgList(Object name, List<String> argList) throws InvalidTypeException {
         if (argList.isEmpty()) {
             throw new InvalidTypeException(name + " expects following " + getType() + " argument");
         }
@@ -31,7 +43,7 @@ public abstract class NonBooleanOption extends Option {
         }
     }
 
-    protected boolean setFromLongName(String arg, List<? extends Object> argList) throws OptionException {
+    protected boolean setFromLongName(String arg, List<String> argList) throws OptionException {
         String longName = getLongName();
         return arg.equals("--" + longName) ? setFromArgList(longName, argList) : false;
     }
@@ -43,19 +55,18 @@ public abstract class NonBooleanOption extends Option {
     
     protected boolean setFromStringPosition(String name, String arg, int pos) throws InvalidTypeException {
         checkArgString(name, arg, pos);        
-        setValue(arg.substring(pos));
+        setValueFromString(arg.substring(pos));
         return true;
     }
 
-    protected boolean setFromShortName(String arg, List<? extends Object> argList) throws OptionException {
-        char shortName = getShortName();
-        return shortName != 0 && arg.equals("-" + shortName) ? setFromArgList(shortName, argList) : false;
+    protected boolean setFromShortName(String arg, List<String> argList) throws OptionException {
+        Character shortName = getShortName();
+        return shortName != null && arg.equals("-" + shortName) ? setFromArgList(shortName, argList) : false;
     }
     
-    protected boolean setFromArgList(Object name, List<? extends Object> argList) throws OptionException {
+    protected boolean setFromArgList(Object name, List<String> argList) throws OptionException {
         checkArgList(name, argList);
-        
-        setValue((String)argList.remove(0));
+        setValueFromString(argList.remove(0));
         return true;
     }
 

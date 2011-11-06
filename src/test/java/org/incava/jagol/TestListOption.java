@@ -1,28 +1,25 @@
 package org.incava.jagol;
 
-import java.io.*;
-import java.util.*;
-import junit.framework.TestCase;
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class TestListOption extends TestCase {
-
-    ListOption opt = new ListOption("listopt", "this is the description of listopt");
+public class TestListOption extends AbstractJagolTestCase {
+    private ListOption opt = new ListOption("listopt", "this is the description of listopt");
 
     public TestListOption(String name) {
         super(name);
     }
 
     public void testDefault() {
-        assertEquals("listopt", opt.getLongName());
-        assertEquals("this is the description of listopt", opt.getDescription());
-
-        assertEquals("default value", (new ArrayList()), opt.getValue());
+        assertLongName("listopt", opt);
+        assertDescription("this is the description of listopt", opt);
+        assertValue(new ArrayList<String>(), opt);
     }
 
     public void testShortName() {
         opt.setShortName('d');
-        assertEquals('d', opt.getShortName());
+        assertShortName('d', opt);
     }
 
     public void testSetListValue() {
@@ -120,5 +117,4 @@ public class TestListOption extends TestCase {
         catch (OptionException ite) {
         }
     }
-
 }

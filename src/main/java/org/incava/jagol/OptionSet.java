@@ -16,8 +16,7 @@ import static org.incava.ijdk.util.IUtil.*;
  * A group of options.
  */
 public class OptionSet {
-
-    private final List<Option> options;
+    private final List<Option<?>> options;
 
     private final List<String> rcFileNames;
 
@@ -28,7 +27,7 @@ public class OptionSet {
     public OptionSet(String appName, String description) {
         this.appName = appName;
         this.description = description;
-        this.options = new ArrayList<Option>();
+        this.options = new ArrayList<Option<?>>();
         this.rcFileNames = new ArrayList<String>();
     }
     
@@ -85,7 +84,7 @@ public class OptionSet {
      * Processes the run control files and command line arguments. Returns the
      * arguments that were not consumed by option processing.
      */
-    public String[] process(String[] args) {
+    public List<String> process(List<String> args) {
         processRunControlFiles();
         return processCommandLine(args);
     }
@@ -106,9 +105,7 @@ public class OptionSet {
         tr.Ace.setVerbose(true);
         
         Properties props = new Properties();
-        tr.Ace.log("props", props);
         rcFileName = FileExt.resolveFileName(rcFileName);
-        tr.Ace.log("rcFileName", rcFileName);
         try {
             props.load(new FileInputStream(rcFileName));
         }
@@ -124,9 +121,9 @@ public class OptionSet {
         }
     }
 
-    protected void setOption(Option opt, String value) {
+    protected void setOption(Option<?> opt, String value) {
         try {
-            opt.setValue(value);
+            opt.setValueFromString(value);
         }
         catch (OptionException oe) {
             System.err.println("error: " + oe.getMessage());
@@ -143,7 +140,7 @@ public class OptionSet {
     }
 
     protected boolean processArgument(String arg, List<String> argList) {
-        for (Option opt : options) {
+        for (Option<?> opt : options) {
             try {
                 if (opt.set(arg, argList)) {
                     return true;
@@ -160,30 +157,27 @@ public class OptionSet {
      * Processes the command line arguments. Returns the arguments that were not
      * consumed by option processing.
      */
-    protected String[] processCommandLine(String[] args) {
-        List<String> argList = new ArrayList<String>(Arrays.asList(args));
-
+    protected List<String> processCommandLine(List<String> args) {
+        // copy the array, in case it's immutable (e.g. main args[])
+        List<String> argList = new ArrayList<String>(args);
         while (!argList.isEmpty()) {
             String arg = argList.get(0);
-            
             if (arg.equals("--")) {
                 argList.remove(0);
                 break;
             }
-            else if (arg.charAt(0) == '-') {
-                argList.remove(0);
-
-                if (!processArgument(arg, argList)) {
-                    handleBadArgument(arg);
-                    break;
-                }
+            if (arg.charAt(0) != '-') {
+                break;
             }
-            else {
+
+            argList.remove(0);
+            if (!processArgument(arg, argList)) {
+                handleBadArgument(arg);
                 break;
             }
         }
 
-        return argList.toArray(new String[argList.size()]);
+        return argList;
     }
 
     protected void handleBadArgument(String arg) {
@@ -209,7 +203,7 @@ public class OptionSet {
         for (Option opt : options) {
             StringBuffer buf = new StringBuffer("  ");
 
-            if (opt.getShortName() == 0) {
+            if (opt.getShortName() == null) {
                 buf.append("    ");
             }
             else {

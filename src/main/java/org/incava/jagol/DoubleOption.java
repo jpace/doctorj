@@ -4,46 +4,33 @@ package org.incava.jagol;
 /**
  * Represents an option that is a double.
  */
-public class DoubleOption extends NonBooleanOption {
-    private Double value;
-    
+public class DoubleOption extends NonBooleanOption<Double> {
     public DoubleOption(String longName, String description) {
-        this(longName, description, null);
+        this(longName, description, null, null);
     }
 
     public DoubleOption(String longName, String description, Double value) {
-        super(longName, description);
-        this.value = value;
+        this(longName, description, null, value);
     }
 
-    /**
-     * Returns the value. Returns null if not set.
-     */
-    public Double getValue() {
-        return value;
+    public DoubleOption(String longName, String description, Character shortName) {
+        this(longName, description, shortName, null);
     }
 
-    /**
-     * Sets the value.
-     */
-    public void setValue(Double value) {
-        this.value = value;
+    public DoubleOption(String longName, String description, Character shortName, Double value) {
+        super(longName, description, shortName, value);
     }
 
     /**
      * Sets the value from the string, for a double type.
      */
-    public void setValue(String value) throws InvalidTypeException {
+    public void setValueFromString(String value) throws InvalidTypeException {
         try {
             setValue(new Double(value));
         }
         catch (NumberFormatException nfe) {
             throw new InvalidTypeException(longName + " expects double argument, not '" + value + "'");
         }
-    }
-
-    public String toString() {
-        return value == null ? "" : value.toString();
     }
 
     protected String getType() {

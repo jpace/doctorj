@@ -48,7 +48,7 @@ public class DoctorJ {
         this.nFiles = 0;
 
         Options  opts = new Options();
-        String[] names = opts.process(args);
+        List<String> names = opts.process(Arrays.asList(args));
 
         this.sourceVersion = opts.getSource();
 

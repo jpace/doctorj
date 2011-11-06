@@ -4,38 +4,28 @@ package org.incava.jagol;
 /**
  * Represents an option that is a String.
  */
-public class StringOption extends NonBooleanOption {
-    private String value;
-    
+public class StringOption extends NonBooleanOption<String> {
     public StringOption(String longName, String description) {
-        this(longName, description, null);
+        this(longName, description, null, null);
     }
 
     public StringOption(String longName, String description, String value) {
-        super(longName, description);
-        this.value = value;
+        this(longName, description, null, value);
     }
 
-    /**
-     * Returns the value.
-     */
-    public String getValue() {
-        return value;
+    public StringOption(String longName, String description, Character shortName) {
+        super(longName, description, shortName, null);
     }
 
-    /**
-     * Sets the value.
-     */
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public String toString() {
-        return value;
+    public StringOption(String longName, String description, Character shortName, String value) {
+        super(longName, description, shortName, value);
     }
 
     protected String getType() {
         return "string";
     }
 
+    public void setValueFromString(String value) throws InvalidTypeException {
+        setValue(value);
+    }
 }

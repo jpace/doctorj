@@ -3,7 +3,6 @@ package org.incava.analysis;
 import net.sourceforge.pmd.ast.Token;
 import org.incava.text.Location;
 
-
 /**
  * Bridge between violations and reports.
  */

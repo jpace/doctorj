@@ -118,16 +118,14 @@ public class Options extends OptionSet {
         this.warningOpt  = addOption("warning",   "same as --level",                                                        lvl);
         
         this.tabWidthOpt = addOption("tabwidth",  "the number of spaces to treat tabs equal to",                            tabWidth);
-        this.dictOpt     = addOption("dictionaries", "the list of dictionary (word list) files",                               wordLists);
+        this.dictOpt     = addOption("dictionaries", "the list of dictionary (word list) files",                            wordLists);
         this.verboseOpt  = addOption("verbose",   "whether to run in verbose mode (for debugging)",                         verbose);
-        this.versionOpt  = addBooleanOption("version",   "Displays the version");
-        this.sourceOpt   = addOption("source",     "the Java source version; either 1.3, 1.4 (the default), or 1.5",         this.source);
+        this.versionOpt  = addOption(new BooleanOption("version",   "Displays the version", 'v'));
+        this.sourceOpt   = addOption("source",     "the Java source version; either 1.3, 1.4 (the default), or 1.5",        this.source);
         
         this.commentsOpt = addOption("comments",  "whether to analyze comments; default is true",                           this.checkComments);
         this.stringsOpt  = addOption("strings",   "whether to analyze strings; default is true",                            this.checkStrings);
         this.minWordsOpt = addOption("minwords",  "the minimum number of words in a string for it to be spell-checked; default is 2", this.minWords);
-        
-        this.versionOpt.setShortName('v');
         
         addRunControlFile("/etc/doctorj.conf");
         addRunControlFile("~/.doctorjrc");
@@ -168,9 +166,9 @@ public class Options extends OptionSet {
      * static variables. Returns the arguments that were not consumed by option
      * processing.
      */
-    public String[] process(String[] args) {
+    public List<String> process(List<String> args) {
         tr.Ace.log("args: " + args);
-        String[] unprocessed = super.process(args);
+        List<String> unprocessed = super.process(args);
 
         Integer tabWidthInt = this.tabWidthOpt.getValue();
         if (tabWidthInt != null) {

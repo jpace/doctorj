@@ -4,47 +4,34 @@ package org.incava.jagol;
 /**
  * Represents an option that is an integer.
  */
-public class IntegerOption extends NonBooleanOption {
-    private Integer value;
-    
+public class IntegerOption extends NonBooleanOption<Integer> {
     public IntegerOption(String longName, String description) {
-        this(longName, description, null);
+        this(longName, description, null, null);
     }
 
     public IntegerOption(String longName, String description, Integer value) {
-        super(longName, description);
-        this.value = value;
+        this(longName, description, null, value);
     }
 
-    /**
-     * Returns the value. This is null if not set.
-     */
-    public Integer getValue() {
-        return value;
+    public IntegerOption(String longName, String description, Character shortName) {
+        this(longName, description, shortName, null);
     }
 
-    /**
-     * Sets the value.
-     */
-    public void setValue(Integer value) {
-        this.value = value;
+    public IntegerOption(String longName, String description, Character shortName, Integer value) {
+        super(longName, description, shortName, value);
     }
 
     /**
      * Sets the value from the string, for an integer type.
      */
-    public void setValue(String value) throws InvalidTypeException {
+    public void setValueFromString(String value) throws InvalidTypeException {
         try {
             setValue(new Integer(value));
         }
         catch (NumberFormatException nfe) {
             throw new InvalidTypeException(getLongName() + " expects integer argument, not '" + value + "'");
         }
-    }
-    
-    public String toString() {
-        return value == null ? "" : value.toString();
-    }
+    }    
 
     protected String getType() {
         return "integer";

@@ -1,19 +1,13 @@
 package org.incava.jagol;
 
-import java.io.*;
-import java.util.*;
-import junit.framework.TestCase;
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class TestNonBooleanOption extends TestCase {
-    
-    NonBooleanOption opt = new NonBooleanOption("nbopt", "this is the description of nbopt") {
-            public void setValue(String value) throws InvalidTypeException {        
-            }
-
-            protected String getType() {
-                return "";
-            }
+public class TestNonBooleanOption extends AbstractJagolTestCase {
+    private NonBooleanOption<String> opt = new NonBooleanOption<String>("nbopt", "this is the description of nbopt") {
+            public void setValueFromString(String value) throws InvalidTypeException {}
+            public String getType() { return ""; }
         };
     
     public TestNonBooleanOption(String name) {
@@ -82,6 +76,4 @@ public class TestNonBooleanOption extends TestCase {
         catch (OptionException ite) {
         }
     }
-
 }
-

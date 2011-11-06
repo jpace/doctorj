@@ -1,41 +1,42 @@
 package org.incava.jagol;
 
-import java.io.*;
-import java.util.*;
-import junit.framework.TestCase;
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class TestBooleanOption extends TestCase {
-
-    BooleanOption opt = new BooleanOption("boolopt", "this is the description of boolopt");
+public class TestBooleanOption extends AbstractJagolTestCase {
+    private BooleanOption opt = new BooleanOption("boolopt", "this is the description of boolopt");
 
     public TestBooleanOption(String name) {
         super(name);
     }
 
-    public void testDefaultNull() {
-        assertEquals("boolopt", opt.getLongName());
-        assertEquals("this is the description of boolopt", opt.getDescription());
+    public void assertValue(Boolean exp, BooleanOption opt) {
+        assertEquals("option value: " + opt.toString(), exp, opt.getValue());
+    }
 
-        assertNull("default value", opt.getValue());
+    public void testDefaultNull() {
+        assertLongName("boolopt", opt);
+        assertDescription("this is the description of boolopt", opt);
+        assertValue(null, opt);
     }
 
     public void testDefaultValue() {
         BooleanOption opt = new BooleanOption("boolopt", "this is the description of boolopt", Boolean.TRUE);
-        assertEquals("default value", Boolean.TRUE, opt.getValue());
+        assertValue(Boolean.TRUE, opt);
     }
 
     public void testShortName() {
         opt.setShortName('n');
-        assertEquals('n', opt.getShortName());
+        assertShortName('n', opt);
     }
 
     public void testSetBooleanValue() {
         opt.setValue(Boolean.TRUE);
-        assertEquals("option value", Boolean.TRUE, opt.getValue());
+        assertValue(Boolean.TRUE, opt);
 
         opt.setValue(Boolean.FALSE);
-        assertEquals("option value", Boolean.FALSE, opt.getValue());
+        assertValue(Boolean.FALSE, opt);
     }
 
     public void testSetFromArgsListPositive() {
@@ -43,7 +44,7 @@ public class TestBooleanOption extends TestCase {
         try {
             boolean processed = opt.set("--boolopt", args);
             assertEquals("option processed", true, processed);
-            assertEquals("option value", Boolean.TRUE, opt.getValue());
+            assertValue(Boolean.TRUE, opt);
             assertEquals("argument removed from list", 0, args.size());
         }
         catch (OptionException ite) {
@@ -56,7 +57,7 @@ public class TestBooleanOption extends TestCase {
         try {
             boolean processed = opt.set("--no-boolopt", args);
             assertEquals("option processed", true, processed);
-            assertEquals("option value", Boolean.FALSE, opt.getValue());
+            assertValue(Boolean.FALSE, opt);
             assertEquals("argument removed from list", 0, args.size());
         }
         catch (OptionException ite) {
@@ -69,7 +70,7 @@ public class TestBooleanOption extends TestCase {
         try {
             boolean processed = opt.set("--noboolopt", args);
             assertEquals("option processed", true, processed);
-            assertEquals("option value", Boolean.FALSE, opt.getValue());
+            assertValue(Boolean.FALSE, opt);
             assertEquals("argument removed from list", 0, args.size());
         }
         catch (OptionException ite) {

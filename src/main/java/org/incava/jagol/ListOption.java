@@ -8,47 +8,32 @@ import org.incava.ijdk.lang.StringExt;
 /**
  * Represents a list of objects that comprise this option.
  */
-public class ListOption extends NonBooleanOption {
-    private List<String> value;
-    
-    /**
-     * Creates the option.
-     */
+public class ListOption extends NonBooleanOption<List<String>> {
     public ListOption(String longName, String description) {
-        this(longName, description, new ArrayList<String>());
+        this(longName, description, null, new ArrayList<String>());
     }
 
-    /**
-     * Creates the option, with a default list.
-     */
     public ListOption(String longName, String description, List<String> value) {
-        super(longName, description);
-        this.value = value;
+        this(longName, description, null, value);
     }
 
-    /**
-     * Returns the value. This is empty by default.
-     */
-    public List<String> getValue() {
-        return value;
+    public ListOption(String longName, String description, Character shortName) {
+        this(longName, description, shortName, new ArrayList<String>());
     }
 
-    /**
-     * Sets the value.
-     */
-    public void setValue(List<String> value) {
-        this.value = value;
+    public ListOption(String longName, String description, Character shortName, List<String> value) {
+        super(longName, description, shortName, value);
     }
 
     /**
      * Sets the value from the string, for a list type. Assumes whitespace or
-     * comma delimiter
+     * comma delimiter.
      */
-    public void setValue(String value) throws InvalidTypeException {
+    public void setValueFromString(String value) throws InvalidTypeException {
         parse(value);
     }
 
-    protected void checkArgList(Object name, List<? extends Object> argList) throws InvalidTypeException {
+    protected void checkArgList(Object name, List<String> argList) throws InvalidTypeException {
         if (argList.isEmpty()) {
             throw new InvalidTypeException(name + " expects following argument");
         }
@@ -67,12 +52,14 @@ public class ListOption extends NonBooleanOption {
      * @see ListOption#convert(String)
      */
     protected void parse(String str) throws InvalidTypeException {
+        List<String> val = new ArrayList<String>();
         List<String> list = StringExt.toList(str);
         for (String s : list) {
             if (!s.equals("+=")) {
                 value.add(convert(s));
             }
         }
+        super.setValue(value);
     }
 
     /**
@@ -84,7 +71,7 @@ public class ListOption extends NonBooleanOption {
     }
 
     public String toString() {
-        return StringExt.join(value, ", ");
+        return StringExt.join(getValue(), ", ");
     }
 
     public String getType() {
