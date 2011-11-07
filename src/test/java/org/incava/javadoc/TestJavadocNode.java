@@ -1,13 +1,10 @@
 package org.incava.javadoc;
 
-import java.io.*;
-import java.util.*;
+import java.util.List;
 import junit.framework.TestCase;
 import org.incava.text.Location;
 
-
-public class TestJavadocNode extends TestCase {
-    
+public class TestJavadocNode extends TestCase {    
     public TestJavadocNode(String name) {
         super(name);
     }
@@ -15,7 +12,6 @@ public class TestJavadocNode extends TestCase {
     public void testNone() {
         String      text = "";
         JavadocNode jd = JavadocParser.parseJavadocNode(text, 1, 1);
-        
         assertNull("no javadoc node for empty string", jd);
     }
     
@@ -25,17 +21,17 @@ public class TestJavadocNode extends TestCase {
         jd = JavadocParser.parseJavadocNode("/**/", 1, 1);
         assertNotNull("javadoc node for empty javadoc comment", jd);
         assertNull("javadoc description", jd.getDescription());
-        assertEquals("javadoc tagged comments", 0, jd.getTaggedComments().length);
+        assertEquals("javadoc tagged comments", 0, jd.getTaggedComments().size());
 
         jd = JavadocParser.parseJavadocNode("/** */", 1, 1);
         assertNotNull("javadoc node for javadoc comment with one space", jd);
         assertNull("javadoc description", jd.getDescription());
-        assertEquals("javadoc tagged comments", 0, jd.getTaggedComments().length);
+        assertEquals("javadoc tagged comments", 0, jd.getTaggedComments().size());
 
         jd = JavadocParser.parseJavadocNode("/**     */", 1, 1);
         assertNotNull("javadoc node for javadoc comment with multiple spaces", jd);
         assertNull("javadoc description", jd.getDescription());
-        assertEquals("javadoc tagged comments", 0, jd.getTaggedComments().length);
+        assertEquals("javadoc tagged comments", 0, jd.getTaggedComments().size());
     }
     
     public void testDescribedSingleLine() {
@@ -52,7 +48,7 @@ public class TestJavadocNode extends TestCase {
         assertEquals("javadoc start location",   new Location(5, 5),  desc.start);
         assertEquals("javadoc end location",     new Location(5, 20), desc.end);
         
-        assertEquals("javadoc tagged comments",  0,                   jd.getTaggedComments().length);
+        assertEquals("javadoc tagged comments",  0,                   jd.getTaggedComments().size());
     }
     
     public void testDescribedSeparateLine() {
@@ -71,7 +67,7 @@ public class TestJavadocNode extends TestCase {
         assertEquals("javadoc start location",   new Location(6, 4),  desc.start);
         assertEquals("javadoc end location",     new Location(6, 19), desc.end);
 
-        assertEquals("javadoc tagged comments", 0, jd.getTaggedComments().length);
+        assertEquals("javadoc tagged comments", 0, jd.getTaggedComments().size());
     }
 
     public void testDescribedOneTagLine() {
@@ -91,16 +87,16 @@ public class TestJavadocNode extends TestCase {
         assertEquals("javadoc start location",   new Location(6, 4),  desc.start);
         assertEquals("javadoc end location",     new Location(6, 20), desc.end);
 
-        JavadocTaggedNode[] jtcs = jd.getTaggedComments();
-        assertEquals("javadoc tagged comments",                      1,                        jtcs.length);
-        assertNotNull("javadoc tagged comment #0",                                             jtcs[0]);
-        assertEquals("javadoc tagged comment description text",      "@tag And that's a tag.", jtcs[0].text);
-        assertEquals("javadoc tagged comment start location",        new Location(7, 4),       jtcs[0].start);
-        assertEquals("javadoc tagged comment end location",          new Location(7, 26),      jtcs[0].end);
-        assertNotNull("javadoc tagged comment #0 tag",                                         jtcs[0].getTag());
-        assertEquals("javadoc tagged comment #0 tag text",           "@tag",                   jtcs[0].getTag().text);
-        assertEquals("javadoc tagged comment #0 tag start location", new Location(7, 4),       jtcs[0].getTag().start);
-        assertEquals("javadoc tagged comment #0 tag end location",   new Location(7, 7),       jtcs[0].getTag().end);
+        List<JavadocTaggedNode> jtcs = jd.getTaggedComments();
+        assertEquals("javadoc tagged comments",                      1,                        jtcs.size());
+        assertNotNull("javadoc tagged comment #0",                                             jtcs.get(0));
+        assertEquals("javadoc tagged comment description text",      "@tag And that's a tag.", jtcs.get(0).text);
+        assertEquals("javadoc tagged comment start location",        new Location(7, 4),       jtcs.get(0).start);
+        assertEquals("javadoc tagged comment end location",          new Location(7, 26),      jtcs.get(0).end);
+        assertNotNull("javadoc tagged comment #0 tag",                                         jtcs.get(0).getTag());
+        assertEquals("javadoc tagged comment #0 tag text",           "@tag",                   jtcs.get(0).getTag().text);
+        assertEquals("javadoc tagged comment #0 tag start location", new Location(7, 4),       jtcs.get(0).getTag().start);
+        assertEquals("javadoc tagged comment #0 tag end location",   new Location(7, 7),       jtcs.get(0).getTag().end);
     }
 
     public void testDescribedTwoTagsMultiLines() {
@@ -124,33 +120,32 @@ public class TestJavadocNode extends TestCase {
         assertEquals("javadoc start location",   new Location(6, 4),  desc.start);
         assertEquals("javadoc end location",     new Location(6, 20), desc.end);
 
-        JavadocTaggedNode[] jtcs = jd.getTaggedComments();
-        assertEquals("javadoc tagged comments", 2, jtcs.length);
+        List<JavadocTaggedNode> jtcs = jd.getTaggedComments();
+        assertEquals("javadoc tagged comments", 2, jtcs.size());
 
-        assertNotNull("javadoc tagged comment #0", jtcs[0]);
-        assertEquals("javadoc tagged comment description text", "@tag0 And that's a tag,\n * which is described on multiple lines.", jtcs[0].text);
-        assertEquals("javadoc tagged comment start location", new Location(7, 4),  jtcs[0].start);
-        assertEquals("javadoc tagged comment end location",   new Location(8, 41), jtcs[0].end);
+        assertNotNull("javadoc tagged comment #0", jtcs.get(0));
+        assertEquals("javadoc tagged comment description text", "@tag0 And that's a tag,\n * which is described on multiple lines.", jtcs.get(0).text);
+        assertEquals("javadoc tagged comment start location", new Location(7, 4),  jtcs.get(0).start);
+        assertEquals("javadoc tagged comment end location",   new Location(8, 41), jtcs.get(0).end);
         
-        assertNotNull("javadoc tagged comment #0 tag", jtcs[0].getTag());
-        assertEquals("javadoc tagged comment #0 tag text", "@tag0", jtcs[0].getTag().text);
-        assertEquals("javadoc tagged comment #0 tag start location", new Location(7, 4), jtcs[0].getTag().start);
-        assertEquals("javadoc tagged comment #0 tag end location",   new Location(7, 8), jtcs[0].getTag().end);
+        assertNotNull("javadoc tagged comment #0 tag", jtcs.get(0).getTag());
+        assertEquals("javadoc tagged comment #0 tag text", "@tag0", jtcs.get(0).getTag().text);
+        assertEquals("javadoc tagged comment #0 tag start location", new Location(7, 4), jtcs.get(0).getTag().start);
+        assertEquals("javadoc tagged comment #0 tag end location",   new Location(7, 8), jtcs.get(0).getTag().end);
 
-        assertNotNull("javadoc tagged comment #0 target", jtcs[0].getTarget());
-        assertEquals("javadoc tagged comment #0 target text", "And", jtcs[0].getTarget().text);
-        assertEquals("javadoc tagged comment #0 target start location", new Location(7, 10), jtcs[0].getTarget().start);
-        assertEquals("javadoc tagged comment #0 target end location",   new Location(7, 12), jtcs[0].getTarget().end);
+        assertNotNull("javadoc tagged comment #0 target", jtcs.get(0).getTarget());
+        assertEquals("javadoc tagged comment #0 target text", "And", jtcs.get(0).getTarget().text);
+        assertEquals("javadoc tagged comment #0 target start location", new Location(7, 10), jtcs.get(0).getTarget().start);
+        assertEquals("javadoc tagged comment #0 target end location",   new Location(7, 12), jtcs.get(0).getTarget().end);
         
-        assertNotNull("javadoc tagged comment #1 tag", jtcs[1].getTag());
-        assertEquals("javadoc tagged comment #1 tag text", "@tag1", jtcs[1].getTag().text);
-        assertEquals("javadoc tagged comment #1 tag start location", new Location(10, 4), jtcs[1].getTag().start);
-        assertEquals("javadoc tagged comment #1 tag end location",   new Location(10, 8), jtcs[1].getTag().end);
+        assertNotNull("javadoc tagged comment #1 tag", jtcs.get(1).getTag());
+        assertEquals("javadoc tagged comment #1 tag text", "@tag1", jtcs.get(1).getTag().text);
+        assertEquals("javadoc tagged comment #1 tag start location", new Location(10, 4), jtcs.get(1).getTag().start);
+        assertEquals("javadoc tagged comment #1 tag end location",   new Location(10, 8), jtcs.get(1).getTag().end);
 
-        assertNotNull("javadoc tagged comment #1 target", jtcs[1].getTarget());
-        assertEquals("javadoc tagged comment #1 target text", "And", jtcs[1].getTarget().text);
-        assertEquals("javadoc tagged comment #1 target start location", new Location(10, 10), jtcs[1].getTarget().start);
-        assertEquals("javadoc tagged comment #1 target end location",   new Location(10, 12), jtcs[1].getTarget().end);
+        assertNotNull("javadoc tagged comment #1 target", jtcs.get(1).getTarget());
+        assertEquals("javadoc tagged comment #1 target text", "And", jtcs.get(1).getTarget().text);
+        assertEquals("javadoc tagged comment #1 target start location", new Location(10, 10), jtcs.get(1).getTarget().start);
+        assertEquals("javadoc tagged comment #1 target end location",   new Location(10, 12), jtcs.get(1).getTarget().end);
     }
-    
 }

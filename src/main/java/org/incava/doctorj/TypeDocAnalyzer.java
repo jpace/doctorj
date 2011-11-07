@@ -53,18 +53,16 @@ public abstract class TypeDocAnalyzer extends ItemDocAnalyzer {
         super.checkJavadoc(javadoc);
 
         if (javadoc != null && isCheckable(getEnclosingNode(), CHKLVL_TAG_CONTENT)) {
-            JavadocTaggedNode[] taggedComments = javadoc.getTaggedComments();
-            for (int ti = 0; ti < taggedComments.length; ++ti) {
-                JavadocTaggedNode jtn = taggedComments[ti];
-                JavadocTag        tag = jtn.getTag();
+            for (JavadocTaggedNode jtn : javadoc.getTaggedComments()) {
+                JavadocTag tag = jtn.getTag();
                 
-                if (tag.text.equals(JavadocTags.AUTHOR)) {
+                if (tag.textMatches(JavadocTags.AUTHOR)) {
                     checkForTagDescription(jtn, MSG_AUTHOR_WITHOUT_NAME);
                 }
-                else if (tag.text.equals(JavadocTags.VERSION)) {
+                else if (tag.textMatches(JavadocTags.VERSION)) {
                     checkForTagDescription(jtn, MSG_VERSION_WITHOUT_TEXT);
                 }
-                else if (tag.text.equals(JavadocTags.SERIAL)) {
+                else if (tag.textMatches(JavadocTags.SERIAL)) {
                     checkForTagDescription(jtn, MSG_SERIAL_WITHOUT_TEXT);
                 }
             }
@@ -82,5 +80,4 @@ public abstract class TypeDocAnalyzer extends ItemDocAnalyzer {
     protected SimpleNode getEnclosingNode() {
         return SimpleNodeUtil.getParent(this.decl);
     }
-
 }

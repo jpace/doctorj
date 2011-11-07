@@ -37,14 +37,13 @@ public class FieldDocAnalyzer extends ItemDocAnalyzer {
         SimpleNode encNode = getEnclosingNode();
 
         if (javadoc != null && isCheckable(encNode, CHKLVL_TAG_CONTENT)) {
-            JavadocTaggedNode[] taggedComments = javadoc.getTaggedComments();
-            for (int ti = 0; ti < taggedComments.length; ++ti) {
-                JavadocTaggedNode jtn = taggedComments[ti];                
+            List<JavadocTaggedNode> taggedComments = javadoc.getTaggedComments();
+            for (int ti = 0; ti < taggedComments.size(); ++ti) {
+                JavadocTaggedNode jtn = taggedComments.get(ti);                
                 JavadocTag        tag = jtn.getTag();
 
                 tr.Ace.log("checking tag: " + tag);
-                if (tag.text.equals(JavadocTags.SERIALFIELD)) {
-
+                if (tag.textMatches(JavadocTags.SERIALFIELD)) {
                     // expecting: field - name field - type field - description
                     JavadocElement desc = jtn.getDescription();
                     if (desc == null) {

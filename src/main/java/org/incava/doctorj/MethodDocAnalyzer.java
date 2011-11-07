@@ -45,13 +45,11 @@ public class MethodDocAnalyzer extends FunctionDocAnalyzer {
         super.checkJavadoc(javadoc);
 
         if (javadoc != null) {
-            JavadocTaggedNode[] taggedComments = javadoc.getTaggedComments();
-            for (int ti = 0; ti < taggedComments.length; ++ti) {
-                JavadocTaggedNode jtn = taggedComments[ti];
-                JavadocTag        tag = jtn.getTag();
+            for (JavadocTaggedNode jtn : javadoc.getTaggedComments()) {
+                JavadocTag tag = jtn.getTag();
                 tr.Ace.log("checking tag: " + tag);
                 
-                if (tag.text.equals(JavadocTags.RETURN)) {
+                if (tag.textMatches(JavadocTags.RETURN)) {
                     ASTResultType resType = (ASTResultType)SimpleNodeUtil.findChild(this.method, ASTResultType.class);
                     Token         resTkn = resType.getFirstToken();
                     

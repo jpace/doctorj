@@ -4,15 +4,16 @@ import java.io.*;
 import java.util.*;
 import org.incava.text.*;
 
-
 /**
  * A tagged element, such as:
  * @since 0.1
  */
 public class JavadocTaggedNode extends JavadocElement {
+    public static JavadocTaggedNode create(String text, TextRange range) {
+        return create(text, range.getStart(), range.getEnd());
+    }
 
     public static JavadocTaggedNode create(String text, Location start, Location end) {
-
         JavadocTag tag = null;
         JavadocElement target = null;
         JavadocElement description = null;
@@ -28,11 +29,6 @@ public class JavadocTaggedNode extends JavadocElement {
             ++pos;
         }
 
-        // tr.Ace.log("after tag, pos: " + pos);
-        // tr.Ace.log("tag line : " + line);
-        // tr.Ace.log("start col: " + start.column);
-        // tr.Ace.log("end col  : " + (pos - 1 + start.column));
-
         tag = new JavadocTag(text.substring(0, pos),
                              new TextLocation(TextLocation.UNDEFINED, line, start.column), 
                              new TextLocation(TextLocation.UNDEFINED, line, pos - 1 + start.column));
@@ -46,12 +42,7 @@ public class JavadocTaggedNode extends JavadocElement {
             ++pos;
         }
 
-        // tr.Ace.log("position: " + pos);
-        // tr.Ace.log("current char: " + text.charAt(pos));
-
         if (pos < len) {
-            // tr.Ace.log("parsing target ...");
-
             // target types:
             final int HTML = 0;
             final int QUOTED = 1;
@@ -69,8 +60,6 @@ public class JavadocTaggedNode extends JavadocElement {
             else {
                 type = WORD;
             }
-
-            // tr.Ace.log("target type: " + type);
 
             // Also handle targets with balanced parentheses, for example:
             //     @see set(int, double, java.net.Socket)
@@ -119,9 +108,7 @@ public class JavadocTaggedNode extends JavadocElement {
 
             TextRange tgtRange = lines.getLocations(targetStart, pos - 1);
 
-            // tr.Ace.log("creating target ...");
             target = new JavadocElement(text.substring(targetStart, pos), tgtRange.getStart(), tgtRange.getEnd());
-            // tr.Ace.log("target: " + target);
 
             // skip non text
             while (pos < len && (Character.isWhitespace(text.charAt(pos)) || text.charAt(pos) == '*')) {
@@ -135,10 +122,8 @@ public class JavadocTaggedNode extends JavadocElement {
                 description = new JavadocElement(text.substring(targetStart, len), tgtRange.getStart(), end);
             }
             else if (pos < len && !Character.isWhitespace(text.charAt(pos))) {
-                // tr.Ace.log("creating description non-target");
                 Location dntStart = lines.getLocation(pos);
                 descriptionNonTarget = new JavadocElement(text.substring(pos, len), dntStart, end);
-                // tr.Ace.log("created description non-target: " + descriptionNonTarget);
                 description = new JavadocElement(text.substring(targetStart, len), tgtRange.getStart(), end);
             }
         }
@@ -192,5 +177,4 @@ public class JavadocTaggedNode extends JavadocElement {
     public JavadocElement getDescriptionNonTarget() {
         return descriptionNonTarget;
     }
-
 }

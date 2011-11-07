@@ -3,6 +3,7 @@ package org.incava.javadoc;
 import java.awt.Point;
 import java.util.*;
 import org.incava.ijdk.lang.Pair;
+import org.incava.ijdk.util.ListExt;
 import org.incava.text.*;
 
 
@@ -16,54 +17,45 @@ public class JavadocParser {
      */
     public static JavadocNode parseJavadocNode(String text, int startLine, int startColumn) {
         List<Point> subs = parse(text, startLine, startColumn);
+        return subs == null ? null : createNode(subs, text, startLine, startColumn);
+    }
 
-        if (subs == null) {
+    private static Pair<Point, TextRange> getPointAndLocation(List<Point> subs, int idx, LineMapping lines) {
+        Point pt = ListExt.get(subs, idx);
+        if (pt == null) {
             return null;
         }
-        else {
-            // store line positions, for converting string positions (which are
-            // 0-based) to line:column (which are 1-based)
+        TextRange locs = lines.getLocations(pt);
+        return new Pair<Point, TextRange>(pt, locs);
+    }
 
-            LineMapping lines       = new LineMapping(text, startLine, startColumn);
-            Location    endLocation = lines.getLocation(text.length() - 1);
+    private static JavadocDescriptionNode createDescription(List<Point> subs, String text, LineMapping lines) {
+        Pair<Point, TextRange> ptLoc = getPointAndLocation(subs, 0, lines);
+        return ptLoc == null ? null : new JavadocDescriptionNode(text.substring(ptLoc.getFirst().x, ptLoc.getFirst().y), ptLoc.getSecond());
+    }
 
-            JavadocDescriptionNode  description = null;
-            List<JavadocTaggedNode> taggedNodes = new ArrayList<JavadocTaggedNode>();
+    private static JavadocTaggedNode createTaggedNode(List<Point> subs, String text, int idx, LineMapping lines) {
+        Pair<Point, TextRange> ptLoc = getPointAndLocation(subs, idx, lines);
+        return ptLoc == null ? null : JavadocTaggedNode.create(text.substring(ptLoc.getFirst().x, ptLoc.getFirst().y), ptLoc.getSecond());
+    }
 
-            if (subs.size() > 0) {
-                Iterator<Point> it = subs.iterator();
+    private static JavadocNode createNode(List<Point> subs, String text, int startLine, int startColumn) {
+        // store line positions, for converting string positions (which are
+        // 0-based) to line:column (which are 1-based)
+        LineMapping lines       = new LineMapping(text, startLine, startColumn);
+        Location    endLocation = lines.getLocation(text.length() - 1);
 
-                Point descPos = it.next();
-                if (descPos != null) {
-                    TextRange descRange = lines.getLocations(descPos);
+        JavadocDescriptionNode  description = createDescription(subs, text, lines);
+        List<JavadocTaggedNode> taggedNodes = new ArrayList<JavadocTaggedNode>();
 
-                    // we could trim whitespace, so that the following descriptions are equivalent:
-
-                    // /** \n
-                    //   * This is a test. \n
-                    //   */
-
-                    // /** \n
-                    //   * This is a test. \n
-                    //   * @tag something
-                    //   */
-
-                    description = new JavadocDescriptionNode(text.substring(descPos.x, descPos.y), descRange.getStart(), descRange.getEnd());
-                }
-
-                for (int i = 0; it.hasNext(); ++i) {
-                    Point      point     = it.next();
-                    TextRange  locations = lines.getLocations(point);
-                    
-                    taggedNodes.add(JavadocTaggedNode.create(text.substring(point.x, point.y), locations.getStart(), locations.getEnd()));
-                }
-            }
-
-            TextLocation start = new TextLocation(TextLocation.UNDEFINED, startLine, startColumn);
-            TextLocation end   = new TextLocation(TextLocation.UNDEFINED, endLocation.line, endLocation.column);
-
-            return new JavadocNode(description, taggedNodes.toArray(new JavadocTaggedNode[taggedNodes.size()]), start, end);
+        for (int si = 1; si < subs.size(); ++si) {
+            taggedNodes.add(createTaggedNode(subs, text, si, lines));
         }
+
+        TextLocation start = new TextLocation(TextLocation.UNDEFINED, startLine, startColumn);
+        TextLocation end   = new TextLocation(TextLocation.UNDEFINED, endLocation.line, endLocation.column);
+
+        return new JavadocNode(description, taggedNodes, start, end);
     }
 
     private static TextLocation skipWhitespace(String text, TextLocation tl, int len) {
@@ -142,33 +134,24 @@ public class JavadocParser {
         }
     }
 
+    private static TextLocation readFromPoint(Point pt, List<Point> ary, String text, int pos, int len) {
+        TextLocation tl = new TextLocation(pos, TextLocation.UNDEFINED, TextLocation.UNDEFINED);            
+        tl  = read(pt, text, tl, len);
+        pos = tl.getPosition();
+        ary.add(pt);
+        return new TextLocation(pos, TextLocation.UNDEFINED, TextLocation.UNDEFINED);
+    }
+
     private static TextLocation readDescription(List<Point> ary, String text, int pos, int len) {
         Point desc = new Point(pos, -1);
-
-        TextLocation tl = new TextLocation(pos, TextLocation.UNDEFINED, TextLocation.UNDEFINED);
-        
-        tl = read(desc, text, tl, len);
-
-        pos = tl.getPosition();
-
-        ary.add(desc);
-
-        return new TextLocation(pos, TextLocation.UNDEFINED, TextLocation.UNDEFINED);
+        return readFromPoint(desc, ary, text, pos, len);
     }
 
     private static int readTagList(List<Point> ary, String text, int pos, int len) {
         while (pos < len && text.charAt(pos) == '@') {
             Point tag = new Point(pos, -1);
-            
-            ++pos;
-
-            TextLocation tl = new TextLocation(pos, TextLocation.UNDEFINED, TextLocation.UNDEFINED);
-            
-            tl = read(tag, text, tl, len);
-
+            TextLocation tl = readFromPoint(tag, ary, text, pos + 1, len);
             pos = tl.getPosition();
-            
-            ary.add(tag);
         }
 
         return pos;
@@ -200,9 +183,7 @@ public class JavadocParser {
             // now, we're at the start of a new line:
             pos = skipCommentCharacters(text, pos, len).getPosition();
         }
-
         ++pt.y;
-
         return new TextLocation(pos, tl.getLine(), tl.getColumn());
     }
 }

@@ -153,8 +153,7 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
         ASTImportDeclaration[] imports = CompilationUnitUtil.getImports(cu);
         this.importMap = makeImportMap(imports);
 
-        JavadocTaggedNode[] taggedComments = this.javadoc.getTaggedComments();
-        for (JavadocTaggedNode jtn : taggedComments) {
+        for (JavadocTaggedNode jtn : this.javadoc.getTaggedComments()) {
             JavadocTag tag = jtn.getTag();
 
             if (tag.text.equals(JavadocTags.EXCEPTION) || tag.text.equals(JavadocTags.THROWS)) {

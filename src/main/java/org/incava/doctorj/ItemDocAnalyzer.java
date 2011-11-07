@@ -153,9 +153,9 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer {
 
     protected void checkMisorderedTag(JavadocNode javadoc) {
         int previousOrderIndex = -1;
-        JavadocTaggedNode[] taggedComments = javadoc.getTaggedComments();
-        for (int ti = 0; ti < taggedComments.length; ++ti) {
-            JavadocTag tag = taggedComments[ti].getTag();
+        List<JavadocTaggedNode> taggedComments = javadoc.getTaggedComments();
+        for (int ti = 0; ti < taggedComments.size(); ++ti) {
+            JavadocTag tag   = taggedComments.get(ti).getTag();
             int        index = JavadocTags.getIndex(tag.text);
             if (index < previousOrderIndex) {
                 addViolation(MSG_TAG_IMPROPER_ORDER, tag.start, tag.end);
@@ -166,10 +166,9 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer {
     }
 
     protected void checkTagValidity(JavadocNode javadoc) {
-        List<String>        validTags = getValidTags();
-        JavadocTaggedNode[] taggedComments = javadoc.getTaggedComments();
-        for (int ti = 0; ti < taggedComments.length; ++ti) {
-            JavadocTag tag = taggedComments[ti].getTag();
+        List<String> validTags = getValidTags();
+        for (JavadocTaggedNode jtn : javadoc.getTaggedComments()) {
+            JavadocTag tag = jtn.getTag();
             if (!validTags.contains(tag.text)) {
                 addViolation("Tag not valid for " + getItemType(), tag.start, tag.end);
             }
@@ -177,17 +176,16 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer {
     }
 
     protected void checkTagContent(JavadocNode javadoc) {
-        JavadocTaggedNode[] taggedComments = javadoc.getTaggedComments();
-        for (int ti = 0; ti < taggedComments.length; ++ti) {
-            JavadocTag tag = taggedComments[ti].getTag();
-            if (tag.text.equals(JavadocTags.SEE)) {
-                checkForTagDescription(taggedComments[ti], MSG_SEE_WITHOUT_REFERENCE);
+        for (JavadocTaggedNode jtn : javadoc.getTaggedComments()) {
+            JavadocTag tag = jtn.getTag();
+            if (tag.textMatches(JavadocTags.SEE)) {
+                checkForTagDescription(jtn, MSG_SEE_WITHOUT_REFERENCE);
             }
-            else if (tag.text.equals(JavadocTags.SINCE)) {
-                checkForTagDescription(taggedComments[ti], MSG_SINCE_WITHOUT_TEXT);
+            else if (tag.textMatches(JavadocTags.SINCE)) {
+                checkForTagDescription(jtn, MSG_SINCE_WITHOUT_TEXT);
             }
-            else if (tag.text.equals(JavadocTags.DEPRECATED)) {
-                checkForTagDescription(taggedComments[ti], MSG_DEPRECATED_WITHOUT_TEXT);
+            else if (tag.textMatches(JavadocTags.DEPRECATED)) {
+                checkForTagDescription(jtn, MSG_DEPRECATED_WITHOUT_TEXT);
             }
         }
     }

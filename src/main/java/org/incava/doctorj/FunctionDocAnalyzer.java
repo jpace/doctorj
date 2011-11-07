@@ -2,11 +2,12 @@ package org.incava.doctorj;
 
 import java.util.Iterator;
 import java.util.List;
-import net.sourceforge.pmd.ast.*;
+import net.sourceforge.pmd.ast.ASTFormalParameters;
+import net.sourceforge.pmd.ast.SimpleNode;
 import org.incava.analysis.Report;
 import org.incava.javadoc.*;
 import org.incava.pmdx.SimpleNodeUtil;
-
+import static org.incava.ijdk.util.IUtil.*;
 
 /**
  * Analyzes Javadoc and code for methods and constructors, AKA functions.
@@ -39,24 +40,13 @@ public abstract class FunctionDocAnalyzer extends ItemDocAnalyzer {
         ParameterDocAnalyzer pda = new ParameterDocAnalyzer(report, javadoc, function, params, chkLevel, warningLevel);
         pda.run();
 
-        if (javadoc == null) {
-            tr.Ace.log("no javadoc");
-        }
-        else if (isCheckable(encNode, CHKLVL_TAG_CONTENT)) {
-            JavadocTaggedNode[] taggedComments = javadoc.getTaggedComments();
-            tr.Ace.log("taggedComments", taggedComments);
-            
-            for (int ti = 0; ti < taggedComments.length; ++ti) {
-                JavadocTaggedNode jtn = taggedComments[ti];
-                JavadocTag        tag = jtn.getTag();
-
-                if (tag.text.equals(JavadocTags.SERIALDATA)) {
+        if (isNotNull(javadoc) && isCheckable(encNode, CHKLVL_TAG_CONTENT)) {
+            for (JavadocTaggedNode jtn : javadoc.getTaggedComments()) {
+                JavadocTag tag = jtn.getTag();
+                if (tag.textMatches(JavadocTags.SERIALDATA)) {
                     checkForTagDescription(jtn, MSG_SERIALDATA_WITHOUT_DESCRIPTION);
                 }
             }
-        }
-        else {
-            tr.Ace.log("skipping check for tag content");
         }
     }
 
@@ -64,5 +54,4 @@ public abstract class FunctionDocAnalyzer extends ItemDocAnalyzer {
      * Returns the parameter list for the function.
      */
     protected abstract ASTFormalParameters getParameterList();
-
 }

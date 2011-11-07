@@ -122,8 +122,7 @@ public class ParameterDocAnalyzer extends DocAnalyzer {
         //  - in order as in code
 
         int parameterIndex = 0;
-        JavadocTaggedNode[] taggedComments = this.javadoc.getTaggedComments();
-        for (JavadocTaggedNode jtn : taggedComments) {
+        for (JavadocTaggedNode jtn : this.javadoc.getTaggedComments()) {
             JavadocTag tag = jtn.getTag();
             if (tag.textMatches(JavadocTags.PARAM) && analyzeParameterNode(jtn, parameterIndex++)) {
                 break;
