@@ -2,15 +2,12 @@ package org.incava.javadoc;
 
 import org.incava.text.Location;
 
-
 /**
  * A field within a Javadoc comment.
  */
 public class JavadocElement {
     public final String text;
-
     public final Location start;
-
     public final Location end;
 
     public JavadocElement(String text, Location start, Location end) {

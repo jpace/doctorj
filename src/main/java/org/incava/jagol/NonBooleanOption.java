@@ -2,7 +2,6 @@ package org.incava.jagol;
 
 import java.util.List;
 
-
 /**
  * Base class of all options, except for booleans.
  */

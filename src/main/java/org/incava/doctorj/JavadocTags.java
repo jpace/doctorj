@@ -5,11 +5,12 @@ import org.incava.analysis.Analyzer;
 import org.incava.analysis.Report;
 import org.incava.ijdk.util.Collect;
 
-
 /**
  * Javadoc tags and the order in which they should appear for each Java type.
  */
 public class JavadocTags {
+    public enum TagValidType { TYPE, CTOR, METHOD, FIELD };
+    
     public static class TagDescription {
         String tag;
         int index;
@@ -18,6 +19,18 @@ public class JavadocTags {
         boolean isMethodTag;
         boolean isFieldTag;
 
+        public final Set<TagValidType> valids;
+
+        public TagDescription(String tag, int index, boolean isTypeTag, boolean isCtorTag, boolean isMethodTag, boolean isFieldTag, EnumSet<TagValidType> valids) {
+            this.tag = tag;
+            this.index = index;
+            this.isTypeTag = isTypeTag;
+            this.isCtorTag = isCtorTag;
+            this.isMethodTag = isMethodTag;
+            this.isFieldTag = isFieldTag;
+            this.valids = valids;
+        }
+
         public TagDescription(String tag, int index, boolean isTypeTag, boolean isCtorTag, boolean isMethodTag, boolean isFieldTag) {
             this.tag = tag;
             this.index = index;
@@ -25,6 +38,23 @@ public class JavadocTags {
             this.isCtorTag = isCtorTag;
             this.isMethodTag = isMethodTag;
             this.isFieldTag = isFieldTag;
+            this.valids = new TreeSet<TagValidType>();
+            if (isTypeTag) {
+                this.valids.add(TagValidType.TYPE);
+            }
+            if (isCtorTag) {
+                this.valids.add(TagValidType.CTOR);
+            }
+            if (isMethodTag) {
+                this.valids.add(TagValidType.METHOD);
+            } 
+            if (isFieldTag) {
+                this.valids.add(TagValidType.FIELD);
+            }
+        }
+
+        public boolean isValid(TagValidType tvt) {
+            return this.valids.contains(tvt);
         }
     }
 
