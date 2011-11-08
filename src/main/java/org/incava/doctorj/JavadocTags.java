@@ -121,44 +121,34 @@ public class JavadocTags {
             return td.tag; 
         }
     }
+
+    private static List<String> getMatchingTags(TagValidType tvt) {
+        List<String> matches = new ArrayList<String>();
+        for (TagDescription td : tags.values()) {
+            if (td.isValid(tvt)) {
+                matches.add(td.tag);
+            }
+        }
+        return matches;
+    }
     
     public static List<String> getValidConstructorTags() {
-        return new TagCollect(tags.values()) {
-            public final static long serialVersionUID = 1;
-            public boolean where(TagDescription td) {
-                return td.isCtorTag;
-            }
-        };
+        return getMatchingTags(TagValidType.CTOR);
     }
     
     public static List<String> getValidMethodTags() {
-        return new TagCollect(tags.values()) {
-            public final static long serialVersionUID = 1;
-            public boolean where(TagDescription td) {
-                return td.isMethodTag;
-            }
-        };
+        return getMatchingTags(TagValidType.METHOD);
     }
 
     public static List<String> getValidFieldTags() {
-        return new TagCollect(tags.values()) {
-            public final static long serialVersionUID = 1;
-            public boolean where(TagDescription td) {
-                return td.isFieldTag;
-            }
-        };
+        return getMatchingTags(TagValidType.FIELD);
     }
 
     public static List<String> getValidInterfaceTags() {
-        return new TagCollect(tags.values()) {
-            public final static long serialVersionUID = 1;
-            public boolean where(TagDescription td) {
-                return td.isTypeTag;
-            }
-        };
+        return getMatchingTags(TagValidType.TYPE);
     }
 
     public static List<String> getValidClassTags() {
-        return getValidInterfaceTags();
+        return getMatchingTags(TagValidType.TYPE);
     }
 }
