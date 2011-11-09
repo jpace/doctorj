@@ -121,8 +121,6 @@ public abstract class Report {
         try {
             for (Violation v : this.violations) {
                 String str = toString(v);
-                tr.Ace.log("v", v);
-                tr.Ace.log("str", str);
                 writer.write(str);
             }
             // we can't close STDOUT

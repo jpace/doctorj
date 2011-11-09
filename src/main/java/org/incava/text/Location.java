@@ -1,15 +1,12 @@
 package org.incava.text;
 
-
 /**
  * Code location.
  */
 public class Location implements Comparable<Location> {
-
-    public final int line;
-    
+    public final int line;    
     public final int column;
-
+    
     public Location(int line, int column) {
         this.line = line;
         this.column = column;
@@ -24,7 +21,7 @@ public class Location implements Comparable<Location> {
     }
 
     public String toString() {
-        return "[line: " + line + ", column: " + column + "]";
+        return "" + line + ":" + column;
     }
 
     public boolean equals(Object obj) {
@@ -40,8 +37,6 @@ public class Location implements Comparable<Location> {
         if (cmp == 0) {
             cmp = new Integer(this.column).compareTo(other.getColumn());
         }
-
         return cmp;
     }
-
 }

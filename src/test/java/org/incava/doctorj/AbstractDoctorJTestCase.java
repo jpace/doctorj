@@ -7,33 +7,38 @@ import junit.framework.TestCase;
 import net.sourceforge.pmd.ast.*;
 import org.incava.analysis.*;
 import org.incava.java.*;
-
+import org.incava.text.Location;
+import org.incava.text.LocationRange;
 
 public class AbstractDoctorJTestCase extends TestCase {
-
     public final static int WARNING_LEVEL_DEFAULT = Options.MAXIMUM_WARNING_LEVEL;
-
     public final static String JAVA_VERSION_DEFAULT = "1.4";
 
     public AbstractDoctorJTestCase(String name) {
         super(name);
     }
 
-    public Point loc(int line, int column) {
-        return new Point(line, column);
+    public LocationRange locrange(Location start, Location end) {
+        return new LocationRange(start, end);
     }
 
-    public Point loc(int line, int col, String var) {
+    public Location loc(int line, int column) {
+        return new Location(line, column);
+    }
+
+    public Location loc(int line, int col, String var) {
         return loc(line, col + var.length() - 1);
     }
 
-    public Point loc(Point pt, String var) {
+    public Location loc(Point pt, String var) {
         return loc(pt.x, pt.y + (var == null ? 0 : var.length() - 1));
     }
 
     public void assertViolations(Collection<Violation> expected, Collection<Violation> actual) {
         tr.Ace.log("expected", expected);
         tr.Ace.log("actual", actual);
+
+        tr.Ace.setVerbose(true);
 
         List<Violation> expList = new ArrayList<Violation>(expected);
         List<Violation> actList = new ArrayList<Violation>(actual);        
@@ -64,7 +69,7 @@ public class AbstractDoctorJTestCase extends TestCase {
         Options      options      = new Options();
         options.setWarningLevel(warningLevel);
         
-        JavaParserVisitor analyzer     = new JavaAnalyzer(report, options);
+        JavaParserVisitor analyzer = new JavaAnalyzer(report, options);
         try {
             report.reset(contents);
 
@@ -109,5 +114,4 @@ public class AbstractDoctorJTestCase extends TestCase {
     public void evaluate(String contents, Violation ... expectations) {
         evaluate(contents, WARNING_LEVEL_DEFAULT, JAVA_VERSION_DEFAULT, expectations);
     }        
-    
 }

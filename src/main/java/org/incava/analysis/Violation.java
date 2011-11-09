@@ -1,42 +1,31 @@
 package org.incava.analysis;
 
-import java.io.*;
-import java.util.*;
 import net.sourceforge.pmd.ast.Token;
-import org.incava.ijdk.lang.ObjectExt;
-
+import org.incava.text.Location;
+import org.incava.text.LocationRange;
 
 /**
  * An error or a warning, associated with a file by a starting and ending
  * position, and a message.
  */
-public class Violation implements Comparable {
-
+public class Violation implements Comparable<Violation> {
     /**
      * The message for this violation. This should be only one line, because it
      * is used in single-line reports.
      */
-    private String message;
-   
-    /**
-     * The line where the violation starts.
-     */
-    private int beginLine;
+    private final String message;
+
+    private final LocationRange location;
 
     /**
-     * The column where the violation starts.
+     * Creates a violation from a message and begin and end positions.
      */
-    private int beginColumn;
-
-    /**
-     * The line where the violation ends.
-     */
-    private int endLine;
-
-    /**
-     * The column where the violation ends.
-     */
-    private int endColumn;
+    public Violation(String message, LocationRange location) {
+        this.message = message;
+        this.location = location;
+        
+        // tr.Ace.log("[" + this.beginLine + ":" + this.beginColumn + " .. " + this.endLine + ":" + this.endColumn + "] (" + this.message + ")");
+    }
 
     /**
      * Creates a violation from a message and begin and end positions.
@@ -48,12 +37,8 @@ public class Violation implements Comparable {
      * @param endColumn   The column where the violation ends.
      */
     public Violation(String message, int beginLine, int beginColumn, int endLine, int endColumn) {
-        this.message = message;
-        this.beginLine = beginLine;
-        this.beginColumn = beginColumn;
-        this.endLine = endLine;
-        this.endColumn = endColumn;
-
+        this(message, new LocationRange(new Location(beginLine, beginColumn), new Location(endLine, endColumn)));
+        
         // tr.Ace.log("[" + this.beginLine + ":" + this.beginColumn + " .. " + this.endLine + ":" + this.endColumn + "] (" + this.message + ")");
     }
 
@@ -89,31 +74,52 @@ public class Violation implements Comparable {
     }
    
     /**
+     * Returns the location of the violation.
+     */
+    public LocationRange getLocation() {
+        return this.location;
+    }
+
+    /**
+     * Returns the beginning of the violation.
+     */
+    public Location getStart() {
+        return getLocation().getStart();
+    }
+
+    /**
+     * Returns the end of the violation.
+     */
+    public Location getEnd() {
+        return getLocation().getEnd();
+    }
+   
+    /**
      * Returns the line where the violation starts.
      */
     public int getBeginLine() {
-        return this.beginLine;
+        return getStart().getLine();
     }
 
     /**
      * Returns the column where the violation starts.
      */
     public int getBeginColumn() {
-        return this.beginColumn;
+        return getStart().getColumn();
     }
 
     /**
      * Returns the line where the violation ends.
      */
     public int getEndLine() {
-        return this.endLine;
+        return getEnd().getLine();
     }
 
     /**
      * Returns the column where the violation ends.
      */
     public int getEndColumn() {
-        return this.endColumn;
+        return getEnd().getColumn();
     }
 
     /**
@@ -123,28 +129,13 @@ public class Violation implements Comparable {
      * @param obj The violation to compare this to.
      * @return -1, 0, or 1, for less than, equivalent to, or greater than.
      */
-    public int compareTo(Object obj) {
-        if (equals(obj)) {
-            return 0;
+    public int compareTo(Violation other) {
+        int cmp = getLocation().compareTo(other.getLocation());
+        if (cmp != 0) {
+            return cmp;
         }
-        else {
-            Violation v = (Violation)obj;
-            int[][] nums = new int[][] {
-                { this.beginLine,   v.getBeginLine() },
-                { this.beginColumn, v.getBeginColumn() },
-                { this.endLine,     v.getEndLine() },
-                { this.endColumn,   v.getEndColumn() }
-            };
-
-            for (int ni = 0; ni < nums.length; ++ni) {
-                int diff = nums[ni][0] - nums[ni][1];
-                if (diff != 0) {
-                    return diff;
-                }
-            }
-            
-            return this.message.compareTo(v.getMessage());
-        }
+        
+        return getMessage().compareTo(other.getMessage());
     }
 
     /**
@@ -155,18 +146,13 @@ public class Violation implements Comparable {
      * @return Whether the other violation is equal to this one.
      */
     public boolean equals(Object obj) {
-        Violation v = (Violation)obj;
-        return (this.beginLine == v.getBeginLine()   &&
-                this.beginColumn == v.getBeginColumn() &&
-                this.endLine == v.getEndLine()     &&
-                this.endColumn == v.getEndColumn() && 
-                ObjectExt.areEqual(this.message, v.getMessage()));
+        return obj instanceof Violation && compareTo((Violation)obj) == 0;
     }
-
+    
     /**
      * Returns this violation, as a string.
      */
     public String toString() {
-        return "[" + this.beginLine + ":" + this.beginColumn + " .. " + this.endLine + ":" + this.endColumn + "] (" + this.message + ")";
+        return "[" + this.location + "] (" + this.message + ")";
     }
 }

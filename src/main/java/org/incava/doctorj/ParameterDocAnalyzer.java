@@ -1,6 +1,5 @@
 package org.incava.doctorj;
 
-import java.io.*;
 import java.util.*;
 import net.sourceforge.pmd.ast.*;
 import org.incava.analysis.*;
@@ -19,7 +18,6 @@ import static org.incava.ijdk.util.IUtil.*;
  * Checks the validity of Javadoc for a list of parameters.
  */
 public class ParameterDocAnalyzer extends DocAnalyzer {
-
     /**
      * The message for documented parameters for a function without any in the
      * code.

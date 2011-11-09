@@ -29,7 +29,7 @@ public class Analyzer {
      * @param token The token to which the violation applies.
      */
     public void addViolation(String message, Token token) {
-        tr.Ace.log("adding violation for " + token + ", " + message);
+        // tr.Ace.log("adding violation for " + token + ", " + message);
         report.addViolation(new Violation(message, token));
     }
 
@@ -41,7 +41,7 @@ public class Analyzer {
      * @param lastToken The last token this violation spans, inclusive.
      */
     public void addViolation(String message, Token firstToken, Token lastToken) {
-        tr.Ace.log("adding violation for " + firstToken + ", " + message);
+        // tr.Ace.log("adding violation for " + firstToken + ", " + message);
         report.addViolation(new Violation(message, firstToken, lastToken));
     }
 
@@ -53,7 +53,7 @@ public class Analyzer {
      * @param end Where this violation ends, inclusive.
      */
     public void addViolation(String message, Location start, Location end) {
-        tr.Ace.log("adding violation for " + message + ", " + start + ", " + end);
+        // tr.Ace.log("adding violation for " + message + ", " + start + ", " + end);
         report.addViolation(new Violation(message, start.line, start.column, end.line, end.column));
     }
 
@@ -67,7 +67,7 @@ public class Analyzer {
      * @param endColumn The column where this violation ends.
      */
     public void addViolation(String message, int beginLine, int beginColumn, int endLine, int endColumn) {
-        tr.Ace.log("adding violation for " + message + ", " + beginLine + ":" + beginColumn + ", " + endLine + ":" + endColumn);
+        // tr.Ace.log("adding violation for " + message + ", " + beginLine + ":" + beginColumn + ", " + endLine + ":" + endColumn);
         report.addViolation(new Violation(message, beginLine, beginColumn, endLine, endColumn));
     }
 
@@ -77,5 +77,4 @@ public class Analyzer {
     protected Report getReport() {
         return report;
     }
-
 }

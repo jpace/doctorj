@@ -1,7 +1,5 @@
 package org.incava.doctorj;
 
-import java.util.Iterator;
-import java.util.List;
 import net.sourceforge.pmd.ast.ASTFormalParameters;
 import net.sourceforge.pmd.ast.SimpleNode;
 import org.incava.analysis.Report;
@@ -13,7 +11,6 @@ import static org.incava.ijdk.util.IUtil.*;
  * Analyzes Javadoc and code for methods and constructors, AKA functions.
  */
 public abstract class FunctionDocAnalyzer extends ItemDocAnalyzer {
-
     public final static String MSG_SERIALDATA_WITHOUT_DESCRIPTION = "@serialData without description";
     
     public FunctionDocAnalyzer(Report r, SimpleNode node, int warningLevel) {
@@ -23,17 +20,13 @@ public abstract class FunctionDocAnalyzer extends ItemDocAnalyzer {
     protected void checkJavadoc(JavadocNode javadoc) {
         super.checkJavadoc(javadoc);
 
-        SimpleNode encNode = getEnclosingNode();
-        tr.Ace.log("encNode", encNode);
-        int        chkLevel = SimpleNodeUtil.getLevel(encNode);
-        tr.Ace.log("chkLevel", chkLevel);
-
-        Report report = getReport();
-        SimpleNode function = getNode();
-        int warningLevel = getWarningLevel();
+        SimpleNode encNode      = getEnclosingNode();
+        int        chkLevel     = SimpleNodeUtil.getLevel(encNode);
+        Report     report       = getReport();
+        SimpleNode function     = getNode();
+        int        warningLevel = getWarningLevel();
 
         ExceptionDocAnalyzer eda = new ExceptionDocAnalyzer(report, javadoc, function, chkLevel, warningLevel);
-        tr.Ace.log("eda", eda);
         eda.run();
 
         ASTFormalParameters  params = getParameterList();

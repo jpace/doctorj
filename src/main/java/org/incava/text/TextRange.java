@@ -2,14 +2,11 @@ package org.incava.text;
 
 import org.incava.ijdk.lang.ObjectExt;
 
-
 /**
  * A range of text, denoted by starting and ending locations.
  */
 public class TextRange {
-
     private final TextLocation start;
-
     private final TextLocation end;
 
     public TextRange(TextLocation start, TextLocation end) {
@@ -36,5 +33,4 @@ public class TextRange {
     public boolean equals(TextRange other) {
         return ObjectExt.equal(other.start, start) && ObjectExt.equal(other.end, end);
     }
-
 }

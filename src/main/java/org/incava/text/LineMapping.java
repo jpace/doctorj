@@ -1,16 +1,14 @@
 package org.incava.text;
 
 import java.awt.Point;
-import java.io.*;
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.ListIterator;
 
 /**
  * Converts from 0-indexed string positions to line:column values. Lines and
  * columns are 1-indexed, matching the Java parser.
  */
 public class LineMapping extends ArrayList<TextLocation> {
-
     private static final long serialVersionUID = 1;
 
     public LineMapping(String text, int startLine, int startColumn) {
@@ -80,12 +78,9 @@ public class LineMapping extends ArrayList<TextLocation> {
         while (lit.hasPrevious()) {
             TextLocation pl = lit.previous();
             if (pos >= pl.getPosition()) {
-                // tr.Ace.log("creating location");
                 return new TextLocation(TextLocation.UNDEFINED, pl.getLine(), pl.getColumn() + pos - pl.getPosition());
             }
         }
-
         return null;
-    }
-    
+    }    
 }

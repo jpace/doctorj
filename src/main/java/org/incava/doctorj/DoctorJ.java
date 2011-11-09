@@ -14,26 +14,17 @@ import org.incava.ijdk.util.TimedEvent;
 import org.incava.ijdk.util.TimedEventSet;
 import org.incava.pmdx.SimpleNodeUtil;
 
-
 public class DoctorJ {
-
     private final TimedEventSet totalInit;
-
     private final TimedEventSet totalParse;
-
     private final TimedEventSet totalAnalysis;
+    private final Report report;
+    private final JavaParserVisitor analyzer;
+    private final String sourceVersion;
 
     private JavaParser parser = null;
-
-    private final Report report;
-
-    private final JavaParserVisitor analyzer;
-
     private int exitValue;
-
     private int nFiles;
-
-    private final String sourceVersion;
 
     public DoctorJ(String[] args) {
         tr.Ace.set(true, 25, 4, 20, 25);
@@ -83,29 +74,27 @@ public class DoctorJ {
         return this.exitValue;
     }
 
+    protected void processDirectory(File dir) {
+        File[] contents = dir.listFiles();
+        Arrays.sort(contents);
+        for (File fd : contents) {
+            if (fd.isDirectory()) {
+                processDirectory(fd);
+            }
+            else if (fd.isFile() && fd.getName().endsWith(".java")) {
+                processFile(fd);
+            }
+        }
+    }
+
     protected void process(String name) {
         File fd = new File(name);
         if (fd.exists()) {
             if (fd.isDirectory()) {
-                tr.Ace.log("processing directory");
-                String[] contents = fd.list();
-                Arrays.sort(contents);
-                for (String nm : contents) {
-                    String fullName = name + File.separator + nm;
-                    File   f = new File(fullName);
-                    if (f.isDirectory()) {
-                        process(fullName);
-                    }
-                    else if (f.isFile() && nm.endsWith(".java")) {
-                        processFile(fullName);
-                    }
-                    else {
-                        tr.Ace.log("not a match", f);
-                    }   
-                }
+                processDirectory(fd);
             }
             else if (fd.isFile()) {
-                processFile(name);
+                processFile(fd);
             }
         }
         else {
@@ -113,25 +102,25 @@ public class DoctorJ {
         }
     }
     
-    protected void processFile(String fileName) {
+    protected void processFile(File file) {
         ++this.nFiles;
 
-        if (initParser(fileName)) {
-            ASTCompilationUnit cu = parse(fileName);
+        if (initParser(file)) {
+            ASTCompilationUnit cu = parse(file);
             if (cu != null) {
                 analyze(cu);
             }
         }
     }
 
-    protected boolean initParser(String fileName) {
-        tr.Ace.log("fileName", fileName);
+    protected boolean initParser(File file) {
+        tr.Ace.log("file", file);
 
         TimedEvent init = new TimedEvent(this.totalInit);
         try {
-            this.report.reset(new File(fileName));
+            this.report.reset(file);
                 
-            FileReader     rdr = new FileReader(fileName);
+            FileReader     rdr = new FileReader(file);
             JavaCharStream jcs = new JavaCharStream(rdr);
             
             this.parser = new JavaParser(jcs);
@@ -158,24 +147,23 @@ public class DoctorJ {
             return true;
         }
         catch (FileNotFoundException e) {
-            System.out.println("File " + fileName + " not found.");
+            System.out.println("File " + file.getName() + " not found.");
             this.exitValue = 1;
-
             return false;
         }
         catch (IOException e) {
-            System.out.println("Error opening " + fileName + ": " + e);
+            System.out.println("Error opening " + file.getName() + ": " + e);
             this.exitValue = 1;
             return false;
         }
         catch (TokenMgrError tme) {
-            System.out.println("Error parsing (tokenizing) " + fileName + ": " + tme.getMessage());
+            System.out.println("Error parsing (tokenizing) " + file.getName() + ": " + tme.getMessage());
             this.exitValue = 1;
             return false;
         }
     }
 
-    protected ASTCompilationUnit parse(String fileName) {
+    protected ASTCompilationUnit parse(File file) {
         tr.Ace.log("running parser");
             
         try {
@@ -188,7 +176,7 @@ public class DoctorJ {
             return cu;
         }
         catch (ParseException e) {
-            System.out.println("Parse error in " + fileName + ": " + e.getMessage());
+            System.out.println("Parse error in " + file.getName() + ": " + e.getMessage());
             this.exitValue = 1;
             return null;
         }

@@ -14,11 +14,8 @@ import static org.incava.ijdk.util.IUtil.*;
  * Analyzes Javadoc and code for methods.
  */
 public class MethodDocAnalyzer extends FunctionDocAnalyzer {
-
     public final static String MSG_RETURN_WITHOUT_DESCRIPTION = "@return without description.";
-
     public final static String MSG_RETURN_FOR_VOID_METHOD = "@return for method returning void";
-
     public final static String MSG_RETURN_TYPE_USED = "@return refers to method return type";
     
     private final ASTMethodDeclaration method;

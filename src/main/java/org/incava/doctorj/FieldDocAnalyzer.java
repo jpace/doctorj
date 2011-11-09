@@ -37,46 +37,51 @@ public class FieldDocAnalyzer extends ItemDocAnalyzer {
         SimpleNode encNode = getEnclosingNode();
 
         if (javadoc != null && isCheckable(encNode, CHKLVL_TAG_CONTENT)) {
-            List<JavadocTaggedNode> taggedComments = javadoc.getTaggedComments();
-            for (int ti = 0; ti < taggedComments.size(); ++ti) {
-                JavadocTaggedNode jtn = taggedComments.get(ti);                
-                JavadocTag        tag = jtn.getTag();
+            checkTagContent(javadoc);
+        }        
+    }
 
-                tr.Ace.log("checking tag: " + tag);
-                if (tag.textMatches(JavadocTags.SERIALFIELD)) {
-                    // expecting: field - name field - type field - description
-                    JavadocElement desc = jtn.getDescription();
-                    if (desc == null) {
-                        addViolation(MSG_SERIALFIELD_WITHOUT_NAME_TYPE_AND_DESCRIPTION, tag.start, tag.end);
+    protected void checkTagContent(JavadocNode javadoc) {
+        super.checkTagContent(javadoc);
+        
+        // List<JavadocTaggedNode> taggedComments = ;
+        for (JavadocTaggedNode jtn : javadoc.getTaggedComments()) {
+            JavadocTag tag = jtn.getTag();
+
+            tr.Ace.log("checking tag: " + tag);
+            if (tag.textMatches(JavadocTags.SERIALFIELD)) {
+                // expecting: field-name field-type field-description
+                JavadocElement desc = jtn.getDescription();
+                if (desc == null) {
+                    addViolation(MSG_SERIALFIELD_WITHOUT_NAME_TYPE_AND_DESCRIPTION, tag.start, tag.end);
+                }
+                else {
+                    JavadocElement nontgt = jtn.getDescriptionNonTarget();
+
+                    if (nontgt == null) {
+                        addViolation(MSG_SERIALFIELD_WITHOUT_TYPE_AND_DESCRIPTION, desc.start, desc.end);
                     }
                     else {
-                        JavadocElement nontgt = jtn.getDescriptionNonTarget();
-
-                        if (nontgt == null) {
-                            addViolation(MSG_SERIALFIELD_WITHOUT_TYPE_AND_DESCRIPTION, desc.start, desc.end);
-                        }
-                        else {
-                            String text = nontgt.text;
+                        String text = nontgt.text;
                             
-                            int pos = 0;
-                            int len = text.length();
+                        int pos = 0;
+                        int len = text.length();
 
-                            boolean gotAnotherWord = false;
-                            while (!gotAnotherWord && pos < len) {
-                                if (Character.isWhitespace(text.charAt(pos))) {
-                                    gotAnotherWord = true;
-                                }
-                                ++pos;
+                        boolean gotAnotherWord = false;
+                        while (!gotAnotherWord && pos < len) {
+                            if (Character.isWhitespace(text.charAt(pos))) {
+                                gotAnotherWord = true;
                             }
+                            ++pos;
+                        }
 
-                            if (!gotAnotherWord) {
-                                addViolation(MSG_SERIALFIELD_WITHOUT_DESCRIPTION, desc.start, desc.end);
-                            }
+                        if (!gotAnotherWord) {
+                            addViolation(MSG_SERIALFIELD_WITHOUT_DESCRIPTION, desc.start, desc.end);
                         }
                     }
                 }
             }
-        }        
+        }
     }
 
     /**
