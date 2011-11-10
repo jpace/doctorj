@@ -19,20 +19,6 @@ allprojects {
     }
 }
 
-sourceSets {
-    main {
-        java {
-            exclude '**/.#*/**'
-        }
-    }
-
-    test {
-        java {
-            exclude '**/.#*/**'
-        }
-    }
-}
-
 jar { 
     from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } 
 }

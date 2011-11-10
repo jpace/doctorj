@@ -3,9 +3,7 @@ package org.incava.text.spell;
 import java.util.*;
 import org.incava.ijdk.util.MultiMap;
 
-
 public class ParsingSpellChecker {
-
     /**
      * Whether we can spell check, which we can't until we get a word or a
      * dictionary (which is a thing with a lot of words).

@@ -12,9 +12,7 @@ import org.incava.analysis.Report;
  * Analyzes Javadoc and code.
  */
 public class JavaAnalyzer extends JavaParserVisitorAdapter {
-
     private final Report report;
-
     private final Options options;
 
     public JavaAnalyzer(Report r, Options options) {
@@ -70,7 +68,7 @@ public class JavaAnalyzer extends JavaParserVisitorAdapter {
 
     public Object visit(ASTLiteral node, Object data) {
         if (checkStrings()) {
-            LiteralAnalyzer analyzer = new LiteralAnalyzer(this.report, node);
+            LiteralAnalyzer analyzer = new LiteralAnalyzer(this.report, node, options.getMinimumWords());
             analyzer.run();
         }
         return super.visit(node, data);

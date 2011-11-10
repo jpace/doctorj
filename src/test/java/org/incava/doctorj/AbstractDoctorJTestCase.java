@@ -1,12 +1,12 @@
 package org.incava.doctorj;
 
-import java.awt.Point;
 import java.io.*;
 import java.util.*;
 import junit.framework.TestCase;
 import net.sourceforge.pmd.ast.*;
 import org.incava.analysis.*;
 import org.incava.java.*;
+import org.incava.text.Lines;
 import org.incava.text.Location;
 import org.incava.text.LocationRange;
 
@@ -28,10 +28,6 @@ public class AbstractDoctorJTestCase extends TestCase {
 
     public Location loc(int line, int col, String var) {
         return loc(line, col + var.length() - 1);
-    }
-
-    public Location loc(Point pt, String var) {
-        return loc(pt.x, pt.y + (var == null ? 0 : var.length() - 1));
     }
 
     public void assertViolations(Collection<Violation> expected, Collection<Violation> actual) {
@@ -58,17 +54,10 @@ public class AbstractDoctorJTestCase extends TestCase {
         }
     }
 
-    protected Report analyze(String contents, String version) {
-        return analyze(contents, version, WARNING_LEVEL_DEFAULT);
-    }
-
-    protected Report analyze(String contents, String version, int warningLevel) {
+    protected Report analyze(String contents, Options options) {
         StringWriter reportOutput = new StringWriter();
         Report       report       = new TerseReport(reportOutput);
 
-        Options      options      = new Options();
-        options.setWarningLevel(warningLevel);
-        
         JavaParserVisitor analyzer = new JavaAnalyzer(report, options);
         try {
             report.reset(contents);
@@ -76,10 +65,10 @@ public class AbstractDoctorJTestCase extends TestCase {
             Reader             rdr = new StringReader(contents);
             JavaCharStream     jcs = new JavaCharStream(rdr);
             JavaParser         parser = new JavaParser(jcs);
-            if ("1.3".equals(version)) {
+            if ("1.3".equals(options.getSource())) {
                 parser.setJDK13();
             }
-            else if ("1.5".equals(version)) {
+            else if ("1.5".equals(options.getSource())) {
                 parser.setJDK15();
             }
             ASTCompilationUnit cu = parser.CompilationUnit();
@@ -95,23 +84,30 @@ public class AbstractDoctorJTestCase extends TestCase {
         return report;
     }
 
-    public void evaluate(Lines lines, int warningLevel, String version, Violation ... expectations) {
-        evaluate(lines.toString(), warningLevel, version, expectations);
-    }
-
-    public void evaluate(String contents, int warningLevel, String version, Violation ... expectations) {
-        Report report = analyze(contents, version, warningLevel);
-
+    public void evaluate(String contents, Options options, Violation ... expectations) {
+        Report report = analyze(contents, options);
         assertViolations(Arrays.asList(expectations), report.getViolations());
-        
         report.flush();
     }        
 
     public void evaluate(Lines lines, Violation ... expectations) {
-        evaluate(lines.toString(), WARNING_LEVEL_DEFAULT, JAVA_VERSION_DEFAULT, expectations);
+        evaluate(lines.toString(), new Options(), expectations);
     }
 
+    public void evaluate(Lines lines, Options options, Violation ... expectations) {
+        evaluate(lines.toString(), options, expectations);
+    }        
+
+    public void evaluate(String contents, Options options, String version, Violation ... expectations) {
+        options.process(Arrays.asList(new String[] { "--source=" + version }));
+        evaluate(contents, options, expectations);
+    }        
+
+    public void evaluate(String contents, String version, Violation ... expectations) {
+        evaluate(contents, new Options(), version, expectations);
+    }        
+
     public void evaluate(String contents, Violation ... expectations) {
-        evaluate(contents, WARNING_LEVEL_DEFAULT, JAVA_VERSION_DEFAULT, expectations);
+        evaluate(contents, new Options(), expectations);
     }        
 }

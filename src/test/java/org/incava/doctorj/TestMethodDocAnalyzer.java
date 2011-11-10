@@ -71,7 +71,6 @@ public class TestMethodDocAnalyzer extends AbstractDoctorJTestCase {
                  "        return result;\n" +
                  "    }\n" +
                  "}\n",
-                 WARNING_LEVEL_DEFAULT,
                  "1.5");
     }
     

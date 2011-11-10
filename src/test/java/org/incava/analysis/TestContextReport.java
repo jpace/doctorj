@@ -1,13 +1,10 @@
 package org.incava.analysis;
 
-import java.io.*;
-import java.util.*;
+import java.io.StringWriter;
 import junit.framework.TestCase;
 import org.incava.qualog.ANSIColor;
 
-
 public class TestContextReport extends TestCase {
-
     private final static String EOLN = System.getProperty("line.separator");
 
     public TestContextReport(String name) {
@@ -15,9 +12,6 @@ public class TestContextReport extends TestCase {
     }
 
     public void testReportOrder() {
-        StringWriter sw;
-        Report r;
-
         String content = ("As fast as thou shalt wane, so fast thou grow'st\n" +
                           "In one of thine, from that which thou departest;\n" +
                           "And that fresh blood which youngly thou bestow'st,\r\n" +
@@ -32,9 +26,8 @@ public class TestContextReport extends TestCase {
                           "Which bounteous gift thou shouldst in bounty cherish:\n" +
                           "She carv'd thee for her seal, and meant thereby,\n" +
                           "Thou shouldst print more, not let that copy die.\n");
-        
-        sw = new StringWriter();
-        r  = new ContextReport(sw, content);
+        StringWriter sw = new StringWriter();
+        Report r  = new ContextReport(sw, content);
         
         r.addViolation(new Violation("msg",  3, 5, 4, 6));
         r.addViolation(new Violation("msg2", 5, 3, 6, 4));
@@ -42,7 +35,6 @@ public class TestContextReport extends TestCase {
         r.flush();
         
         String str0 = sw.toString();
-        tr.Ace.log("str0: " + str0);
 
         sw = new StringWriter();
         r  = new ContextReport(sw, content);
@@ -52,7 +44,6 @@ public class TestContextReport extends TestCase {
         r.flush();
         
         String str1 = sw.toString();
-        tr.Ace.log("str1: " + str1);
 
         assertEquals("order of reported violations", str0, str1);
     }
@@ -72,14 +63,12 @@ public class TestContextReport extends TestCase {
                           "Which bounteous gift thou shouldst in bounty cherish:\n" +
                           "She carv'd thee for her seal, and meant thereby,\n" +
                           "Thou shouldst print more, not let that copy die.\n");
-        
         StringWriter sw = new StringWriter();
         Report r = new ContextReport(sw, content);
         r.addViolation(new Violation("msg",  5, 9, 5, 9));
         assertEquals(1, r.getViolations().size());
         r.flush();
         String str = sw.toString();
-        tr.Ace.log("str: " + str);
         
         // end of line gets "fixed" to whatever is appropriate for this system.
         assertEquals("In " + ANSIColor.BOLD + ANSIColor.REVERSE + "-" + ANSIColor.RESET + ":" + EOLN + EOLN +
@@ -112,7 +101,6 @@ public class TestContextReport extends TestCase {
         assertEquals(1, r.getViolations().size());
         r.flush();
         String str = sw.toString();
-        tr.Ace.log("str: " + str);
         
         // end of line gets "fixed" to whatever is appropriate for this system.
         assertEquals("In " + ANSIColor.BOLD + ANSIColor.REVERSE + "-" + ANSIColor.RESET + ":" + EOLN + EOLN +
@@ -145,7 +133,6 @@ public class TestContextReport extends TestCase {
         assertEquals(1, r.getViolations().size());
         r.flush();
         String str = sw.toString();
-        tr.Ace.log("str: " + str);
         
         // end of line gets "fixed" to whatever is appropriate for this system.
         assertEquals("In " + ANSIColor.BOLD + ANSIColor.REVERSE + "-" + ANSIColor.RESET + ":" + EOLN + EOLN +
@@ -178,14 +165,12 @@ public class TestContextReport extends TestCase {
                           "\tDelights to peep, to gaze therein on thee; \n" +
                           "\tYet eyes this cunning want to grace their art,\n" +
                           "\tThey draw but what they see, know not the heart.\n");
-        
         StringWriter sw = new StringWriter();
         Report r = new ContextReport(sw, content);
         r.addViolation(new Violation("msg",  2, 23, 2, 25));
         assertEquals(1, r.getViolations().size());
         r.flush();
         String str = sw.toString();
-        tr.Ace.log("str: " + str);
         
         assertEquals("In " + ANSIColor.BOLD + ANSIColor.REVERSE + "-" + ANSIColor.RESET + ":" + EOLN + EOLN +
                      "     2. \tThy beauty's form in table of my heart;" + EOLN +
@@ -194,5 +179,4 @@ public class TestContextReport extends TestCase {
                      EOLN,
                      str);
     }
-
 }

@@ -23,8 +23,6 @@ public class Violation implements Comparable<Violation> {
     public Violation(String message, LocationRange location) {
         this.message = message;
         this.location = location;
-        
-        // tr.Ace.log("[" + this.beginLine + ":" + this.beginColumn + " .. " + this.endLine + ":" + this.endColumn + "] (" + this.message + ")");
     }
 
     /**
@@ -38,8 +36,6 @@ public class Violation implements Comparable<Violation> {
      */
     public Violation(String message, int beginLine, int beginColumn, int endLine, int endColumn) {
         this(message, new LocationRange(new Location(beginLine, beginColumn), new Location(endLine, endColumn)));
-        
-        // tr.Ace.log("[" + this.beginLine + ":" + this.beginColumn + " .. " + this.endLine + ":" + this.endColumn + "] (" + this.message + ")");
     }
 
     /**

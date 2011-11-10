@@ -7,7 +7,6 @@ import org.incava.ijdk.lang.StringExt;
 import org.incava.jagol.*;
 import static org.incava.ijdk.util.IUtil.*;
 
-
 /**
  * Options for processing Javadoc and strings.
  */
@@ -160,6 +159,10 @@ public class Options extends OptionSet {
         return source;
     }
 
+    public int getMinimumWords() {
+        return this.minWords;
+    }
+
     /**
      * Processes the run control files and command line arguments, and sets the
      * static variables. Returns the arguments that were not consumed by option
@@ -170,22 +173,22 @@ public class Options extends OptionSet {
 
         Integer tabWidthInt = this.tabWidthOpt.getValue();
         if (tabWidthInt != null) {
-            ContextReport.tabWidth = tabWidthInt.intValue();
+            ContextReport.tabWidth = tabWidthInt;
         }
     
         Integer levelInt = this.levelOpt.getValue();
         if (levelInt != null) {
-            this.warningLevel = levelInt.intValue();
+            this.warningLevel = levelInt;
         }
         
         Boolean emacsBool = this.emacsOpt.getValue();
         if (emacsBool != null) {
-            this.emacsOutput = emacsBool.booleanValue();
+            this.emacsOutput = emacsBool;
         }
         
         Boolean verboseBool = this.verboseOpt.getValue();
         if (verboseBool != null) {
-            tr.Ace.setVerbose(verboseBool.booleanValue());
+            tr.Ace.setVerbose(verboseBool);
         }
 
         Boolean versionBool = this.versionOpt.getValue();
@@ -210,15 +213,19 @@ public class Options extends OptionSet {
 
         Boolean commentsBool = this.commentsOpt.getValue();
         if (commentsBool != null) {
-            this.checkComments = commentsBool.booleanValue();
+            this.checkComments = commentsBool;
         }
 
         Boolean stringsBool = this.stringsOpt.getValue();
         if (stringsBool != null) {
-            this.checkStrings = stringsBool.booleanValue();
+            this.checkStrings = stringsBool;
         }
-        
+
+        Integer minWords = this.minWordsOpt.getValue();
+        if (minWords != null) {
+            this.minWords = minWords;
+        }
+
         return unprocessed;
     }
-
 }

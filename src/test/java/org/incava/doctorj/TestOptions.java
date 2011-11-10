@@ -1,6 +1,10 @@
 package org.incava.doctorj;
 
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import org.incava.analysis.Violation;
+import org.incava.text.Lines;
 import org.incava.text.Location;
 import org.incava.text.LocationRange;
 
@@ -14,21 +18,56 @@ public class TestOptions extends AbstractDoctorJTestCase {
     }
 
     public void runTest(int level, int violationLevel,
-                        String content, 
+                        Lines content, 
+                        int index,
+                        String message,
+                        LocationRange location) {
+        List<Violation> violations = new ArrayList<Violation>();
+        if (level >= 0 && violationLevel + 3 - index <= level) {
+            violations.add(new Violation(message, location));
+        }
+        
+        Options options = new Options();
+        options.process(Arrays.asList(new String[] { "--level=" + level }));
+        evaluate(content, options, violations.toArray(new Violation[violations.size()]));
+    }
+
+    public void runTest(int level, int violationLevel,
+                        Lines content, 
                         int index,
                         String[] messages,
                         LocationRange[] locations) {
-        Violation[] violations = new Violation[0];                
-        if (level >= 0 && violationLevel + 3 - index <= level) {
-            String msg = getValue(messages, index);
+        runTest(level, violationLevel, content, index, getValue(messages, index), getValue(locations, index));
+    }
 
-            LocationRange location = getValue(locations, index);
-            violations = new Violation[] {
-                new Violation(msg, location)
-            };
+    public void runTest(int level, int violationLevel,
+                        Lines[] contents, 
+                        String message,
+                        LocationRange location) {
+        for (int ci = 0; ci < contents.length; ++ci) {
+            runTest(level, violationLevel, contents[ci], ci, message, location);
         }
-        
-        evaluate(content, level, JAVA_VERSION_DEFAULT, violations);
+    }    
+
+    public void runTest(int level, int violationLevel,
+                        Lines[] contents, 
+                        String[] messages,
+                        LocationRange[] locations) {
+        for (int ci = 0; ci < contents.length; ++ci) {
+            runTest(level, violationLevel, contents[ci], ci, messages, locations);
+        }
+    }    
+
+    public void runTest(int violationLevel, Lines[] contents, String message, LocationRange location) {
+        for (int level = -1; level < 9; ++level) {
+            runTest(level, violationLevel, contents, message, location);
+        }
+    }    
+
+    public void runTest(int violationLevel, Lines[] contents, String[] messages, LocationRange ... locations) {
+        for (int level = -1; level < 9; ++level) {
+            runTest(level, violationLevel, contents, messages, locations);
+        }
     }
 
     public void runTest(int level, int violationLevel,
@@ -36,48 +75,23 @@ public class TestOptions extends AbstractDoctorJTestCase {
                         int index,
                         String message,
                         LocationRange location) {
-        Violation[] violations = new Violation[0];                
+        List<Violation> violations = new ArrayList<Violation>();
         if (level >= 0 && violationLevel + 3 - index <= level) {
-            violations = new Violation[] {
-                new Violation(message, location)
-            };
+            violations.add(new Violation(message, location));
         }
         
-        evaluate(content, level, JAVA_VERSION_DEFAULT, violations);
+        Options options = new Options();
+        options.process(Arrays.asList(new String[] { "--level=" + level }));
+        evaluate(content, options, violations.toArray(new Violation[violations.size()]));
     }
 
     public void runTest(int level, int violationLevel,
                         String content, 
                         int index,
                         String[] messages,
-                        Integer[] beginLine, Integer[] beginColumn, 
-                        Integer[] endLine, Integer[] endColumn) {
-        String msg    = getValue(messages,    index);
-        int    bgLn   = getValue(beginLine,   index);
-        int    bgCol  = getValue(beginColumn, index);
-        int    endLn  = getValue(endLine,     index);
-        int    endCol = getValue(endColumn,   index);
-
-        Violation[] violations = new Violation[0];
-                
-        if (level >= 0 && violationLevel + 3 - index <= level) {
-            violations = new Violation[] {
-                new Violation(msg, bgLn, bgCol, endLn, endCol)
-            };
-        }
-
-        evaluate(content, level, JAVA_VERSION_DEFAULT, violations);
+                        LocationRange[] locations) {
+        runTest(level, violationLevel, content, index, getValue(messages, index), getValue(locations, index));
     }
-
-    public void runTest(int level, int violationLevel,
-                        String[] contents, 
-                        String[] messages,
-                        Integer[] beginLine, Integer[] beginColumn, 
-                        Integer[] endLine, Integer[] endColumn) {
-        for (int ci = 0; ci < contents.length; ++ci) {
-            runTest(level, violationLevel, contents[ci], ci, messages, beginLine, beginColumn, endLine, endColumn);
-        }
-    }    
 
     public void runTest(int level, int violationLevel,
                         String[] contents, 
@@ -88,15 +102,24 @@ public class TestOptions extends AbstractDoctorJTestCase {
         }
     }    
 
-    public void runTest(int violationLevel, String[] contents, String[] messages, Integer[] beginLine, Integer[] beginColumn, Integer[] endLine, Integer[] endColumn) {
-        for (int level = -1; level < 9; ++level) {
-            runTest(level, violationLevel, contents, messages, beginLine, beginColumn, endLine, endColumn);
+    public void runTest(int level, int violationLevel,
+                        String[] contents, 
+                        String[] messages,
+                        LocationRange[] locations) {
+        for (int ci = 0; ci < contents.length; ++ci) {
+            runTest(level, violationLevel, contents[ci], ci, messages, locations);
         }
-    }
+    }    
 
     public void runTest(int violationLevel, String[] contents, String message, LocationRange location) {
         for (int level = -1; level < 9; ++level) {
             runTest(level, violationLevel, contents, message, location);
+        }
+    }    
+
+    public void runTest(int violationLevel, String[] contents, String[] messages, LocationRange ... locations) {
+        for (int level = -1; level < 9; ++level) {
+            runTest(level, violationLevel, contents, messages, locations);
         }
     }
     
@@ -130,11 +153,11 @@ public class TestOptions extends AbstractDoctorJTestCase {
                     "Undocumented protected class",
                     "Undocumented public class"
                 },
-                    
-                new Integer[] {  4,  1,  4,  1 },  // begin lines
-                new Integer[] { 19,  7, 21, 14 },  // begin columns
-                new Integer[] {  4,  1,  4,  1 },  // end lines
-                new Integer[] { 23, 10, 25, 27 }); // end columns
+
+                locrange(loc(4, 19), loc(4, 23)),
+                locrange(loc(1,  7), loc(1, 10)),
+                locrange(loc(4, 21), loc(4, 25)),
+                locrange(loc(1, 14), loc(1, 27)));
     }
 
     public void testSummarySentence() {
@@ -168,11 +191,11 @@ public class TestOptions extends AbstractDoctorJTestCase {
                 new String[] {
                     ItemDocAnalyzer.MSG_SUMMARY_SENTENCE_TOO_SHORT
                 },
-                    
-                new Integer[] {  4,  1,  4,  1 }, // lines
-                new Integer[] {  9,  5,  9,  5 }, // columns
-                new Integer[] {  4,  1,  4,  1 },
-                new Integer[] { 18, 14, 18, 14 });
+
+                locrange(loc(4,  9), loc(4, 18)),
+                locrange(loc(1,  5), loc(1, 14)),
+                locrange(loc(4,  9), loc(4, 18)),
+                locrange(loc(1,  5), loc(1, 14)));
     }
 
     public void testClassTagOrder() {

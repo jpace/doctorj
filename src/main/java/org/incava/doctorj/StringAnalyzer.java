@@ -19,13 +19,15 @@ public class StringAnalyzer extends JavaParserVisitorAdapter {
     private final Analyzer analyzer;
     private final Report report;
     private final SpellingAnalyzer spellingAnalyzer;
+    private final int minimumWords;
 
-    public StringAnalyzer(Report r) {
+    public StringAnalyzer(Report r, int minimumWords) {
         this.report = r;
         this.analyzer = new Analyzer(r);
 
         this.spellingAnalyzer = new SpellingAnalyzer();
         this.spellingAnalyzer.addDictionary("/home/jpace/proj/doctorj/etc/words.en_US");
+        this.minimumWords = minimumWords;
     }
 
     public Object visit(SimpleJavaNode node, Object data) {
@@ -37,8 +39,13 @@ public class StringAnalyzer extends JavaParserVisitorAdapter {
         Token st = node.getFirstToken();
         if (isTrue(st) && StringExt.charAt(st.image, 0) == '"' && StringExt.charAt(st.image, -1) == '"') {
             String      substr = StringExt.get(st.image, 1, -2);
-            LineMapping lines  = new LineMapping(substr, st.beginLine, st.beginColumn + 1);
-            this.spellingAnalyzer.check(this.analyzer, lines, substr);
+            // must have at least N words:
+            String[]    words  = StringExt.split(substr, " ");
+            
+            if (words.length >= this.minimumWords) {
+                LineMapping lines  = new LineMapping(substr, st.beginLine, st.beginColumn + 1);
+                this.spellingAnalyzer.check(this.analyzer, lines, substr);
+            }
         }
         return visit((SimpleJavaNode)node, data);
     }
