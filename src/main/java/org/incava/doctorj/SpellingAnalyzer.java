@@ -12,9 +12,7 @@ import org.incava.text.spell.*;
 
 
 public class SpellingAnalyzer extends ParsingSpellChecker {
-
-    public final static String MSG_MISSPELLED_NO_MATCHES = "Word ''{0}'' appears to be misspelled. No close matches";
-    
+    public final static String MSG_MISSPELLED_NO_MATCHES = "Word ''{0}'' appears to be misspelled. No close matches";    
     public final static String MSG_MISSPELLED_MATCHES = "Word ''{0}'' appears to be misspelled. Closest matches: {1}";
     
     private static SpellingAnalyzer instance = new SpellingAnalyzer();

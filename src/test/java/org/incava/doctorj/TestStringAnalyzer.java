@@ -12,6 +12,8 @@ public class TestStringAnalyzer extends AbstractDoctorJTestCase {
     
     public TestStringAnalyzer(String name) {
         super(name);
+
+        tr.Ace.setVerbose(true);
     }
 
     public Violation violation(int line, int col, String word, String ... matches) {
@@ -25,7 +27,18 @@ public class TestStringAnalyzer extends AbstractDoctorJTestCase {
         return new Violation(sb.toString(), locrange(loc(line, col), loc(line, col + word.length() - 1)));
     }
 
-    public void xtestIncorrectString() {
+    public void testBasic() {
+        String comment = "/** Documentation that is sufficiently lengthy. */";
+        evaluate(new Lines(comment,
+                           "class Test {",
+                           comment,
+                           "    String s = \"wafle freis\";",
+                           "}"),
+                 violation(4, 17, "wafle", "waffle", "wale", "ale", "wafer", "waffled", "waffler"),
+                 violation(4, 23, "freis", "reis", "fares", "fires", "fores", "fredi", "fredi's"));
+    }
+
+    public void testIncorrectString() {
         String comment = "/** Documentation that is sufficiently lengthy. */";
         evaluate(new Lines(comment,
                            "class Test {",
@@ -39,7 +52,7 @@ public class TestStringAnalyzer extends AbstractDoctorJTestCase {
                  violation(4, 17, "wafle", "waffle", "wale", "ale", "wafer", "waffled", "waffler"),
                  violation(4, 23, "freis", "reis", "fares", "fires", "fores", "fredi", "fredi's"),
                  violation(8, 17, "supperman", "superman", "superhuman", "superman's", "supermen", "superwoman", "supper"),
-                 violation(8, 27, "mxyzptlk", "atches"));
+                 violation(8, 27, "mxyzptlk"));
     }
 
     public Options createOptions(int minWords) {

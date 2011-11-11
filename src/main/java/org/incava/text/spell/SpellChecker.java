@@ -1,6 +1,5 @@
 package org.incava.text.spell;
 
-import java.io.*;
 import java.util.*;
 import org.incava.ijdk.io.FileExt;
 import org.incava.ijdk.lang.MathExt;
@@ -13,7 +12,6 @@ import static org.incava.ijdk.util.IUtil.*;
  * Calculates the edit distance between two strings.
  */
 public class SpellChecker {
-
     public static final int DEFAULT_MAX_DISTANCE = 4;
 
     public enum CaseType { CASE_SENSITIVE, CASE_INSENSITIVE };
@@ -68,15 +66,12 @@ public class SpellChecker {
         }
     }
 
-    private Collection<String> getByCharacter(String wstr, int index) {
+    private void getByCharacter(String wstr, int index, Collection<String> matches) {
         Character ch = StringExt.charAt(wstr, index);
-        Collection<String> atLtr = null;
-
-        if (ch != null) {
-            atLtr = this.words.get(ch);
+        Collection<String> atLtr = ch == null ? null : this.words.get(ch);
+        if (isTrue(atLtr)) {
+            matches.addAll(atLtr);
         }
-
-        return atLtr == null ? new ArrayList<String>() : atLtr;
     }
 
     public boolean hasWord(String word) {
@@ -85,17 +80,12 @@ public class SpellChecker {
     }
 
     private Collection<String> getWordsForMatch(String wstr) {
-        Set<String> matches = new TreeSet<String>();
-
-        matches.addAll(getByCharacter(wstr, 0));
-        matches.addAll(getByCharacter(wstr, 1));
-
+        Set<String> matches = new HashSet<String>();
+        getByCharacter(wstr, 0, matches);
+        getByCharacter(wstr, 1, matches);
         return matches;
     }
 
-    /**
-     * @param nearMatches a map from edit distances to matches.
-     */
     public boolean isCorrect(String word, int maxEditDistance, MultiMap<Integer, String> nearMatches) {
         String wstr = getString(word);
         
@@ -103,19 +93,24 @@ public class SpellChecker {
             return true;
         }
         else if (nearMatches != null) {
-            Collection<String> matches = getWordsForMatch(wstr);
-            for (String w : matches) {
-                int ed = Spelling.getEditDistance(wstr, w, maxEditDistance);
-                if (ed >= 0 && ed <= maxEditDistance) {
-                    nearMatches.put(ed, w);
-                }
-            }
+            findNearMatches(word, maxEditDistance, nearMatches);
         }
         return false;
+    }
+    
+    public void findNearMatches(String word, int maxEditDistance, MultiMap<Integer, String> nearMatches) {
+        String wstr = getString(word);
+        
+        Collection<String> matches = getWordsForMatch(wstr);
+        for (String w : matches) {
+            int ed = Spelling.getEditDistance(wstr, w, maxEditDistance);
+            if (ed >= 0 && ed <= maxEditDistance) {
+                nearMatches.put(ed, w);
+            }
+        }
     }
     
     public boolean isCorrect(String word, MultiMap<Integer, String> nearMatches) {
         return isCorrect(word, DEFAULT_MAX_DISTANCE, nearMatches);
     }
-
 }

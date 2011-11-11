@@ -22,6 +22,10 @@ public class AbstractDoctorJTestCase extends TestCase {
         return new LocationRange(start, end);
     }
 
+    public LocationRange locrange(int line, int column, String var) {
+        return locrange(loc(line, column), loc(line, column, var));
+    }
+
     public Location loc(int line, int column) {
         return new Location(line, column);
     }
