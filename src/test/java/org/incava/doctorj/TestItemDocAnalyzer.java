@@ -1,15 +1,8 @@
 package org.incava.doctorj;
 
-import java.io.*;
-import java.util.*;
-import junit.framework.TestCase;
 import org.incava.analysis.Violation;
 
 public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
-    // static {
-    //     ItemDocAnalyzer.addDictionary("/home/jpace/proj/doctorj/etc/words.en_US");
-    // }
-    
     public TestItemDocAnalyzer(String name) {
         super(name);
     }
@@ -913,49 +906,36 @@ public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
                  new Violation(ItemDocAnalyzer.MSG_SUMMARY_SENTENCE_TOO_SHORT, 2, 5, 2, 17));
     }
 
-    // spelling
-
-    public void xtestSpellingOK() {
+    public void testSpellingOK() {
         evaluate("/** This is a description.\n" +
                  "  */\n" +
                  "class Test {\n" +
                  "}\n");
     }
 
-    public void xtestSpellingOneMistake() {
-        tr.Ace.setVerbose(true);
-        
-        final String msg = ("Word 'descriptino' appears to be misspelled. " +
-                            "Closest matches: description, descriptions, descriptor, description's, descriptive, descriptors");
+    public void testSpellingOneMistake() {
         evaluate("/** This is a descriptino.\n" +
                  "  */\n" +
                  "class Test {\n" +
                  "}\n",
-                 new Violation(msg, 1, 15, 1, 25));
+                 spellingViolation(1, 15, "descriptino", "description", "descriptions", "descriptor", "description's", "descriptive", "descriptors"));
     }
 
-    public void xtestSpellingTwoMistakes() {
-        final String msg0 = ("Word 'exampel' appears to be misspelled. " +
-                             "Closest matches: example, expel, enamel, exam, examen, example");
-
-        final String msg1 = ("Word 'badd' appears to be misspelled. " +
-                             "Closest matches: bad, baddy, ba, ba, badder, baddie");
-
+    public void testSpellingTwoMistakes() {
         evaluate("/** This is an exampel of\n" +
                  "  * badd spelling.\n" +
                  "  */\n" +
                  "class Test {\n" +
                  "}\n",
-                 new Violation(msg0, 1, 16, 1, 22),
-                 new Violation(msg1, 2,  5, 2,  8));
+                 spellingViolation(1, 16, "exampel", "example", "expel", "enamel", "exam", "examen", "exampled"),
+                 spellingViolation(2,  5, "badd", "add", "bad", "baddy", "ad", "adda", "addi"));
     }
 
-    public void xtestSpellingEgregiousMistake() {
-        evaluate("/** This is an egreejish misspelling.\n" +
+    public void testSpellingEgregiousMistake() {
+        evaluate("/** This is an egggreejeesh misspelling.\n" +
                  "  */\n" +
                  "class Test {\n" +
                  "}\n",
-                 new Violation("Word 'egreejish' appears to be misspelled. No close matches", 1, 16, 1, 24));
+                 spellingViolation(1, 16, "egggreejeesh"));
     }
-
 }

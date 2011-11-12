@@ -6,7 +6,6 @@ import junit.framework.TestCase;
 import org.incava.ijdk.lang.Pair;
 import org.incava.ijdk.util.MultiMap;
 
-
 public abstract class AbstractTestSpellChecker extends TestCase {
     public AbstractTestSpellChecker(String name) {
         super(name);
@@ -63,23 +62,4 @@ public abstract class AbstractTestSpellChecker extends TestCase {
     public void addWord(MultiMap<Integer, Pair<Pair<String, String>, Integer>> map, Integer dist, String from, String to) {
         addWord(map, dist, from, to, null);
     }
-
-    public void testDictionary() {
-        SpellChecker sc = new SpellChecker(SpellingCaseType.SENSITIVE);
-        sc.addDictionary("/home/jpace/proj/doctorj/etc/words.en_US");
-
-        // for (String word : getDictionaryWords()) {
-        //     assertTrue("word in dictionary: " + word, sc.hasWord(word));
-        // }
-
-        // for (String word : getNotInDictionaryWords()) {
-        //     assertFalse("word not in dictionary: " + word, sc.hasWord(word));
-        // }
-
-        MultiMap<Integer, String> nearMatches = new MultiMap<Integer, String>();
-        boolean isOK = sc.checkCorrectness("badd", nearMatches);
-        // tr.Ace.log("isOK: " + isOK);
-        // tr.Ace.log("nearMatches", nearMatches);
-    }
-    
 }

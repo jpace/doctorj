@@ -1,19 +1,28 @@
 package org.incava.doctorj;
 
-import java.io.*;
-import java.lang.reflect.Field;
-import java.util.*;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import junit.framework.TestCase;
-import net.sourceforge.pmd.ast.*;
-import org.incava.analysis.*;
-import org.incava.java.*;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.JavaCharStream;
+import net.sourceforge.pmd.ast.JavaParser;
+import net.sourceforge.pmd.ast.ParseException;
+import org.incava.analysis.Report;
+import org.incava.analysis.TerseReport;
+import org.incava.analysis.Violation;
+import org.incava.ijdk.lang.StringExt;
 import org.incava.text.Lines;
 import org.incava.text.Location;
 import org.incava.text.LocationRange;
 
 public class AbstractDoctorJTestCase extends TestCase {
     public final static int WARNING_LEVEL_DEFAULT = Options.MAXIMUM_WARNING_LEVEL;
-    public final static String JAVA_VERSION_DEFAULT = "1.4";
+    public final static String JAVA_VERSION_DEFAULT = "1.5";
 
     public AbstractDoctorJTestCase(String name) {
         super(name);
@@ -63,7 +72,7 @@ public class AbstractDoctorJTestCase extends TestCase {
         StringWriter reportOutput = new StringWriter();
         Report       report       = new TerseReport(reportOutput);
 
-        JavaParserVisitor analyzer = new JavaAnalyzer(report, options);
+        JavaAnalyzer analyzer = new JavaAnalyzer(report, options);
         try {
             report.reset(contents);
 
@@ -116,25 +125,14 @@ public class AbstractDoctorJTestCase extends TestCase {
         evaluate(contents, new Options(), expectations);
     }
 
-    // public void setField(Object obj, String fieldName, Object value) {
-    //     Field fld  = obj.getClass().getField(fieldName);
-    //     int   mods = fld.getModifiers();
-
-    //     boolean wasAccessible = fld.isAccessible();
-
-    //     if (!wasAccessible) {
-    //         fld.setAccessible(true);
-    //     }
-
-    //     try {
-    //         fld.set(obj, value);
-    //     }
-    //     catch (IllegalAccessException iae) {
-    //     }
-
-    //     if (!wasAccessible) {
-    //         fld.setAccessible(false);
-    //     }
-    // }
-
+    public Violation spellingViolation(int line, int col, String word, String ... matches) {
+        StringBuilder sb = new StringBuilder("Word '" + word + "' appears to be misspelled. ");
+        if (matches.length > 0) {
+            sb.append("Closest matches: ").append(StringExt.join(matches, ", "));
+        }
+        else {
+            sb.append("No close matches");
+        }
+        return new Violation(sb.toString(), locrange(loc(line, col), loc(line, col + word.length() - 1)));
+    }
 }

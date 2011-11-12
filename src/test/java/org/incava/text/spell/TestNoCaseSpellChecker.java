@@ -1,7 +1,8 @@
 package org.incava.text.spell;
 
-import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import junit.framework.TestCase;
 import org.incava.ijdk.lang.Pair;
 import org.incava.ijdk.util.MultiMap;
@@ -16,13 +17,11 @@ public class TestNoCaseSpellChecker extends AbstractTestSpellChecker {
     }
 
     public void assertEditDistance(SpellChecker sc, int expDist, String from, String to, Integer max) {
-        String msg = "from: " + from + "; to: " + to + "; max: " + max;
-
-        String fstr = from.toLowerCase();
-        String tstr = to.toLowerCase();
-
-        // tr.Ace.yellow("msg", msg);
-        int actDist = max == null ? Spelling.getEditDistance(fstr, tstr) : Spelling.getEditDistance(fstr, tstr, max);
+        String msg     = "from: " + from + "; to: " + to + "; max: " + max;
+        String fstr    = from.toLowerCase();
+        String tstr    = to.toLowerCase();
+        int    actDist = max == null ? Spelling.getEditDistance(fstr, tstr) : Spelling.getEditDistance(fstr, tstr, max);
+        
         assertEquals(msg, expDist, actDist);
     }
 
@@ -74,19 +73,14 @@ public class TestNoCaseSpellChecker extends AbstractTestSpellChecker {
 
     public Collection<String> getDictionaryWords() {
         List<String> dictWords = new ArrayList<String>();
-
         dictWords.add("locate");
         dictWords.add("logarithm");
-
         return dictWords;
     }
 
     public Collection<String> getNotInDictionaryWords() {
         List<String> noDictWords = new ArrayList<String>();
-
         noDictWords.add("eujiffEROUS"); // alas
-
         return noDictWords;
     }
-    
 }

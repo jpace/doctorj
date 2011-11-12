@@ -5,11 +5,8 @@ import java.util.*;
 import junit.framework.TestCase;
 import org.incava.ijdk.util.MultiMap;
 
-
 public class TestParsingSpellChecker extends TestCase {
-
     static class TestableParsingSpellChecker extends ParsingSpellChecker {
-        
         private List<Misspelling> misspellings = new ArrayList<Misspelling>();
 
         public TestableParsingSpellChecker() {
@@ -27,9 +24,17 @@ public class TestParsingSpellChecker extends TestCase {
     }
 
     private static TestableParsingSpellChecker tcsc = new TestableParsingSpellChecker();
-    
+
     static {
-        tcsc.addDictionary("/home/jpace/proj/doctorj/etc/words.en_US");
+        Locale locale = Locale.getDefault();
+        tr.Ace.log("locale", locale);
+        String wordListFile = "words." + locale;
+        tr.Ace.log("wordListFile", wordListFile);
+
+        InputStream wordStream = ClassLoader.getSystemResourceAsStream(wordListFile);
+        tr.Ace.log("wordStream", wordStream);
+
+        tcsc.addDictionary(wordStream);
     }
     
     public TestParsingSpellChecker(String name) {

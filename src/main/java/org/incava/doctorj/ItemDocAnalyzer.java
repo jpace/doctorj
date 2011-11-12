@@ -36,7 +36,7 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer {
 
     protected final static int CHKLVL_VALID_TAGS = 0;
 
-    private static SpellingAnalyzer spellingAnalzyer = SpellingAnalyzer.getInstance();
+    private static SpellingAnalyzer spellingAnalyzer = SpellingAnalyzer.getInstance();
 
     private final SimpleNode node;
     
@@ -47,7 +47,7 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer {
     }
 
     public static void addDictionary(String dictName) {
-        spellingAnalzyer.addDictionary(dictName);
+        spellingAnalyzer.addDictionary(dictName);
     }
 
     /**
@@ -147,7 +147,7 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer {
                 }
             }
 
-            spellingAnalzyer.check(this, lines, desc.text);
+            spellingAnalyzer.check(this, lines, desc.text);
         }
     }
 
