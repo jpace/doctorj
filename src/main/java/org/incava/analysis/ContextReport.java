@@ -145,8 +145,6 @@ public class ContextReport extends Report {
         }
 
         if (contents == null) {
-            tr.Ace.log("opening reader for " + sourceReader);
-                
             try {
                 List<String>   cont = new ArrayList<String>();
                 BufferedReader br   = new BufferedReader(sourceReader);
@@ -158,17 +156,11 @@ public class ContextReport extends Report {
                 }
 
                 contents = cont.toArray(new String[cont.size()]);
-
-                for (int i = 0; i < contents.length; ++i) {
-                    tr.Ace.log("contents[" + i + "]: " + contents[i]);
-                }
             }
             catch (IOException ioe) {
                 tr.Ace.log("error reading source: " + ioe);
             }
         }
-
-        tr.Ace.log("writing: " + violation);
 
         int beginLine = violation.getBeginLine()   - 1;
         int endLine = violation.getEndLine()     - 1;

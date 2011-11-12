@@ -6,15 +6,13 @@ import junit.framework.TestCase;
 import org.incava.ijdk.lang.Pair;
 import org.incava.ijdk.util.MultiMap;
 
-
 public class TestNoCaseSpellChecker extends AbstractTestSpellChecker {
-
     public TestNoCaseSpellChecker(String name) {
         super(name);
     }
 
     public SpellChecker createSpellChecker() {
-        return new SpellChecker(SpellChecker.CaseType.CASE_INSENSITIVE);
+        return new SpellChecker(SpellingCaseType.INSENSITIVE);
     }
 
     public void assertEditDistance(SpellChecker sc, int expDist, String from, String to, Integer max) {

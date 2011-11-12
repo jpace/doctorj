@@ -3,6 +3,7 @@ package org.incava.doctorj;
 import java.io.*;
 import java.util.*;
 import org.incava.analysis.ContextReport;
+import org.incava.ijdk.io.FileExt;
 import org.incava.ijdk.lang.StringExt;
 import org.incava.jagol.*;
 import static org.incava.ijdk.util.IUtil.*;
@@ -38,7 +39,7 @@ public class Options extends OptionSet {
 
     private int minWords = 2;
 
-    private String source = "1.4";
+    private String source = "1.5";
 
     private final IntegerOption levelOpt;
 
@@ -119,7 +120,7 @@ public class Options extends OptionSet {
         this.dictOpt     = addOption("dictionaries", "the list of dictionary (word list) files",                            wordLists);
         this.verboseOpt  = addOption("verbose",   "whether to run in verbose mode (for debugging)",                         verbose);
         this.versionOpt  = addOption(new BooleanOption("version",   "Displays the version", 'v'));
-        this.sourceOpt   = addOption("source",     "the Java source version; either 1.3, 1.4 (the default), or 1.5",        this.source);
+        this.sourceOpt   = addOption("source",     "the Java source version; either 1.3, 1.4, or 1.5 (the default)",        this.source);
         
         this.commentsOpt = addOption("comments",  "whether to analyze comments; default is true",                           this.checkComments);
         this.stringsOpt  = addOption("strings",   "whether to analyze strings; default is true",                            this.checkStrings);
@@ -199,11 +200,11 @@ public class Options extends OptionSet {
             System.exit(0);
         }
 
+        SpellingAnalyzer speller = SpellingAnalyzer.getInstance();
+        
         List<String> dictList = this.dictOpt.getValue();
-        if (dictList != null) {
-            for (String dict : dictList) {
-                SpellingAnalyzer.getInstance().addDictionary(dict);
-            }
+        for (String dict : dictList) {
+            speller.addDictionary(dict);
         }
 
         String sourceStr = this.sourceOpt.getValue();

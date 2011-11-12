@@ -5,18 +5,14 @@ import java.util.*;
 import junit.framework.TestCase;
 import org.incava.analysis.Violation;
 
-
 public class TestItemDocAnalyzer extends AbstractDoctorJTestCase {
-
-    static {
-        ItemDocAnalyzer.addDictionary("/home/jpace/proj/doctorj/etc/words.en_US");
-    }
+    // static {
+    //     ItemDocAnalyzer.addDictionary("/home/jpace/proj/doctorj/etc/words.en_US");
+    // }
     
     public TestItemDocAnalyzer(String name) {
         super(name);
     }
-
-    // presence of Javadoc
 
     public void testDocumentedOuterConcreteNonPublicClass() {
         evaluate("class Test {\n" +

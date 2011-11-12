@@ -1,7 +1,9 @@
 apply plugin: 'java'
+apply plugin: 'application'
 
 group = 'org.incava.doctorj'
 version ='5.2.0'
+mainClassName = 'org.incava.doctorj.DoctorJ'
 
 repositories {
     mavenCentral()
@@ -20,12 +22,13 @@ allprojects {
 }
 
 jar { 
-    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } 
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    manifest { attributes 'Main-Class' : 'org.incava.doctorj.DoctorJ' }
 }
 
 test {
     excludes = [ '**/Abstract*', '**/.#*' ]
 }
 
-manifest.mainAttributes("Main-Class" : "org.incava.doctorj.DoctorJ")
+// manifest.mainAttributes("Main-Class" : "org.incava.doctorj.DoctorJ")
 logging.captureStandardOutput LogLevel.ERROR

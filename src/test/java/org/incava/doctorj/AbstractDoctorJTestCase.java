@@ -1,6 +1,7 @@
 package org.incava.doctorj;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.util.*;
 import junit.framework.TestCase;
 import net.sourceforge.pmd.ast.*;
@@ -113,5 +114,27 @@ public class AbstractDoctorJTestCase extends TestCase {
 
     public void evaluate(String contents, Violation ... expectations) {
         evaluate(contents, new Options(), expectations);
-    }        
+    }
+
+    // public void setField(Object obj, String fieldName, Object value) {
+    //     Field fld  = obj.getClass().getField(fieldName);
+    //     int   mods = fld.getModifiers();
+
+    //     boolean wasAccessible = fld.isAccessible();
+
+    //     if (!wasAccessible) {
+    //         fld.setAccessible(true);
+    //     }
+
+    //     try {
+    //         fld.set(obj, value);
+    //     }
+    //     catch (IllegalAccessException iae) {
+    //     }
+
+    //     if (!wasAccessible) {
+    //         fld.setAccessible(false);
+    //     }
+    // }
+
 }

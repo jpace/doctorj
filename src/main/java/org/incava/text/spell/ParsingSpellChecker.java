@@ -1,5 +1,6 @@
 package org.incava.text.spell;
 
+import java.io.InputStream;
 import java.util.*;
 import org.incava.ijdk.util.MultiMap;
 
@@ -31,11 +32,20 @@ public class ParsingSpellChecker {
     private int pos;
     
     public ParsingSpellChecker(SpellChecker checker) {
+        this(checker, false);
+    }
+
+    public ParsingSpellChecker(SpellChecker checker, boolean canCheck) {
         this.checker = checker;
-        this.canCheck = false;
+        this.canCheck = canCheck;
     }
 
     public boolean addDictionary(String dictionary) {
+        this.canCheck = this.checker.addDictionary(dictionary) || this.canCheck;
+        return this.canCheck;
+    }
+
+    public boolean addDictionary(InputStream dictionary) {
         this.canCheck = this.checker.addDictionary(dictionary) || this.canCheck;
         return this.canCheck;
     }
@@ -104,7 +114,7 @@ public class ParsingSpellChecker {
 
     protected void checkWord(String word, int position) {
         MultiMap<Integer, String> nearMatches = new MultiMap<Integer, String>();
-        boolean valid = this.checker.isCorrect(word, nearMatches);
+        boolean valid = this.checker.checkCorrectness(word, nearMatches);
         if (!valid) {
             wordMisspelled(word, position, nearMatches);
         }

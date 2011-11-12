@@ -8,7 +8,9 @@ import org.incava.text.Lines;
 import org.incava.text.Location;
 import org.incava.text.LocationRange;
 
-public class TestOptions extends AbstractDoctorJTestCase {    
+public class TestOptions extends AbstractDoctorJTestCase {
+    
+
     public TestOptions(String name) {
         super(name);
     }

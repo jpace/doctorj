@@ -6,17 +6,14 @@ import junit.framework.TestCase;
 import org.incava.ijdk.lang.Pair;
 import org.incava.ijdk.util.MultiMap;
 
-
 public class TestSpellChecker extends AbstractTestSpellChecker {
-
     public TestSpellChecker(String name) {
         super(name);
-
         tr.Ace.setVerbose(true);
     }
 
     public SpellChecker createSpellChecker() {
-        return new SpellChecker(SpellChecker.CaseType.CASE_SENSITIVE);
+        return new SpellChecker(SpellingCaseType.SENSITIVE);
     }
 
     public Collection<Pair<String, String>> getSameWords() {

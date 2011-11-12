@@ -1,5 +1,7 @@
 package org.incava.text.spell;
 
+import java.io.Reader;
+import java.io.InputStream;
 import java.util.*;
 import org.incava.ijdk.io.FileExt;
 import org.incava.ijdk.lang.MathExt;
@@ -7,29 +9,28 @@ import org.incava.ijdk.lang.StringExt;
 import org.incava.ijdk.util.MultiMap;
 import static org.incava.ijdk.util.IUtil.*;
 
-
 /**
  * Calculates the edit distance between two strings.
  */
 public class SpellChecker {
     public static final int DEFAULT_MAX_DISTANCE = 4;
 
-    public enum CaseType { CASE_SENSITIVE, CASE_INSENSITIVE };
+    private final SpellingCaseType caseType;
+    private final Set<WordList> wordLists;
+    private final WordList wordList;
 
-    private final MultiMap<Character, String> words;
-
-    private final CaseType caseType;
-
-    public SpellChecker(CaseType caseType) {
-        this.words = new MultiMap<Character, String>();
+    public SpellChecker(SpellingCaseType caseType) {
+        this.wordLists = new HashSet<WordList>();
         this.caseType = caseType;
+        this.wordList = new WordList(caseType);
+        this.wordLists.add(this.wordList);
     }
 
     /**
      * Returns the string, lowering case if appropriate.
      */
     public String getString(String str) {
-        return this.caseType == CaseType.CASE_INSENSITIVE ? str.toLowerCase() : str;
+        return this.caseType == SpellingCaseType.INSENSITIVE ? str.toLowerCase() : str;
     }
 
     public boolean nearMatch(String str1, String str2) {
@@ -43,74 +44,62 @@ public class SpellChecker {
     /**
      * Adds the given dictionary. Returns whether it could be read and had content.
      */
-    public boolean addDictionary(String dictionary) {
-        for (String line : FileExt.readLines(dictionary)) {
-            if (isTrue(line)) {
-                addWord(line);
+    public boolean addDictionary(String dictName) {
+        this.wordLists.add(new Dictionary(this.caseType, dictName));
+        return true;
+    }
+
+    /**
+     * Adds the given dictionary. Returns whether it could be read and had content.
+     */
+    public boolean addDictionary(Reader dictReader) {
+        this.wordLists.add(new Dictionary(this.caseType, dictReader));
+        return true;
+    }
+
+    /**
+     * Adds the given dictionary. Returns whether it could be read and had content.
+     */
+    public boolean addDictionary(InputStream dictStream) {
+        this.wordLists.add(new Dictionary(this.caseType, dictStream));
+        return true;
+    }
+
+    /**
+     * Adds the given words.
+     */
+    public boolean addWords(String[] words) {
+        for (String word : words) {
+            if (isTrue(word)) {
+                addWord(word);
             }
         }
-
         return true;
     }
 
     public void addWord(String word) {
         String wstr = getString(word);
-        addByCharacter(wstr, 0);
-        addByCharacter(wstr, 1);
+        this.wordList.addWord(wstr);
     }
 
-    private void addByCharacter(String wstr, int index) {
-        Character ch = StringExt.charAt(wstr, index);
-        if (ch != null) {
-            this.words.put(ch, wstr);
-        }
-    }
-
-    private void getByCharacter(String wstr, int index, Collection<String> matches) {
-        Character ch = StringExt.charAt(wstr, index);
-        Collection<String> atLtr = ch == null ? null : this.words.get(ch);
-        if (isTrue(atLtr)) {
-            matches.addAll(atLtr);
-        }
-    }
-
-    public boolean hasWord(String word) {
+    public boolean checkCorrectness(String word, int maxEditDistance, MultiMap<Integer, String> nearMatches) {
         String wstr = getString(word);
-        return getWordsForMatch(wstr).contains(wstr);
-    }
 
-    private Collection<String> getWordsForMatch(String wstr) {
-        Set<String> matches = new HashSet<String>();
-        getByCharacter(wstr, 0, matches);
-        getByCharacter(wstr, 1, matches);
-        return matches;
-    }
-
-    public boolean isCorrect(String word, int maxEditDistance, MultiMap<Integer, String> nearMatches) {
-        String wstr = getString(word);
-        
-        if (hasWord(wstr)) {
-            return true;
-        }
-        else if (nearMatches != null) {
-            findNearMatches(word, maxEditDistance, nearMatches);
+        for (WordList wordList : wordLists) {
+            if (wordList.checkCorrectness(wstr, maxEditDistance, nearMatches)) {
+                return true;
+            }
         }
         return false;
     }
     
     public void findNearMatches(String word, int maxEditDistance, MultiMap<Integer, String> nearMatches) {
-        String wstr = getString(word);
-        
-        Collection<String> matches = getWordsForMatch(wstr);
-        for (String w : matches) {
-            int ed = Spelling.getEditDistance(wstr, w, maxEditDistance);
-            if (ed >= 0 && ed <= maxEditDistance) {
-                nearMatches.put(ed, w);
-            }
+        for (WordList wordList : wordLists) {
+            wordList.findNearMatches(word, maxEditDistance, nearMatches);
         }
     }
     
-    public boolean isCorrect(String word, MultiMap<Integer, String> nearMatches) {
-        return isCorrect(word, DEFAULT_MAX_DISTANCE, nearMatches);
+    public boolean checkCorrectness(String word, MultiMap<Integer, String> nearMatches) {
+        return checkCorrectness(word, DEFAULT_MAX_DISTANCE, nearMatches);
     }
 }
