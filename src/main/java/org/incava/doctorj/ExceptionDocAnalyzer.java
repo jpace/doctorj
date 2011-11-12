@@ -100,13 +100,9 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
     }
 
     private final JavadocNode javadoc;
-
     private final ASTNameList throwsList;
-
     private final SimpleNode function;
-
     private final List<String> documentedExceptions;
-
     private final int nodeLevel;
 
     private Map<String, ASTImportDeclaration> importMap;
@@ -156,76 +152,72 @@ public class ExceptionDocAnalyzer extends DocAnalyzer {
         for (JavadocTaggedNode jtn : this.javadoc.getTaggedComments()) {
             JavadocTag tag = jtn.getTag();
 
-            if (tag.text.equals(JavadocTags.EXCEPTION) || tag.text.equals(JavadocTags.THROWS)) {
-                JavadocElement tgt = jtn.getTarget();
-                tr.Ace.log("tgt", tgt);
+            if (!tag.text.equals(JavadocTags.EXCEPTION) && !tag.text.equals(JavadocTags.THROWS)) {
+                continue;
+            }
 
-                if (tgt == null) {
-                    if (warningLevel >= CHKLVL_TAG_CONTENT + this.nodeLevel) {
-                        addViolation(MSG_EXCEPTION_WITHOUT_CLASS_NAME, tag.start, tag.end);
-                    }
-                }
-                else {
-                    if (jtn.getDescriptionNonTarget() == null && warningLevel >= CHKLVL_TAG_CONTENT + this.nodeLevel) {
-                        addViolation(MSG_EXCEPTION_WITHOUT_DESCRIPTION, tgt.start, tgt.end);
-                    }
-                    
-                    String shortName = getShortName(tgt.text);
-                    String fullName = tgt.text;
-                    Class  cls = resolveClassByName(fullName, shortName);
-                    
-                    checkAgainstCode(tag, tgt, shortName, fullName, cls);
+            JavadocElement tgt = jtn.getTarget();
 
-                    if (!alphabeticalReported && 
-                        warningLevel >= CHKLVL_EXCEPTIONS_ALPHABETICAL + this.nodeLevel && 
-                        previousException != null && previousException.compareTo(shortName) > 0) {
-                        
-                        addViolation(MSG_EXCEPTIONS_NOT_ALPHABETICAL, tgt.start, tgt.end);
-                        alphabeticalReported = true;
-                    }
-                        
-                    previousException = shortName;
+            if (tgt == null) {
+                handleViolation(CHKLVL_TAG_CONTENT, MSG_EXCEPTION_WITHOUT_CLASS_NAME, tag);
+            }
+            else {
+                if (jtn.getDescriptionNonTarget() == null) {
+                    handleViolation(CHKLVL_TAG_CONTENT, MSG_EXCEPTION_WITHOUT_DESCRIPTION, tgt);
                 }
+                    
+                String shortName = getShortName(tgt.text);
+                String fullName = tgt.text;
+                Class  cls = resolveClassByName(fullName, shortName);
+                
+                checkAgainstCode(tag, tgt, shortName, fullName, cls);
+
+                if (!alphabeticalReported && isReported(CHKLVL_EXCEPTIONS_ALPHABETICAL) && previousException != null && previousException.compareTo(shortName) > 0) {
+                    handleViolation(CHKLVL_EXCEPTIONS_ALPHABETICAL, MSG_EXCEPTIONS_NOT_ALPHABETICAL, tgt);
+                    alphabeticalReported = true;
+                }
+                        
+                previousException = shortName;
             }
         }
 
-        if (this.throwsList != null && warningLevel >= CHKLVL_EXCEPTION_DOC_EXISTS + this.nodeLevel) {
+        if (this.throwsList != null && isReported(CHKLVL_EXCEPTION_DOC_EXISTS)) {
             reportUndocumentedExceptions();
         }            
     }
 
+    private boolean isReported(int level) {
+        return getWarningLevel() >= level + this.nodeLevel;
+    }
+    
+    private boolean handleViolation(int level, String msg, JavadocElement elmt) {
+        return isReported(level) ? addViolation(msg, elmt.start, elmt.end) : false;
+    }
+
     protected Class resolveClassByName(String fullName, String shortName) {
-        Class cls = null;
         if (fullName.indexOf('.') >= 0) {
-            cls = loadClass(fullName);
+            return loadClass(fullName);
         }
         else {
             String flNm = getExactMatch(fullName);
+            if (isNotNull(flNm)) {
+                return loadClass(flNm);
+            }
                         
-            if (flNm == null) {
-                Iterator<String> iit = this.importMap.keySet().iterator();
-                while (cls == null && iit.hasNext()) {
-                    String impName = iit.next();
-                    String shImpName = getShortName(impName);
-                    if (shImpName.equals("*")) {
-                        // try to load pkg.name
-                        flNm = impName.substring(0, impName.indexOf("*")) + shortName;
-                        cls = loadClass(flNm);
+            for (String impName : this.importMap.keySet()) {
+                String shImpName = getShortName(impName);
+                if (shImpName.equals("*")) {
+                    // try to load pkg.name
+                    Class cls = loadClass(impName.substring(0, impName.indexOf("*")) + shortName);
+                    if (cls != null) {
+                        return cls;
                     }
                 }
+            }
                             
-                if (cls == null) {
-                    // maybe java.lang....
-                    flNm = "java.lang." + shortName;
-                    cls = loadClass(flNm);
-                }
-            }
-            else {
-                cls = loadClass(flNm);
-            }
+            // maybe java.lang....
+            return loadClass("java.lang." + shortName);
         }
-
-        return cls;
     }          
     
     protected Map<String, ASTImportDeclaration> makeImportMap(ASTImportDeclaration[] imports) {

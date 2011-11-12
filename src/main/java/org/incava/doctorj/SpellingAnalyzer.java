@@ -35,14 +35,9 @@ public class SpellingAnalyzer extends ParsingSpellChecker {
     public SpellingAnalyzer() {
         super(new SpellChecker(SpellingCaseType.INSENSITIVE));
 
-        Locale locale = Locale.getDefault();
-        tr.Ace.log("locale", locale);
-        String wordListFile = "words." + locale;
-        tr.Ace.log("wordListFile", wordListFile);
-
+        String wordListFile = "words." + Locale.getDefault();
         InputStream wordStream = ClassLoader.getSystemResourceAsStream(wordListFile);
-        tr.Ace.log("wordStream", wordStream);
-
+        
         addDictionary(wordStream);
     }
 

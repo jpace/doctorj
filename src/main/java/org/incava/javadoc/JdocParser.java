@@ -4,12 +4,10 @@ import java.util.*;
 import org.incava.text.TextLocation;
 import static org.incava.ijdk.util.IUtil.*;
 
-
 /**
- * Parses Javadoc comments.
+ * Parses Javadoc comments. This is in development, and not yet used.
  */
 public class JdocParser {
-
     // protected final static List<Character> WSCHARS = Arrays.asList(new Character[] { '\r', "\n", "\t", "\f", " " };
 
     private String str;
@@ -193,8 +191,6 @@ public class JdocParser {
         while (hasMore() && !atCommentEnd()) {
             if (currentCharIs('@')) {
                 JdocTaggedNode jtn = getTaggedComment();
-                tr.Ace.cyan("jtn", jtn);
-
                 taggedNodes.add(jtn);
             }
             else {
@@ -209,25 +205,20 @@ public class JdocParser {
         // we assume we're at a @
 
         TextLocation tagStart = this.location;
-        tr.Ace.cyan("tagStart", tagStart);
         TextLocation tagEnd = this.location;
-        tr.Ace.cyan("tagEnd", tagEnd);
 
         while (hasMore() && !isCurrentCharCommentOrWhitespace()) {
             tagEnd = this.location;
-            tr.Ace.cyan("tagEnd", tagEnd);
             gotoNextChar();
         }
 
         JdocElement tag = new JdocElement(this.str, tagStart, tagEnd);
-        tr.Ace.cyan("tag", tag);
         
         while (hasMore() && !atCommentEnd() && isCurrentCharCommentOrWhitespace()) {
             gotoNextChar();
         }
         
         JdocElement tgt = atCommentEnd() ? null : getTarget();
-        tr.Ace.cyan("tgt", tgt);
 
         JdocElement desc = null;
         JdocElement fullDesc = null;
@@ -240,29 +231,24 @@ public class JdocParser {
             }
         
             TextLocation descStart = null;            
-            tr.Ace.cyan("descStart", descStart);
         
             // now, to end of line or end of comment.
             while (hasMore() && !atCommentEnd() && !atEndOfLine()) {
                 descStart = elvis(descStart, this.location);
-                tr.Ace.cyan("descStart", descStart);
                 gotoNextChar();
             }
 
             if (isTrue(descStart) && descStart.getPosition() < lastNonCommentWhitespace.getPosition()) {
                 desc = new JdocElement(this.str, descStart, lastNonCommentWhitespace);
-                tr.Ace.cyan("desc", desc);
             }
         
             fullDesc = new JdocElement(this.str, tgt.getStartLocation(), lastNonCommentWhitespace);
-            tr.Ace.cyan("fullDesc", fullDesc);
         }
 
         return new JdocTaggedNode(tag, tgt, desc, fullDesc);
     }
 
     protected JdocElement getTarget() {
-        tr.Ace.magenta("this", this);
         return new JdocTargetParser(this).parse();
     }
 
@@ -281,25 +267,15 @@ public class JdocParser {
         List<JdocTaggedNode> jdocTaggedCmts = new ArrayList<JdocTaggedNode>();
 
         if (gotoJdocStart()) {
-            jdocNodeStart = this.location;
-            tr.Ace.cyan("jdocNodeStart", jdocNodeStart);
-      
-            jdocDesc = getDescription();
-            tr.Ace.cyan("jdocDesc", jdocDesc);
-
+            jdocNodeStart  = this.location;
+            jdocDesc       = getDescription();
             jdocTaggedCmts = getTaggedComments();
-            tr.Ace.cyan("jdocTaggedCmts", jdocTaggedCmts);
-
-            jdocNodeEnd = lastNonCommentWhitespace;
+            jdocNodeEnd    = lastNonCommentWhitespace;
         }
         else {
             return null;
         }    
 
-        JdocComment jdc = new JdocComment(this.str, jdocNodeStart, jdocNodeEnd, jdocDesc, jdocTaggedCmts);
-        tr.Ace.cyan("jdc", jdc);
-        
-        return jdc;
+        return new JdocComment(this.str, jdocNodeStart, jdocNodeEnd, jdocDesc, jdocTaggedCmts);
     }
-
 }

@@ -138,7 +138,6 @@ public abstract class Report {
      * @param v The violation being added.
      */
     public void addViolation(Violation v) {
-        tr.Ace.stack("v", v);
         this.violations.add(v);
     }
 

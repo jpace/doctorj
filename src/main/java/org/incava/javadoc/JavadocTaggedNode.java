@@ -1,8 +1,9 @@
 package org.incava.javadoc;
 
-import java.io.*;
-import java.util.*;
-import org.incava.text.*;
+import org.incava.text.LineMapping;
+import org.incava.text.Location;
+import org.incava.text.TextLocation;
+import org.incava.text.TextRange;
 
 /**
  * A tagged element, such as:
@@ -32,8 +33,6 @@ public class JavadocTaggedNode extends JavadocElement {
         tag = new JavadocTag(text.substring(0, pos),
                              new TextLocation(TextLocation.UNDEFINED, line, start.column), 
                              new TextLocation(TextLocation.UNDEFINED, line, pos - 1 + start.column));
-
-        // tr.Ace.log("created tag '" + tag.text + "'");
 
         LineMapping lines = new LineMapping(text, start.line, start.column);
 
@@ -117,7 +116,6 @@ public class JavadocTaggedNode extends JavadocElement {
 
             if (pos == len) {
                 // no description beyond target
-                // tr.Ace.log("no description beyond target");
                 descriptionNonTarget = null;
                 description = new JavadocElement(text.substring(targetStart, len), tgtRange.getStart(), end);
             }
@@ -132,11 +130,8 @@ public class JavadocTaggedNode extends JavadocElement {
     }
     
     private final JavadocTag tag;
-
     private final JavadocElement target;
-
     private final JavadocElement description;
-
     private final JavadocElement descriptionNonTarget;
     
     public JavadocTaggedNode(String text, Location start, Location end,

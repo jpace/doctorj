@@ -2,8 +2,7 @@ package org.incava.doctorj;
 
 import java.util.List;
 import org.incava.analysis.Report;
-import net.sourceforge.pmd.ast.*;
-import org.incava.javadoc.*;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 
 /**
  * Analyzes Javadoc and code for a class, either concrete or abstract.

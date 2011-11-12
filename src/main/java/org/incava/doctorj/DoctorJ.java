@@ -43,10 +43,6 @@ public class DoctorJ {
 
         this.sourceVersion = opts.getSource();
 
-        tr.Ace.log("args", args);
-        tr.Ace.log("names", names);
-        tr.Ace.log("properties", System.getProperties());
-
         if (opts.getEmacsOutput()) {
             this.report = new TerseReport(System.out);
         }
@@ -125,15 +121,12 @@ public class DoctorJ {
             
             this.parser = new JavaParser(jcs);
 
+            // as of 2011/11/12, there is no setJDK14.
+
             if (sourceVersion.equals("1.3")) {
-                tr.Ace.log("setting as 1.3");
                 this.parser.setJDK13();
             }
-            else if (sourceVersion.equals("1.4")) {
-                tr.Ace.log("leaving as 1.4");
-            }
             else if (sourceVersion.equals("1.5") || sourceVersion.equals("1.6")) {
-                tr.Ace.log("setting as 1.5");
                 this.parser.setJDK15();
             }
             else {
@@ -141,8 +134,6 @@ public class DoctorJ {
                 System.exit(-1);
             }
             init.end();
-
-            tr.Ace.log("init: " + init.duration);
 
             return true;
         }
@@ -164,15 +155,10 @@ public class DoctorJ {
     }
 
     protected ASTCompilationUnit parse(File file) {
-        tr.Ace.log("running parser");
-            
         try {
             TimedEvent         parse = new TimedEvent(this.totalParse);
             ASTCompilationUnit cu = this.parser.CompilationUnit();
             parse.end();
-
-            tr.Ace.log("parse: " + parse.duration);
-
             return cu;
         }
         catch (ParseException e) {
@@ -188,8 +174,6 @@ public class DoctorJ {
 
         this.report.flush();
         analysis.end();
-
-        tr.Ace.log("analysis: " + analysis.duration);
     }
 
     public static void main(String[] args) {

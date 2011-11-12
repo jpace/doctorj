@@ -1,12 +1,10 @@
 package org.incava.javadoc;
 
 import java.util.*;
-import static org.incava.ijdk.util.IUtil.*;
 import org.incava.text.TextLocation;
-
+import static org.incava.ijdk.util.IUtil.*;
 
 public class JdocTargetParser {
-
     private final JdocParser jdp;
 
     public JdocTargetParser(JdocParser jdp) {
@@ -21,13 +19,8 @@ public class JdocTargetParser {
         // * @parens something(with, parentheses)
 
         TextLocation tgtStart = this.jdp.getLocation();
-        tr.Ace.log("tgtStart", tgtStart);
-
         TextLocation tgtEnd = this.jdp.getLocation();
-        tr.Ace.log("tgtEnd", tgtEnd);
-
         JdocSubtargetParser subparser = null;
-        tr.Ace.log("subparser", subparser);
 
         List<JdocSubtargetParser> subparsers = new ArrayList<JdocSubtargetParser>();
         subparsers.add(new JdocDoubleQuoteTargetParser(this.jdp));
@@ -41,14 +34,12 @@ public class JdocTargetParser {
         while (this.jdp.hasMore() && !atEnd && !matchesEnd()) {
             if (atStart && matchesStart()) {
                 inTarget = true;
-                tr.Ace.log("inTarget", "" + inTarget);
             }
 
             if (inTarget) {
                 if (isTrue(subparser)) {
                     if (subparser.matchesEnd()) {
                         tgtEnd = this.jdp.getLocation();
-                        tr.Ace.log("tgtEnd", tgtEnd);
                         atEnd = true;
                     }
                 }
@@ -56,7 +47,6 @@ public class JdocTargetParser {
                     for (JdocSubtargetParser subp : subparsers) {
                         if (subp.matchesStart()) {
                             subparser = subp;
-                            tr.Ace.log("subparser", subparser);
                             break;
                         }
                     }
@@ -64,23 +54,18 @@ public class JdocTargetParser {
                     if (!isTrue(subparser)) {
                         if (this.jdp.isCurrentCharWhitespace()) {
                             atEnd = true;
-                            tr.Ace.log("atEnd", "" + atEnd);
 
                             // skip advancing to the next char
                             break;
                         }
                         else {
                             tgtEnd = this.jdp.getLocation();
-                            tr.Ace.log("tgtEnd", tgtEnd);
                         }
                     }
                 }
             }
             this.jdp.gotoNextChar();
         }
-
-        tr.Ace.log("tgtEnd", tgtEnd);
-        tr.Ace.log("tgtStart", tgtStart);
 
         return new JdocElement(this.jdp.getString(), tgtStart, tgtEnd);
     }

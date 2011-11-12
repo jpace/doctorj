@@ -1,8 +1,10 @@
 package org.incava.doctorj;
 
-import java.util.Iterator;
 import java.util.List;
-import net.sourceforge.pmd.ast.*;
+import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.ast.ASTFormalParameters;
+import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.Token;
 import org.incava.analysis.Report;
 import org.incava.javadoc.JavadocNode;
 import org.incava.pmdx.CtorUtil;
