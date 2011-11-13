@@ -27,24 +27,17 @@ public class TestParsingSpellChecker extends TestCase {
 
     static {
         Locale locale = Locale.getDefault();
-        tr.Ace.log("locale", locale);
         String wordListFile = "words." + locale;
-        tr.Ace.log("wordListFile", wordListFile);
-
         InputStream wordStream = ClassLoader.getSystemResourceAsStream(wordListFile);
-        tr.Ace.log("wordStream", wordStream);
 
         tcsc.addDictionary(wordStream);
     }
     
     public TestParsingSpellChecker(String name) {
         super(name);
-
-        tr.Ace.setVerbose(true);
     }
 
     public void runSpellTest(String comment, int nMisspellings) {
-        tr.Ace.log("comment", comment);
         tcsc.check(comment);
         assertEquals(nMisspellings, tcsc.misspellings.size());
     }

@@ -112,16 +112,6 @@ public class JavadocTags {
         return list;
     }
 
-    static abstract class TagCollect extends Collect<TagDescription, String> {
-        public TagCollect(Collection<TagDescription> c) {
-            super(c);
-        }
-        
-        public String block(TagDescription td) {
-            return td.tag; 
-        }
-    }
-
     private static List<String> getMatchingTags(TagValidType tvt) {
         List<String> matches = new ArrayList<String>();
         for (TagDescription td : tags.values()) {

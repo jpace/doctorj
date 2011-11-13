@@ -36,7 +36,7 @@ public class JavadocParser {
 
     private static JavadocTaggedNode createTaggedNode(List<Point> subs, String text, int idx, LineMapping lines) {
         Pair<Point, TextRange> ptLoc = getPointAndLocation(subs, idx, lines);
-        return ptLoc == null ? null : JavadocTaggedNode.create(text.substring(ptLoc.getFirst().x, ptLoc.getFirst().y), ptLoc.getSecond());
+        return ptLoc == null ? null : createTaggedNode(text.substring(ptLoc.getFirst().x, ptLoc.getFirst().y), ptLoc.getSecond());
     }
 
     private static JavadocNode createNode(List<Point> subs, String text, int startLine, int startColumn) {
@@ -186,4 +186,124 @@ public class JavadocParser {
         ++pt.y;
         return new TextLocation(pos, tl.getLine(), tl.getColumn());
     }
+
+    public static JavadocTaggedNode createTaggedNode(String text, TextRange range) {
+        return createTaggedNode(text, range.getStart(), range.getEnd());
+    }
+
+    public static JavadocTaggedNode createTaggedNode(String text, Location start, Location end) {
+        JavadocTag tag = null;
+        JavadocElement target = null;
+        JavadocElement description = null;
+        JavadocElement descriptionNonTarget = null;
+
+        int pos = 0;
+        int line = start.line;
+        int col = start.column;
+        int len = text.length();
+
+        // has to be a tag first
+        while (pos < len && !Character.isWhitespace(text.charAt(pos))) {
+            ++pos;
+        }
+
+        tag = new JavadocTag(text.substring(0, pos),
+                             new TextLocation(TextLocation.UNDEFINED, line, start.column), 
+                             new TextLocation(TextLocation.UNDEFINED, line, pos - 1 + start.column));
+
+        LineMapping lines = new LineMapping(text, start.line, start.column);
+
+        // skip non text
+        while (pos < len && (Character.isWhitespace(text.charAt(pos)) || text.charAt(pos) == '*')) {
+            ++pos;
+        }
+
+        if (pos < len) {
+            // target types:
+            final int HTML = 0;
+            final int QUOTED = 1;
+            final int WORD = 2;
+
+            int targetStart = pos;
+                
+            int type;
+            if (pos + 2 < len && text.substring(pos, pos + 2).equalsIgnoreCase("<a")) {
+                type = HTML;
+            }
+            else if (text.charAt(pos) == '"') {
+                type = QUOTED;
+            }
+            else {
+                type = WORD;
+            }
+
+            // Also handle targets with balanced parentheses, for example:
+            //     @see set(int, double, java.net.Socket)
+            // These can't be nested.
+
+            boolean inParen = false;
+
+            while (pos < len) {
+                char ch = text.charAt(pos);
+                if (ch == '\\' && pos + 1 < len) {
+                    ++pos;
+                }
+                else if (type == WORD) {
+                    if (ch == '(') {
+                        inParen = true;
+                    }
+                    else if (inParen && ch == ')') {
+                        inParen = false;
+                    }
+                    if (!inParen) {
+                        if (pos + 1 == len) {
+                            // we'll never get a space, because we're at the end
+                            ++pos;
+                            break;
+                        }
+                        else if (Character.isWhitespace(ch)) {
+                            // we have a space between the target and the next word
+                            break;
+                        }
+                    }
+                }
+                else if (type == HTML && ch == '>' && Character.toLowerCase(text.charAt(pos - 1)) == 'a') {
+                    // HTML target
+                    ++pos;
+                    break;
+                }
+                else if (type == QUOTED && ch == '"') {
+                    // quoted target
+                    ++pos;
+                    break;
+                }
+                ++pos;
+            }
+
+            // even unbalanced HTML or double-quoted strings will get a target:
+
+            TextRange tgtRange = lines.getLocations(targetStart, pos - 1);
+
+            target = new JavadocElement(text.substring(targetStart, pos), tgtRange.getStart(), tgtRange.getEnd());
+
+            // skip non text
+            while (pos < len && (Character.isWhitespace(text.charAt(pos)) || text.charAt(pos) == '*')) {
+                ++pos;
+            }
+
+            if (pos == len) {
+                // no description beyond target
+                descriptionNonTarget = null;
+                description = new JavadocElement(text.substring(targetStart, len), tgtRange.getStart(), end);
+            }
+            else if (pos < len && !Character.isWhitespace(text.charAt(pos))) {
+                Location dntStart = lines.getLocation(pos);
+                descriptionNonTarget = new JavadocElement(text.substring(pos, len), dntStart, end);
+                description = new JavadocElement(text.substring(targetStart, len), tgtRange.getStart(), end);
+            }
+        }
+
+        return new JavadocTaggedNode(text, start, end, tag, target, description, descriptionNonTarget);
+    }
+
 }

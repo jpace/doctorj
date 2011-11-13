@@ -1,273 +1,167 @@
 package org.incava.javadoc;
 
-import java.io.*;
 import java.util.*;
 import junit.framework.TestCase;
 import org.incava.text.Location;
 
-
-public class TestJavadocTaggedNode extends TestCase {
-    
+public class TestJavadocTaggedNode extends TestCase {    
     public TestJavadocTaggedNode(String name) {
         super(name);
     }
 
-    public void testTagOnly() {
-        String text = "@tag";
+    public static Location loc(int line, int column) {
+        return new Location(line, column);
+    }
 
-        // starts at line 11, column 4:
-        Location start = new Location(11, 4);
-        Location end = new Location(11, 4 + text.length() - 1);
-        JavadocTaggedNode jtn = JavadocTaggedNode.create(text, start, end);
+    public static Location loc(Location location, String text) {
+        return loc(location.getLine(), location.getColumn() + text.length() - 1);
+    }
 
+    public static Location loc(int line, int column, String text) {
+        return loc(line, column + text.length() - 1);
+    }
+
+    public JavadocTaggedNode createTaggedNode(String text, Location start, Location end) {
+        return JavadocParser.createTaggedNode(text, start, end);
+    }
+
+    public void assertTaggedNode(JavadocTaggedNode jtn, String expText, Location expStart, Location expEnd) {
         assertNotNull("javadoc tagged node", jtn);
-        assertEquals("javadoc tagged comment description text",      "@tag",  jtn.text);
-        assertEquals("javadoc tagged comment start location",        new Location(11, 4),       jtn.start);
-        assertEquals("javadoc tagged comment end location",          new Location(11, 7),       jtn.end);
-        
-        assertNotNull("javadoc tagged comment #0 tag",                                          jtn.getTag());
-        assertEquals("javadoc tagged comment #0 tag text",           "@tag",                    jtn.getTag().text);
-        assertEquals("javadoc tagged comment #0 tag start location", new Location(11, 4),       jtn.getTag().start);
-        assertEquals("javadoc tagged comment #0 tag end location",   new Location(11, 7),       jtn.getTag().end);
+        assertEquals("javadoc tagged comment description text", expText,  jtn.text);
+        assertEquals("javadoc tagged comment start location",   expStart, jtn.start);
+        assertEquals("javadoc tagged comment end location",     expEnd,   jtn.end);
+    }
 
-        assertNull("javadoc tagged comment #0 description",                                          jtn.getDescription());
+    public JavadocTaggedNode assertTaggedNode(String text, Location start, Location end) {
+        JavadocTaggedNode jtn = createTaggedNode(text, start, end);
+        assertTaggedNode(jtn, text, start, end);
+        return jtn;
+    }
+
+    public void assertElement(JavadocElement elmt, String expText, Location expStart, Location expEnd) {
+        assertNotNull("javadoc element", elmt);
+        assertEquals("javadoc element text",           expText,  elmt.text);
+        assertEquals("javadoc element start location", expStart, elmt.start);
+        assertEquals("javadoc element end location",   expEnd,   elmt.end);
+    }
+
+    public void assertElement(JavadocElement elmt, String expText, Location expStart) {
+        if (expText == null) {
+            assertElementNull(elmt);
+        }
+        else {
+            assertElement(elmt, expText, expStart, loc(expStart, expText));
+        }
+    }
+
+    public void assertElementNull(JavadocElement elmt) {
+        assertNull("javadoc element", elmt);
+    }
+
+    public void assertTaggedNode(String text, String tag, String tgt, String desc, String descNonTgt, Location start, Location tgtStart, Location descNonTgtStart) {
+        Location          end = loc(start, text);
+        JavadocTaggedNode jtn = assertTaggedNode(text, start, end);
+
+        assertElement(jtn.getTag(), tag, start);
+        assertElement(jtn.getTarget(), tgt, tgtStart);
+        assertElement(jtn.getDescription(), desc, tgtStart);
+        assertElement(jtn.getDescriptionNonTarget(), descNonTgt, descNonTgtStart);
+    }
+
+    public void assertTaggedNode(String text, String tag, String tgt, String descNonTgt, Location start, Location tgtStart, Location descNonTgtStart) {
+        Location          end = loc(start, text);
+        JavadocTaggedNode jtn = assertTaggedNode(text, start, end);
+
+        assertElement(jtn.getTag(), tag, start);
+        assertElement(jtn.getTarget(), tgt, tgtStart);
+        // assertElement(jtn.getDescription(), desc, descStart);
+        assertElement(jtn.getDescriptionNonTarget(), descNonTgt, descNonTgtStart);
+    }
+
+    public void assertTaggedNode(String text, String tag, String tgt, Location start, Location tgtStart) {
+        assertTaggedNode(text, tag, tgt, null, start, tgtStart, null);
+    }
+
+    public void testTagOnly() {
+        String tag = "@tag";
+        String text = tag;
+        assertTaggedNode(text, tag, null, loc(11, 4), null);
     }
 
     public void testTagNoFollowingText() {
-        String text = "@tag ";
-
-        // starts at line 11, column 4:
-        Location start = new Location(11, 4);
-        Location end = new Location(11, 4 + text.length() - 1);
-        JavadocTaggedNode jtn = JavadocTaggedNode.create(text, start, end);
-
-        assertNotNull("javadoc tagged node", jtn);
-        assertEquals("javadoc tagged comment description text",      "@tag ",  jtn.text);
-        assertEquals("javadoc tagged comment start location",        new Location(11, 4),       jtn.start);
-        assertEquals("javadoc tagged comment end location",          new Location(11, 8),       jtn.end);
-        
-        assertNotNull("javadoc tagged comment #0 tag",                                          jtn.getTag());
-        assertEquals("javadoc tagged comment #0 tag text",           "@tag",                    jtn.getTag().text);
-        assertEquals("javadoc tagged comment #0 tag start location", new Location(11, 4),       jtn.getTag().start);
-        assertEquals("javadoc tagged comment #0 tag end location",   new Location(11, 7),       jtn.getTag().end);
-
-        assertNull("javadoc tagged comment #0 description",                                          jtn.getDescription());
+        String tag = "@tag";
+        String desc = "";
+        String text = tag + " " + desc;
+        assertTaggedNode(text, tag, null, loc(11, 4), null);
     }
 
     public void testOneLetter() {
-        String text = "@tag X";
-
-        // starts at line 11, column 4:
-        Location start = new Location(11, 4);
-        Location end = new Location(11, 4 + text.length() - 1);
-        JavadocTaggedNode jtn = JavadocTaggedNode.create(text, start, end);
-
-        assertNotNull("javadoc tagged node", jtn);
-        assertEquals("javadoc tagged comment description text",      "@tag X",  jtn.text);
-        assertEquals("javadoc tagged comment start location",        new Location(11, 4),       jtn.start);
-        assertEquals("javadoc tagged comment end location",          new Location(11, 9),       jtn.end);
-        
-        assertNotNull("javadoc tagged comment #0 tag",                                          jtn.getTag());
-        assertEquals("javadoc tagged comment #0 tag text",           "@tag",                    jtn.getTag().text);
-        assertEquals("javadoc tagged comment #0 tag start location", new Location(11, 4),       jtn.getTag().start);
-        assertEquals("javadoc tagged comment #0 tag end location",   new Location(11, 7),       jtn.getTag().end);
-
-        assertNotNull("javadoc tagged comment #0 description",                                          jtn.getDescription());
-        assertEquals("javadoc tagged comment #0 description text",           "X",                       jtn.getDescription().text);
-        assertEquals("javadoc tagged comment #0 description start location", new Location(11, 9),       jtn.getDescription().start);
-        assertEquals("javadoc tagged comment #0 description end location",   new Location(11, 9),       jtn.getDescription().end);
+        String tag = "@tag";
+        String desc = "X";
+        String text = tag + " " + desc;
+        assertTaggedNode(text, tag, desc, loc(11, 4), loc(11, 9));
     }
 
     public void testOneLine() {
-        String text = "@tag And that's a tag.";
-
-        // starts at line 11, column 4:
-        Location start = new Location(11, 4);
-        Location end = new Location(11, 4 + text.length() - 1);
-        JavadocTaggedNode jtn = JavadocTaggedNode.create(text, start, end);
-
-        assertNotNull("javadoc tagged node", jtn);
-        assertEquals("javadoc tagged comment description text",      "@tag And that's a tag.",  jtn.text);
-        assertEquals("javadoc tagged comment start location",        new Location(11, 4),       jtn.start);
-        assertEquals("javadoc tagged comment end location",          new Location(11, 25),      jtn.end);
-        
-        assertNotNull("javadoc tagged comment #0 tag",                                          jtn.getTag());
-        assertEquals("javadoc tagged comment #0 tag text",           "@tag",                    jtn.getTag().text);
-        assertEquals("javadoc tagged comment #0 tag start location", new Location(11, 4),       jtn.getTag().start);
-        assertEquals("javadoc tagged comment #0 tag end location",   new Location(11, 7),       jtn.getTag().end);
+        String tag = "@tag";
+        String tgt = "See";
+        String descNt = "that thing for more.";
+        String fullDesc = tgt + " " + descNt;
+        String text = tag + " " + fullDesc;
+        assertTaggedNode(text, tag, tgt, fullDesc, descNt, loc(11, 4), loc(11, 9), loc(11, 13));
     }
 
     public void testOneWord() {
-        String text = "@tag And";
-
-        // starts at line 11, column 4:
-        Location start = new Location(11, 4);
-        Location end = new Location(11, 4 + text.length() - 1);
-        JavadocTaggedNode jtn = JavadocTaggedNode.create(text, start, end);
-
-        assertNotNull("javadoc tagged node", jtn);
-        assertEquals("javadoc tagged comment description text",      "@tag And",  jtn.text);
-        assertEquals("javadoc tagged comment start location",        new Location(11, 4),       jtn.start);
-        assertEquals("javadoc tagged comment end location",          new Location(11, 11),      jtn.end);
-        
-        assertNotNull("javadoc tagged comment #0 tag",                                          jtn.getTag());
-        assertEquals("javadoc tagged comment #0 tag text",           "@tag",                    jtn.getTag().text);
-        assertEquals("javadoc tagged comment #0 tag start location", new Location(11, 4),       jtn.getTag().start);
-        assertEquals("javadoc tagged comment #0 tag end location",   new Location(11, 7),       jtn.getTag().end);
-
-        assertNotNull("javadoc tagged comment #0 description",                                          jtn.getDescription());
-        assertEquals("javadoc tagged comment #0 description text",           "And",                     jtn.getDescription().text);
-        assertEquals("javadoc tagged comment #0 description start location", new Location(11, 9),       jtn.getDescription().start);
-        assertEquals("javadoc tagged comment #0 description end location",   new Location(11, 11),      jtn.getDescription().end);
+        String tag  = "@tag";
+        String tgt = "And";
+        String descNt = "";
+        String fullDesc = tgt + "" + descNt;
+        String text = tag + " " + fullDesc;
+        assertTaggedNode(text, tag, tgt, fullDesc, null, loc(11, 4), loc(11, 9), null);
     }
 
     public void testWordTarget() {
-        String text = "@tag And that's a tag.";
-
-        // starts at line 11, column 8:
-        Location          start = new Location(11, 8);
-        Location          end = new Location(11, 8 + text.length() - 1);
-        JavadocTaggedNode jtn = JavadocTaggedNode.create(text, start, end);
-
-        assertNotNull("javadoc tagged node",                                                      jtn);
-        assertEquals("javadoc tagged comment description text",         "@tag And that's a tag.", jtn.text);
-        assertEquals("javadoc tagged comment start location",           new Location(11, 8),      jtn.start);
-        assertEquals("javadoc tagged comment end location",             new Location(11, 29),     jtn.end);
-
-        assertNotNull("javadoc tagged comment #0 tag",                                            jtn.getTag());
-        assertEquals("javadoc tagged comment #0 tag text",              "@tag",                   jtn.getTag().text);
-        assertEquals("javadoc tagged comment #0 tag start location",    new Location(11, 8),      jtn.getTag().start);
-        assertEquals("javadoc tagged comment #0 tag end location",      new Location(11, 11),     jtn.getTag().end);
-
-        assertNotNull("javadoc tagged comment #0 target",                                         jtn.getTarget());
-        assertEquals("javadoc tagged comment #0 target text",           "And",                    jtn.getTarget().text);
-        assertEquals("javadoc tagged comment #0 target start location", new Location(11, 13),     jtn.getTarget().start);
-        assertEquals("javadoc tagged comment #0 target end location",   new Location(11, 15),     jtn.getTarget().end);
+        String tag  = "@tag";
+        String tgt  = "And";
+        String desc = "that's a tag.";
+        String text = tag + " " + tgt + " " + desc;
+        assertTaggedNode(text, tag, tgt, desc, loc(11, 8), loc(11, 13), loc(11, 17));
     }
 
     public void testHTMLTarget() {
-        String text = "@tag <a href=\"www.somewhere.tld/something/something\">this</a> See that thing for more.";
-
-        // starts at line 11, column 8:
-        Location          start = new Location(8, 3);
-        Location          end = new Location(8, 3 + text.length() - 1);
-        JavadocTaggedNode jtn = JavadocTaggedNode.create(text, start, end);
-
-        assertNotNull("javadoc tagged node",                                                      jtn);
-        assertEquals("javadoc tagged comment description text",         text,                     jtn.text);
-        assertEquals("javadoc tagged comment start location",           new Location(8, 3),       jtn.start);
-        assertEquals("javadoc tagged comment end location",             new Location(8, 88),      jtn.end);
-
-        assertNotNull("javadoc tagged comment #0 tag",                                            jtn.getTag());
-        assertEquals("javadoc tagged comment #0 tag text",              "@tag",                   jtn.getTag().text);
-        assertEquals("javadoc tagged comment #0 tag start location",    new Location(8, 3),       jtn.getTag().start);
-        assertEquals("javadoc tagged comment #0 tag end location",      new Location(8, 6),       jtn.getTag().end);
-
-        assertNotNull("javadoc tagged comment #0 target",                                         jtn.getTarget());
-        assertEquals("javadoc tagged comment #0 target text",           "<a href=\"www.somewhere.tld/something/something\">this</a>", jtn.getTarget().text);
-        assertEquals("javadoc tagged comment #0 target start location", new Location(8, 8),       jtn.getTarget().start);
-        assertEquals("javadoc tagged comment #0 target end location",   new Location(8, 63),      jtn.getTarget().end);
-
-        assertNotNull("javadoc tagged comment #0 nontarget desc",                                 jtn.getDescriptionNonTarget());
-        assertEquals("javadoc tagged comment #0 nontarget desc text",           "See that thing for more.", jtn.getDescriptionNonTarget().text);
-        assertEquals("javadoc tagged comment #0 nontarget desc start location", new Location(8, 65),       jtn.getDescriptionNonTarget().start);
-        assertEquals("javadoc tagged comment #0 nontarget desc end location",   new Location(8, 88),      jtn.getDescriptionNonTarget().end);
+        String tag  = "@tag";
+        String tgt  = "<a href=\"www.somewhere.tld/something/something\">this</a>";
+        String desc = "See that thing for more.";
+        String text = tag + " " + tgt + " " + desc;
+        assertTaggedNode(text, tag, tgt, desc, loc(8, 3), loc(8, 8), loc(8, 65));
     }
 
     public void testHTMLTargetUppercase() {
-        String text = "@tag <A HREF=\"www.somewhere.tld/something/something\">this</A> See that thing for more.";
-
-        // starts at line 11, column 8:
-        Location          start = new Location(8, 3);
-        Location          end = new Location(8, 3 + text.length() - 1);
-        JavadocTaggedNode jtn = JavadocTaggedNode.create(text, start, end);
-
-        assertNotNull("javadoc tagged node",                                                      jtn);
-        assertEquals("javadoc tagged comment description text",         text,                     jtn.text);
-        assertEquals("javadoc tagged comment start location",           new Location(8, 3),       jtn.start);
-        assertEquals("javadoc tagged comment end location",             new Location(8, 88),      jtn.end);
-
-        assertNotNull("javadoc tagged comment #0 tag",                                            jtn.getTag());
-        assertEquals("javadoc tagged comment #0 tag text",              "@tag",                   jtn.getTag().text);
-        assertEquals("javadoc tagged comment #0 tag start location",    new Location(8, 3),       jtn.getTag().start);
-        assertEquals("javadoc tagged comment #0 tag end location",      new Location(8, 6),       jtn.getTag().end);
-
-        assertNotNull("javadoc tagged comment #0 target",                                         jtn.getTarget());
-        assertEquals("javadoc tagged comment #0 target text",           "<A HREF=\"www.somewhere.tld/something/something\">this</A>", jtn.getTarget().text);
-        assertEquals("javadoc tagged comment #0 target start location", new Location(8, 8),       jtn.getTarget().start);
-        assertEquals("javadoc tagged comment #0 target end location",   new Location(8, 63),      jtn.getTarget().end);
+        String tag  = "@tag";
+        String tgt  = "<A HREF=\"www.somewhere.tld/something/something\">this</A>";
+        String desc = "See that thing for more.";
+        String text = tag + " " + tgt + " " + desc;
+        assertTaggedNode(text, tag, tgt, desc, loc(8, 3), loc(8, 8), loc(8, 65));
     }
 
     public void testHTMLTargetNoEnd() {
-        String text = "@tag <A HREF=\"www.somewhere.tld/something/something\">this";
-
-        // starts at line 11, column 8:
-        Location          start = new Location(8, 3);
-        Location          end = new Location(8, 3 + text.length() - 1);
-        JavadocTaggedNode jtn = JavadocTaggedNode.create(text, start, end);
-
-        assertNotNull("javadoc tagged node",                                                      jtn);
-        assertEquals("javadoc tagged comment description text",         text,                     jtn.text);
-        assertEquals("javadoc tagged comment start location",           new Location(8, 3),       jtn.start);
-        assertEquals("javadoc tagged comment end location",             new Location(8, 59),      jtn.end);
-
-        assertNotNull("javadoc tagged comment #0 tag",                                            jtn.getTag());
-        assertEquals("javadoc tagged comment #0 tag text",              "@tag",                   jtn.getTag().text);
-        assertEquals("javadoc tagged comment #0 tag start location",    new Location(8, 3),       jtn.getTag().start);
-        assertEquals("javadoc tagged comment #0 tag end location",      new Location(8, 6),       jtn.getTag().end);
-
-        assertNotNull("javadoc tagged comment #0 target",                                         jtn.getTarget());
-        assertEquals("javadoc tagged comment #0 target text",           "<A HREF=\"www.somewhere.tld/something/something\">this", jtn.getTarget().text);
-        assertEquals("javadoc tagged comment #0 target start location", new Location(8, 8),       jtn.getTarget().start);
-        assertEquals("javadoc tagged comment #0 target end location",   new Location(8, 59),      jtn.getTarget().end);
+        String tag  = "@tag";
+        String tgt  = "<A HREF=\"www.somewhere.tld/something/something\">this";
+        String text = tag + " " + tgt;
+        assertTaggedNode(text, tag, tgt, loc(8, 3), loc(8, 8));
     }
 
     public void testQuotedTarget() {
-        String text = "@tag Something#foo(int, double, float)";
-
-        // starts at line 11, column 8:
-        Location          start = new Location(8, 3);
-        Location          end = new Location(8, 3 + text.length() - 1);
-        JavadocTaggedNode jtn = JavadocTaggedNode.create(text, start, end);
-
-        assertNotNull("javadoc tagged node",                                                      jtn);
-        assertEquals("javadoc tagged comment description text",         text,                     jtn.text);
-        assertEquals("javadoc tagged comment start location",           start,                    jtn.start);
-        assertEquals("javadoc tagged comment end location",             end,                      jtn.end);
-
-        assertNotNull("javadoc tagged comment #0 tag",                                            jtn.getTag());
-        assertEquals("javadoc tagged comment #0 tag text",              "@tag",                   jtn.getTag().text);
-        assertEquals("javadoc tagged comment #0 tag start location",    start,                    jtn.getTag().start);
-        assertEquals("javadoc tagged comment #0 tag end location",      new Location(start.line, start.column + 3), jtn.getTag().end);
-
-        assertNotNull("javadoc tagged comment #0 target",                                         jtn.getTarget());
-        assertEquals("javadoc tagged comment #0 target text",           "Something#foo(int, double, float)", jtn.getTarget().text);
-        assertEquals("javadoc tagged comment #0 target start location", new Location(start.line, start.column + 5), jtn.getTarget().start);
-        assertEquals("javadoc tagged comment #0 target end location",   new Location(start.line, start.column + 5 + 32), jtn.getTarget().end);
+        String tag  = "@tag";
+        String tgt  = "Something#foo(int, double, float)";
+        String text = tag + " " + tgt;
+        assertTaggedNode(text, tag, tgt, loc(8, 3), loc(8, 8));
     }
 
     public void testQuotedTargetNoEnd() {
-        String text = "@tag Something#foo(int, double";
-
-        // starts at line 11, column 8:
-        Location          start = new Location(8, 3);
-        Location          end = new Location(8, 3 + text.length() - 1);
-        JavadocTaggedNode jtn = JavadocTaggedNode.create(text, start, end);
-
-        assertNotNull("javadoc tagged node",                                                      jtn);
-        assertEquals("javadoc tagged comment description text",         text,                     jtn.text);
-        assertEquals("javadoc tagged comment start location",           start,                    jtn.start);
-        assertEquals("javadoc tagged comment end location",             end,                      jtn.end);
-
-        assertNotNull("javadoc tagged comment #0 tag",                                            jtn.getTag());
-        assertEquals("javadoc tagged comment #0 tag text",              "@tag",                   jtn.getTag().text);
-        assertEquals("javadoc tagged comment #0 tag start location",    start,                    jtn.getTag().start);
-        assertEquals("javadoc tagged comment #0 tag end location",      new Location(start.line, start.column + 3), jtn.getTag().end);
-
-        assertNotNull("javadoc tagged comment #0 target",                                         jtn.getTarget());
-        assertEquals("javadoc tagged comment #0 target text",           "Something#foo(int, double", jtn.getTarget().text);
-        assertEquals("javadoc tagged comment #0 target start location", new Location(start.line, start.column + 5), jtn.getTarget().start);
-        assertEquals("javadoc tagged comment #0 target end location",   new Location(start.line, start.column + 5 + 24), jtn.getTarget().end);
+        String tag  = "@tag";
+        String tgt  = "Something#foo(int, double";
+        String text = tag + " " + tgt;
+        assertTaggedNode(text, tag, tgt, loc(8, 3), loc(8, 8));
     }
-
 }
