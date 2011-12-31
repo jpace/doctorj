@@ -1,23 +1,27 @@
 package org.incava.analysis;
 
-import java.io.*;
-import java.util.*;
-import net.sourceforge.pmd.ast.Token;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.Writer;
+import java.util.Formatter;
+import org.incava.ijdk.io.FileExt;
 import org.incava.ijdk.lang.StringExt;
 import org.incava.ijdk.util.ANSI;
-
 
 /**
  * Reports errors in multiple lines, displaying the contextual code, and
  * denoting the code to which a violation applies.
  */
-public class ContextReport extends Report {
-    
+public class ContextReport extends Report {    
     /**
      * The number of spaces a tab is equivalent to.
      */
     public static int tabWidth = 4;
-
+    
     /**
      * The end - of - line character/sequence for this OS.
      */
@@ -138,67 +142,52 @@ public class ContextReport extends Report {
      * @param violation The violation to represent as a string.
      */
     protected String toString(Violation violation) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (!wroteFileName) {
-            buf.append("In " + ANSI.BOLD + ANSI.REVERSE + fileName + ANSI.RESET + ":" + EOLN + EOLN);
+            sb.append("In " + ANSI.BOLD + ANSI.REVERSE + fileName + ANSI.RESET + ":" + EOLN + EOLN);
             wroteFileName = true;
         }
 
         if (contents == null) {
-            try {
-                List<String>   cont = new ArrayList<String>();
-                BufferedReader br   = new BufferedReader(sourceReader);
-                
-                String line = br.readLine();
-                while (line != null) {
-                    cont.add(line);
-                    line = br.readLine();
-                }
-
-                contents = cont.toArray(new String[cont.size()]);
-            }
-            catch (IOException ioe) {
-                tr.Ace.log("error reading source: " + ioe);
-            }
+            contents = FileExt.readLines(sourceReader);
         }
 
-        int beginLine = violation.getBeginLine()   - 1;
-        int endLine = violation.getEndLine()     - 1;
+        int beginLine = violation.getBeginLine() - 1;
+        int endLine = violation.getEndLine() - 1;
         int beginColumn = violation.getBeginColumn() - 1;
-        int endColumn = violation.getEndColumn()   - 1;
+        int endColumn = violation.getEndColumn() - 1;
+
+        final int lineNumWidth = 6;
         
         if (beginLine == endLine) {
-            writeLine(buf, beginLine);
-            underline(buf, beginLine, beginColumn, endColumn);
+            writeLine(sb, beginLine, lineNumWidth);
+            underline(sb, beginLine, beginColumn, endColumn);
         }
         else {
-            markToEndOfLine(buf, beginLine, beginColumn);
+            markToEndOfLine(sb, beginLine, beginColumn);
             for (int lnum = beginLine; lnum <= endLine; ++lnum) {
-                writeLine(buf, lnum);
+                writeLine(sb, lnum, lineNumWidth);
             }
-            markToStartPosition(buf, endLine, endColumn);
+            markToStartPosition(sb, endLine, endColumn);
         }
         
-        buf.append("*** " + violation.getMessage() + EOLN);
-        buf.append(EOLN);
+        sb.append("*** " + violation.getMessage() + EOLN);
+        sb.append(EOLN);
         
-        return buf.toString();
+        return sb.toString();
     }
 
     /**
-     * Adds indentation to the buffer, replacing spacing and tabs. Replaces tabs
-     * with <code>tabWidth</code> occurrences of <code>ch</code>.
+     * Adds indentation to the buffer.
      *
-     * @param buf The buffer to be written to.
+     * @param sb The buffer to be written to.
      * @param line The current line number.
      * @param column The column to indent to.
      * @param ch The character with which to replace spaces and tabs.
      */
-    protected void indent(StringBuffer buf, int line, int column, char ch) {
-        buf.append("        ");
-
-        // move it over for the column, replacing tabs with spaces
-        buf.append(StringExt.repeat(ch, column));
+    protected void indent(StringBuilder sb, int line, int column, char ch) {
+        sb.append(StringExt.repeat(' ', 8));
+        sb.append(StringExt.repeat(ch, column));
     }
 
     /**
@@ -206,35 +195,33 @@ public class ContextReport extends Report {
      * (inclusive), and from there marking to the end of the line with
      * "<---...".
      *
-     * @param buf The buffer to be written to.
+     * @param sb The buffer to be written to.
      * @param line The current line number.
      * @param column The column to mark to/from.
      */
-    protected void markToEndOfLine(StringBuffer buf, int line, int column) {
-        indent(buf, line, column, ' ');
+    protected void markToEndOfLine(StringBuilder sb, int line, int column) {
+        indent(sb, line, column, ' ');
         
         int len = contents[line].length();
         
-        buf.append('<');
-        for (int i = column + 1; i < len; ++i) {
-            buf.append('-');
-        }
-        buf.append(EOLN);
+        sb.append('<');
+        sb.append(StringExt.repeat('-', len - column - 1));
+        sb.append(EOLN);
     }
 
     /**
      * Marks the given line with "...--->" leading to the column position
      * (inclusive).
      *
-     * @param buf The buffer to be written to.
+     * @param sb The buffer to be written to.
      * @param line The current line number.
      * @param column The column to mark to.
      */
-    protected void markToStartPosition(StringBuffer buf, int line, int column) {
-        indent(buf, line, column, '-');
+    protected void markToStartPosition(StringBuilder sb, int line, int column) {
+        indent(sb, line, column, '-');
 
-        buf.append('>');
-        buf.append(EOLN);
+        sb.append('>');
+        sb.append(EOLN);
     }
 
     /**
@@ -242,44 +229,36 @@ public class ContextReport extends Report {
      * <code>endColumn</code> in the given line. If the columns are equal, a
      * single caret is shown.
      *
-     * @param buf The buffer to be written to.
+     * @param sb The buffer to be written to.
      * @param line The current line number.
      * @param beginColumn The column to mark from.
      * @param endColumn The column to mark to.
      */
-    protected void underline(StringBuffer buf, int line, int beginColumn, int endColumn) {
-        indent(buf, line, beginColumn, ' ');
+    protected void underline(StringBuilder sb, int line, int beginColumn, int endColumn) {
+        indent(sb, line, beginColumn, ' ');
         
         if (beginColumn == endColumn) {
-            buf.append('^');
+            sb.append('^');
         }
         else {
-            buf.append('<');
-            for (int i = beginColumn + 1; i < endColumn; ++i) {
-                buf.append('-');
-            }
-            buf.append('>');
+            sb.append('<');
+            sb.append(StringExt.repeat('-', endColumn - beginColumn - 1));
+            sb.append('>');
         }
-        buf.append(EOLN);
+        sb.append(EOLN);
     }
 
     /**
-     * Writes the given line, adding the line number, right - aligned. Appends the
-     * end - of - line character/sequence.
+     * Writes the given line, adding the line number, right-aligned. Appends the
+     * end-of-line character/sequence. Assumes that lines are zero-indexed, and
+     * that the output should be one-indexed.
      *
-     * @param buf The buffer to be written to.
-     * @param line The current line number.
+     * @param sb The buffer to be written to.
+     * @param lineNum The current line number.
+     * @param lineNumWidth The number of characters for the line number.
      */
-    protected void writeLine(StringBuffer buf, int line) {
-        StringBuffer lnBuf = new StringBuffer("" + (1 + line));
-        while (lnBuf.length() < 6) {
-            lnBuf.insert(0, ' ');
-        }
-
-        buf.append(lnBuf);
-        buf.append(". ");
-        buf.append(contents[line]);
-        buf.append(EOLN);
+    protected void writeLine(StringBuilder sb, int lineNum, int lineNumWidth) {
+        Formatter fmtr = new Formatter(sb);
+        fmtr.format("%" + lineNumWidth + "d. %s%s", lineNum + 1, this.contents[lineNum], EOLN);
     }
-
 }

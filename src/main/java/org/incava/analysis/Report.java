@@ -1,10 +1,13 @@
 package org.incava.analysis;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
-
 
 /**
  * Reports errors (violations), in a format that is determined by the subclass.

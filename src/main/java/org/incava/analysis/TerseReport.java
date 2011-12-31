@@ -1,15 +1,13 @@
 package org.incava.analysis;
 
-import java.io.*;
-import java.util.*;
-import net.sourceforge.pmd.ast.Token;
-
+import java.io.File;
+import java.io.OutputStream;
+import java.io.Writer;
 
 /**
  * Reports errors in a single line, AKA the format expected by Emacs (!c).
  */
 public class TerseReport extends Report {
-
     /**
      * Creates a terse report for the given writer.
      *
@@ -84,5 +82,4 @@ public class TerseReport extends Report {
                 violation.getEndLine()   + ":" + violation.getEndColumn()   + ": " + 
                 violation.getMessage() + System.getProperty("line.separator"));
     }
-
 }

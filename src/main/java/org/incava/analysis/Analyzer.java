@@ -7,11 +7,10 @@ import org.incava.text.Location;
  * Bridge between violations and reports.
  */
 public class Analyzer {
-
     /**
      * The report to which violations will be sent.
      */
-    private Report report;
+    private final Report report;
 
     /**
      * Creates an analyzer with a report.

@@ -30,5 +30,4 @@ test {
     excludes = [ '**/Abstract*', '**/.#*' ]
 }
 
-// manifest.mainAttributes("Main-Class" : "org.incava.doctorj.DoctorJ")
 logging.captureStandardOutput LogLevel.ERROR
