@@ -28,7 +28,7 @@ public class WordList {
     /**
      * Adds the given words.
      */
-    public boolean addWords(String[] words) {
+    public boolean addWords(List<String> words) {
         for (String word : words) {
             if (isTrue(word)) {
                 addWord(word);
@@ -41,7 +41,7 @@ public class WordList {
     /**
      * Same as <code>addWords</code>, but assumes that there are no empty strings.
      */
-    public boolean addAllWords(String[] words) {
+    public boolean addAllWords(List<String> words) {
         for (String word : words) {
             addWord(word);
         }

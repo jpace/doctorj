@@ -7,8 +7,12 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
+import java.util.EnumSet;
 import java.util.Formatter;
+import java.util.List;
 import org.incava.ijdk.io.FileExt;
+import org.incava.ijdk.io.ReadOptionType;
+import org.incava.ijdk.io.ReaderExt;
 import org.incava.ijdk.lang.StringExt;
 import org.incava.ijdk.util.ANSI;
 
@@ -42,7 +46,7 @@ public class ContextReport extends Report {
      * The contents, separated by new lines, which are included at the end of
      * each string.
      */
-    private String[] contents;
+    private List<String> contents;
 
     /**
      * Creates a context report for the given writer.
@@ -149,7 +153,7 @@ public class ContextReport extends Report {
         }
 
         if (contents == null) {
-            contents = FileExt.readLines(sourceReader);
+            contents = ReaderExt.readLines(sourceReader, EnumSet.noneOf(ReadOptionType.class));
         }
 
         int beginLine = violation.getBeginLine() - 1;
@@ -202,7 +206,7 @@ public class ContextReport extends Report {
     protected void markToEndOfLine(StringBuilder sb, int line, int column) {
         indent(sb, line, column, ' ');
         
-        int len = contents[line].length();
+        int len = contents.get(line).length();
         
         sb.append('<');
         sb.append(StringExt.repeat('-', len - column - 1));
@@ -259,6 +263,6 @@ public class ContextReport extends Report {
      */
     protected void writeLine(StringBuilder sb, int lineNum, int lineNumWidth) {
         Formatter fmtr = new Formatter(sb);
-        fmtr.format("%" + lineNumWidth + "d. %s%s", lineNum + 1, this.contents[lineNum], EOLN);
+        fmtr.format("%" + lineNumWidth + "d. %s%s", lineNum + 1, this.contents.get(lineNum), EOLN);
     }
 }

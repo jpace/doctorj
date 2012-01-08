@@ -12,8 +12,7 @@ import java.util.TreeSet;
 /**
  * Reports errors (violations), in a format that is determined by the subclass.
  */
-public abstract class Report {
-    
+public abstract class Report {    
     /**
      * The file to which this report currently applies. By default, this is '-',
      * denoting standard output.
