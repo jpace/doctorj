@@ -26,10 +26,7 @@ public class LineMapping extends ArrayList<TextLocation> {
                 }
                 // otherwise, it's Mac (at least, before OS X)
             }
-            else if (text.charAt(pos) == '\n') {
-                // Unix
-            }
-            else {
+            else if (text.charAt(pos) != '\n') {
                 // we're not at a newline, so go to the next character.
                 continue;
             }
