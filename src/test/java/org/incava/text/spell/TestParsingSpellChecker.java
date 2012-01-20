@@ -1,7 +1,9 @@
 package org.incava.text.spell;
 
-import java.io.*;
-import java.util.*;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import junit.framework.TestCase;
 import org.incava.ijdk.util.MultiMap;
 
@@ -35,6 +37,8 @@ public class TestParsingSpellChecker extends TestCase {
     
     public TestParsingSpellChecker(String name) {
         super(name);
+
+        tr.Ace.setVerbose(true);
     }
 
     public void runSpellTest(String comment, int nMisspellings) {
