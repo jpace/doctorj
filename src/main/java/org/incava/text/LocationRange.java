@@ -31,7 +31,7 @@ public class LocationRange implements Comparable<LocationRange> {
     }
 
     public boolean equals(LocationRange other) {
-        return other != null && ObjectExt.equal(other.getStart(), start) && ObjectExt.equal(other.getEnd(), end);
+        return ObjectExt.equal(other.getStart(), start) && ObjectExt.equal(other.getEnd(), end);
     }
 
     public int compareTo(LocationRange other) {

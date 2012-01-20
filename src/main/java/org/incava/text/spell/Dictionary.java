@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.EnumSet;
 import java.util.List;
+import org.incava.ijdk.io.FileExt;
 import org.incava.ijdk.io.IO;
 import org.incava.ijdk.io.InputStreamExt;
 import org.incava.ijdk.io.ReadOptionType;
