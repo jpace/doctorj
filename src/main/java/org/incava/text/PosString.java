@@ -78,35 +78,43 @@ public class PosString {
     /**
      * Returns whether the current position is not at the end of the string.
      */
-    protected boolean hasMore() {
-        return this.pos < this.len;
+    public boolean hasChar() {
+        return hasNumMore(0);
     }
     
     /**
      * Returns whether the current position is at least <code>num</code>
      * characters from the end of the string.
      */
-    protected boolean hasNumMore(int num) {
+    public boolean hasNumMore(int num) {
         return this.pos + num < this.len;
     }
 
     /**
-     * Advances from one substring to another.
+     * Returns whether the substring at the current position matches
+     * <code>what</code>.
      */
-    public void advanceFromTo(String from, String to) {
-        if (advancePast(from)) {
-            advanceThrough(to);
+    public boolean isMatch(String what) {
+        return hasNumMore(what.length() - 1) && this.str.substring(this.pos).startsWith(what);
+    }
+
+    /**
+     * Advances this position to <code>what</code>.
+     */
+    public void advanceTo(String what) {
+        while (hasChar() && !isMatch(what)) {
+            advancePosition();
         }
     }
 
     /**
-     * If the current substring matches <code>what</code>, the position is
-     * advanced through <code>what</code> and true is returned. Otherwise, this
+     * If <code>what</code> is a match at the current position, the position is
+     * advanced beyond the substring, and true is returned. Otherwise this
      * returns false.
      */
-    public boolean advancePast(String what) {
-        if (this.pos + what.length() < this.len && this.str.substring(this.pos).startsWith(what)) {
-            this.pos += what.length();
+    public boolean advanceFrom(String what) {
+        if (isMatch(what)) {
+            advancePosition(what.length());
             return true;
         }
         else {
@@ -115,20 +123,10 @@ public class PosString {
     }
 
     /**
-     * Advances this position through <code>what</code>.
-     */
-    protected void advanceThrough(String what) {
-        int len = this.str.length();
-        while (this.pos < len && this.pos + what.length() < len && !this.str.substring(this.pos).startsWith(what)) {
-            ++this.pos;
-        }
-    }
-
-    /**
      * Advances until whitespace or a letter or digit is found.
      */
-    protected void advanceToWord() {
-        while (hasMore() && !Character.isWhitespace(currentChar()) && !Character.isLetterOrDigit(currentChar())) {
+    public void advanceToWord() {
+        while (hasChar() && !Character.isWhitespace(currentChar()) && !Character.isLetterOrDigit(currentChar())) {
             ++this.pos;
         }
     }
@@ -137,7 +135,7 @@ public class PosString {
      * Advances until whitespace is found.
      */
     protected void advanceToWhitespace() {
-        while (hasMore() && !Character.isWhitespace(currentChar())) {
+        while (hasChar() && !Character.isWhitespace(currentChar())) {
             ++this.pos;
         }
     }

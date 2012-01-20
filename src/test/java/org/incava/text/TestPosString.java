@@ -1,11 +1,16 @@
 package org.incava.text;
 
 import junit.framework.TestCase;
+import org.incava.ijdk.lang.Range;
 
 public class TestPosString extends TestCase {
     private PosString str0;
 
     private PosString str1;
+
+    private PosString abc;
+
+    private PosString tenletters;
 
     public TestPosString(String name) {
         super(name);
@@ -16,6 +21,8 @@ public class TestPosString extends TestCase {
     public void setUp() {
         str0 = new PosString("this is a test");
         str1 = new PosString("this too is a test", 12);
+        abc  = new PosString("abc");
+        tenletters = new PosString("tenletters");
     }
 
     public void assertPosition(int exp, PosString pstr) {
@@ -36,13 +43,18 @@ public class TestPosString extends TestCase {
         assertEquals(pstr.toString(), exp, pstr.currentChar());
     }
 
-    public void assertHasMore(boolean exp, PosString pstr) {
-        assertEquals(pstr.toString(), exp, pstr.hasMore());
+    public void assertHasChar(boolean exp, PosString pstr) {
+        assertEquals(pstr.toString(), exp, pstr.hasChar());
     }   
 
     public void assertHasNumMore(boolean exp, PosString pstr, int num) {
-        assertEquals(getMessage(pstr, num), exp, pstr.hasMore());
+        assertEquals(getMessage(pstr, num), exp, pstr.hasNumMore(num));
     }   
+
+    public void assertIsMatch(boolean exp, String str, PosString pstr) {
+        String msg = "pstr: " + pstr + "; str: '" + str + "'";
+        assertEquals(msg, exp, pstr.isMatch(str));
+    }
 
     public void testCtor() {
         assertPosition(0,  str0);
@@ -104,35 +116,90 @@ public class TestPosString extends TestCase {
         assertCurrentChar('s', str1);
     }
 
-    public void testHasMore() {
-        assertHasMore(true, str0);
+    public void testHasChar() {
+        assertHasChar(true, abc); // at 'a'
         // no change
-        assertHasMore(true, str0);
+        assertHasChar(true, abc);
 
-        str0.advancePosition();
-        assertHasMore(true, str0);
+        abc.advancePosition();  // at 'b'
+        assertHasChar(true, abc);
 
-        str0.advancePosition(12);
-        assertHasMore(true, str0);
+        abc.advancePosition(); // at 'c'
+        assertHasChar(true, abc);
 
-        str0.advancePosition();
-        assertHasMore(false, str0);
+        abc.advancePosition(); // off end
+        assertHasChar(false, abc);
     }
 
     public void testHasNumMore() {
-        assertHasNumMore(true, str0, 0);
-        assertHasNumMore(true, str0, 1);
+        for (int i : new Range(0, 9)) {
+            assertHasNumMore(true, tenletters, i);
+        }
+    }
 
-        str0.advancePosition();
-        assertHasNumMore(true, str0, 1);
+    public void testIsMatch() {
+        assertIsMatch(true,  "a", abc);
+        assertIsMatch(false, "b", abc);
+        assertIsMatch(false, "c", abc);
 
-        str0.advancePosition(11);
-        assertHasNumMore(true,  str0, 1);
+        abc.advancePosition();
+        assertIsMatch(false, "a", abc);
+        assertIsMatch(true,  "b", abc);
+        assertIsMatch(false, "c", abc);
 
-        assertHasNumMore(true,  str0, 1);
-        assertHasNumMore(false, str0, 2);
+        abc.advancePosition();
+        assertIsMatch(false, "a", abc);
+        assertIsMatch(false, "b", abc);
+        assertIsMatch(true,  "c", abc);
 
-        str0.advancePosition();
-        assertHasNumMore(true, str0, 0);
+        abc.advancePosition();
+        assertIsMatch(false, "a", abc);
+        assertIsMatch(false, "b", abc);
+        assertIsMatch(false, "c", abc);
+    }
+
+    public void testAdvanceTo() {
+        assertCurrentChar('a', abc);
+        abc.advanceTo("b");
+        assertCurrentChar('b', abc);
+        abc.advanceTo("c");
+        assertCurrentChar('c', abc);
+        abc.advanceTo("d");
+        assertPosition(3, abc);
+        assertCurrentChar(null, abc);
+
+        assertCurrentChar('t', tenletters);
+        // the first 'e':
+        tenletters.advanceTo("e");
+
+        assertPosition(1, tenletters);
+        assertCurrentChar('e', tenletters);
+
+        // does not go to the second 'e'
+        tenletters.advanceTo("e");
+        assertPosition(1, tenletters);
+
+        tenletters.advancePosition();
+        
+        // now it goes to the second 'e':
+        tenletters.advanceTo("e");
+        assertPosition(4, tenletters);
+        assertCurrentChar('e', tenletters);
+    }
+
+    public void testAdvanceFrom() {
+        assertCurrentChar('a', abc);
+        abc.advanceFrom("a");
+        assertCurrentChar('b', abc);
+
+        abc.advanceFrom("c");
+        assertCurrentChar('b', abc);
+
+        abc.advancePosition();  // we're on 'c' now:
+        assertCurrentChar('c', abc);
+        abc.advanceFrom("c");
+        
+        assertPosition(3, abc);
+        assertCurrentChar(null, abc);
     }
 }
