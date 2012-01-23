@@ -18,11 +18,6 @@ public class ParsingSpellChecker {
     private final SpellChecker checker;
 
     /**
-     * The current string we're working on.
-     */
-    private String str;
-
-    /**
      * The string currently spell-checked.
      */
     private PString pstr;
@@ -34,6 +29,20 @@ public class ParsingSpellChecker {
     public ParsingSpellChecker(SpellChecker checker, boolean canCheck) {
         this.checker = checker;
         this.canCheck = canCheck;
+    }
+
+    protected boolean hasMore() {
+        return this.pstr.hasChar();
+    }
+
+    protected boolean atBlank() {
+        return this.pstr.hasChar() && !this.pstr.isMatch("<") && !this.pstr.isMatch("{@") && !Character.isLetterOrDigit(currentChar());
+    }
+    
+    protected void skipBlanks() {
+        while (atBlank()) {
+            this.pstr.advancePosition();
+        }
     }
 
     public boolean addDictionary(String dictionary) {
@@ -52,21 +61,22 @@ public class ParsingSpellChecker {
     }
 
     public void check(String str) {
-        if (this.canCheck) {
-            this.pstr = new PString(str);
-            this.str = pstr.str;
+        if (!this.canCheck) {
+            return;
+        }
+
+        this.pstr = new PString(str);
     
-            while (hasMore()) {
-                skipToWord();
-                if (hasMore()) {
-                    if (Character.isLetter(currentChar())) {
-                        checkCurrentWord();
-                    }
-                    else {
-                        // not at an alpha character. Might be some screwy formatting or
-                        // a nonstandard tag.
-                        skipThroughWord();
-                    }
+        while (hasMore()) {
+            skipToWord();
+            if (hasMore()) {
+                if (Character.isLetter(currentChar())) {
+                    checkCurrentWord();
+                }
+                else {
+                    // not at an alpha character. Might be some screwy formatting or
+                    // a nonstandard tag.
+                    skipThroughWord();
                 }
             }
         }
@@ -76,7 +86,7 @@ public class ParsingSpellChecker {
      * Consumes from one string to another.
      */
     protected void consumeFromTo(String from, String to) {
-        if (consume(from)) {
+        if (consumeFrom(from)) {
             consumeTo(to);
         }
     }
@@ -94,17 +104,11 @@ public class ParsingSpellChecker {
         consumeFromTo("{@link", "}");
     }
     
-    protected void skipBlanks() {
-        while (this.pstr.position + 2 < this.pstr.length && currentChar() != '<' && !this.str.substring(this.pstr.position, this.pstr.position + 2).equals("{@") && !Character.isLetterOrDigit(currentChar())) {
-            ++this.pstr.position;
-        }
-    }
-    
     protected void skipToWord() {
         skipBracketedSection("code");
         skipBracketedSection("pre");
         skipLink();
-        consume("&nbsp;");
+        consumeFrom("&nbsp;");
     }
 
     protected void checkWord(String word, int position) {
@@ -132,39 +136,27 @@ public class ParsingSpellChecker {
         }
     }
 
-    protected boolean consume(String what) {
+    protected boolean consumeFrom(String what) {
         skipBlanks();
-        if (this.pstr.position + what.length() < this.pstr.length && this.str.substring(this.pstr.position).startsWith(what)) {
-            this.pstr.position += what.length();
-            return true;
-        }
-        else {
-            return false;
-        }
+        return this.pstr.advanceFrom(what);
     }
 
     protected void consumeTo(String what) {
-        while (this.pstr.position < this.pstr.length && this.pstr.position + what.length() < this.pstr.length && !this.str.substring(this.pstr.position).startsWith(what)) {
-            ++this.pstr.position;
-        }
+        this.pstr.advanceTo(what);
     }
 
     protected Character currentChar() {
-        return this.str.charAt(this.pstr.position);
-    }
-
-    protected boolean hasMore() {
-        return this.pstr.position < this.pstr.length;
+        return this.pstr.currentChar();
     }
 
     protected void checkCurrentWord() {
         StringBuffer word = new StringBuffer();
         word.append(currentChar());
         
-        int startingPosition = this.pstr.position;
+        int startingPosition = this.pstr.getPosition();
         boolean canCheck = true;
 
-        ++this.pstr.position;
+        this.pstr.advancePosition();
 
         // spell check words that do not have:
         //     - mixed case (varName)
@@ -177,7 +169,7 @@ public class ParsingSpellChecker {
             }
             else if (Character.isLowerCase(ch)) {
                 word.append(ch);
-                ++this.pstr.position;
+                this.pstr.advancePosition();
             }
             else if (Character.isUpperCase(ch)) {
                 skipThroughWord();
@@ -190,17 +182,17 @@ public class ParsingSpellChecker {
             else {
                 // must be punctuation, which we can check it if there's nothing
                 // but punctuation up to the next space or end of string.
-                if (this.pstr.position + 1 == this.pstr.length) {
+                if (this.pstr.getPosition() + 1 == this.pstr.getLength()) {
                     // that's OK to check
                     break;
                 }
                 else {
-                    ++this.pstr.position;
+                    this.pstr.advancePosition();
                     while (hasMore() && !Character.isWhitespace(currentChar()) && !Character.isLetterOrDigit(currentChar())) {
                         // skipping through punctuation
-                        ++this.pstr.position;
+                        this.pstr.advancePosition();
                     }
-                    if (this.pstr.position == this.pstr.length || Character.isWhitespace(currentChar())) {
+                    if (this.pstr.getPosition() == this.pstr.getLength() || Character.isWhitespace(currentChar())) {
                         // punctuation ended the word, so we can check this
                         break;
                     }
@@ -214,16 +206,15 @@ public class ParsingSpellChecker {
         }
 
         // has to be more than one character:
-        if (canCheck && this.pstr.position - startingPosition > 1) {
+        if (canCheck && this.pstr.getPosition() - startingPosition > 1) {
             checkWord(word.toString(), startingPosition);
         }
     }
 
     protected void skipThroughWord() {
-        ++this.pstr.position;
+        this.pstr.advancePosition();
         while (hasMore() && !Character.isWhitespace(currentChar())) {
-            ++this.pstr.position;
+            this.pstr.advancePosition();
         }
     }
-
 }

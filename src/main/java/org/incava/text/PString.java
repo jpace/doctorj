@@ -54,6 +54,10 @@ public class PString {
         this.position = position;
     }
 
+    public int getLength() {
+        return this.length;
+    }
+
     /**
      * Advances the position <code>num</code> characters.
      */
