@@ -26,7 +26,7 @@ public class TestPosString extends TestCase {
     }
 
     public void assertPosition(int exp, PosString pstr) {
-        String msg = "pstr: '" + pstr + "'";
+        String msg = "pstr: " + pstr;
         tr.Ace.log(msg);
         assertEquals(msg, exp, pstr.getPosition());
     }
@@ -192,6 +192,7 @@ public class TestPosString extends TestCase {
         abc.advanceFrom("a");
         assertCurrentChar('b', abc);
 
+        // no change
         abc.advanceFrom("c");
         assertCurrentChar('b', abc);
 
@@ -201,5 +202,39 @@ public class TestPosString extends TestCase {
         
         assertPosition(3, abc);
         assertCurrentChar(null, abc);
+    }
+
+    protected void doAdvanceFromToTest(Character expChar, int expPos, PosString pstr, String from, String to) {
+        pstr.advanceFromTo(from, to);
+        assertCurrentChar(expChar, pstr);
+        assertPosition(expPos, pstr);
+    }
+
+    public void testAdvanceFromTo() {
+        assertCurrentChar('a', abc);
+        doAdvanceFromToTest('c', 2, abc, "a", "c");
+
+        assertCurrentChar('t', tenletters);
+
+        // no change
+        doAdvanceFromToTest('t', 0, tenletters, "e", "n");
+
+        // to first e
+        doAdvanceFromToTest('e', 1, tenletters, "t", "e");
+
+        // to second e
+        doAdvanceFromToTest('e', 4, tenletters, "e", "e");
+
+        // to second t
+        doAdvanceFromToTest('t', 5, tenletters, "e", "t");
+
+        // to third t (next character)
+        doAdvanceFromToTest('t', 6, tenletters, "t", "t");
+
+        // to end of string
+        doAdvanceFromToTest('s', 9, tenletters, "t", "s");
+
+        // off end of string
+        doAdvanceFromToTest(null, 10, tenletters, "s", "j");
     }
 }

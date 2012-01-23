@@ -123,6 +123,18 @@ public class PosString {
     }
 
     /**
+     * Advances from the first string the second one, if there is a current
+     * match.
+     *
+     * @see #isMatch
+     */
+    public void advanceFromTo(String from, String to) {
+        if (advanceFrom(from)) {
+            advanceTo(to);
+        }
+    }
+
+    /**
      * Advances until whitespace or a letter or digit is found.
      */
     public void advanceToWord() {
