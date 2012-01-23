@@ -3,6 +3,7 @@ package org.incava.text.spell;
 import java.io.InputStream;
 import java.util.*;
 import org.incava.ijdk.util.MultiMap;
+import org.incava.text.PString;
 
 public class ParsingSpellChecker {
     /**
@@ -22,14 +23,9 @@ public class ParsingSpellChecker {
     private String str;
 
     /**
-     * The length of the current string.
+     * The string currently spell-checked.
      */
-    private int len;
-
-    /**
-     * The current position within the string.
-     */
-    private int pos;
+    private PString pstr;
     
     public ParsingSpellChecker(SpellChecker checker) {
         this(checker, false);
@@ -57,9 +53,8 @@ public class ParsingSpellChecker {
 
     public void check(String str) {
         if (this.canCheck) {
-            this.str = str;
-            this.len = this.str.length();
-            this.pos = 0;
+            this.pstr = new PString(str);
+            this.str = pstr.str;
     
             while (hasMore()) {
                 skipToWord();
@@ -100,8 +95,8 @@ public class ParsingSpellChecker {
     }
     
     protected void skipBlanks() {
-        while (this.pos + 2 < this.len && currentChar() != '<' && !this.str.substring(this.pos, this.pos + 2).equals("{@") && !Character.isLetterOrDigit(currentChar())) {
-            ++this.pos;
+        while (this.pstr.position + 2 < this.pstr.length && currentChar() != '<' && !this.str.substring(this.pstr.position, this.pstr.position + 2).equals("{@") && !Character.isLetterOrDigit(currentChar())) {
+            ++this.pstr.position;
         }
     }
     
@@ -139,8 +134,8 @@ public class ParsingSpellChecker {
 
     protected boolean consume(String what) {
         skipBlanks();
-        if (this.pos + what.length() < this.len && this.str.substring(this.pos).startsWith(what)) {
-            this.pos += what.length();
+        if (this.pstr.position + what.length() < this.pstr.length && this.str.substring(this.pstr.position).startsWith(what)) {
+            this.pstr.position += what.length();
             return true;
         }
         else {
@@ -149,28 +144,27 @@ public class ParsingSpellChecker {
     }
 
     protected void consumeTo(String what) {
-        int len = this.str.length();
-        while (this.pos < len && this.pos + what.length() < len && !this.str.substring(this.pos).startsWith(what)) {
-            ++this.pos;
+        while (this.pstr.position < this.pstr.length && this.pstr.position + what.length() < this.pstr.length && !this.str.substring(this.pstr.position).startsWith(what)) {
+            ++this.pstr.position;
         }
     }
 
     protected Character currentChar() {
-        return this.str.charAt(this.pos);
+        return this.str.charAt(this.pstr.position);
     }
 
     protected boolean hasMore() {
-        return this.pos < this.len;
+        return this.pstr.position < this.pstr.length;
     }
 
     protected void checkCurrentWord() {
         StringBuffer word = new StringBuffer();
         word.append(currentChar());
         
-        int startingPosition = this.pos;
+        int startingPosition = this.pstr.position;
         boolean canCheck = true;
 
-        ++this.pos;
+        ++this.pstr.position;
 
         // spell check words that do not have:
         //     - mixed case (varName)
@@ -183,7 +177,7 @@ public class ParsingSpellChecker {
             }
             else if (Character.isLowerCase(ch)) {
                 word.append(ch);
-                ++this.pos;
+                ++this.pstr.position;
             }
             else if (Character.isUpperCase(ch)) {
                 skipThroughWord();
@@ -196,17 +190,17 @@ public class ParsingSpellChecker {
             else {
                 // must be punctuation, which we can check it if there's nothing
                 // but punctuation up to the next space or end of string.
-                if (this.pos + 1 == this.len) {
+                if (this.pstr.position + 1 == this.pstr.length) {
                     // that's OK to check
                     break;
                 }
                 else {
-                    ++this.pos;
+                    ++this.pstr.position;
                     while (hasMore() && !Character.isWhitespace(currentChar()) && !Character.isLetterOrDigit(currentChar())) {
                         // skipping through punctuation
-                        ++this.pos;
+                        ++this.pstr.position;
                     }
-                    if (this.pos == this.len || Character.isWhitespace(currentChar())) {
+                    if (this.pstr.position == this.pstr.length || Character.isWhitespace(currentChar())) {
                         // punctuation ended the word, so we can check this
                         break;
                     }
@@ -220,15 +214,15 @@ public class ParsingSpellChecker {
         }
 
         // has to be more than one character:
-        if (canCheck && this.pos - startingPosition > 1) {
+        if (canCheck && this.pstr.position - startingPosition > 1) {
             checkWord(word.toString(), startingPosition);
         }
     }
 
     protected void skipThroughWord() {
-        ++this.pos;
+        ++this.pstr.position;
         while (hasMore() && !Character.isWhitespace(currentChar())) {
-            ++this.pos;
+            ++this.pstr.position;
         }
     }
 
