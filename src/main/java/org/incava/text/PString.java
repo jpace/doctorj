@@ -1,9 +1,9 @@
 package org.incava.text;
 
 /**
- * A poorly-named string with a position. For processing through it.
+ * A processable/iterable string with a position.
  */
-public class PosString {
+public class PString {
     /**
      * The string.
      */
@@ -12,53 +12,53 @@ public class PosString {
     /**
      * The length of the string.
      */
-    public final int len;
+    public final int length;
 
     /**
      * The current position within the string.
      */
-    public int pos;
+    public int position;
 
-    public PosString(String str, int pos) {
+    public PString(String str, int position) {
         this.str = str;
-        this.pos = pos;
-        this.len = str.length();
+        this.position = position;
+        this.length = str.length();
     }
 
-    public PosString(String str) {
+    public PString(String str) {
         this(str, 0);
     }
 
     public String toString() {
-        return "'" + this.str + "' (" + this.pos + ")";
+        return "'" + this.str + "' (" + this.position + ")";
     }
 
     /**
      * Returns a substring from the current position, of <code>num</code> characters.
      */
     public String substring(int num) {
-        return this.str.substring(this.pos, this.pos + num);
+        return this.str.substring(this.position, this.position + num);
     }
 
     /**
      * Returns the current position.
      */
     public int getPosition() {
-        return this.pos;
+        return this.position;
     }
 
     /**
      * Sets the current position.
      */
-    public void setPosition(int pos) {
-        this.pos = pos;
+    public void setPosition(int position) {
+        this.position = position;
     }
 
     /**
      * Advances the position <code>num</code> characters.
      */
     public void advancePosition(int num) {
-        this.pos += num;
+        this.position += num;
     }
 
     /**
@@ -72,7 +72,7 @@ public class PosString {
      * Returns the character at the current position.
      */
     public Character currentChar() {
-        return this.pos < this.len ? this.str.charAt(this.pos) : null;
+        return this.position < this.length ? this.str.charAt(this.position) : null;
     }
 
     /**
@@ -87,7 +87,7 @@ public class PosString {
      * characters from the end of the string.
      */
     public boolean hasNumMore(int num) {
-        return this.pos + num < this.len;
+        return this.position + num < this.length;
     }
 
     /**
@@ -95,7 +95,7 @@ public class PosString {
      * <code>what</code>.
      */
     public boolean isMatch(String what) {
-        return hasNumMore(what.length() - 1) && this.str.substring(this.pos).startsWith(what);
+        return hasNumMore(what.length() - 1) && this.str.substring(this.position).startsWith(what);
     }
 
     /**
@@ -139,7 +139,7 @@ public class PosString {
      */
     public void advanceToWord() {
         while (hasChar() && !Character.isWhitespace(currentChar()) && !Character.isLetterOrDigit(currentChar())) {
-            ++this.pos;
+            ++this.position;
         }
     }
 
@@ -148,7 +148,7 @@ public class PosString {
      */
     protected void advanceToWhitespace() {
         while (hasChar() && !Character.isWhitespace(currentChar())) {
-            ++this.pos;
+            ++this.position;
         }
     }
 }

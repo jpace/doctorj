@@ -3,55 +3,55 @@ package org.incava.text;
 import junit.framework.TestCase;
 import org.incava.ijdk.lang.Range;
 
-public class TestPosString extends TestCase {
-    private PosString str0;
+public class TestPString extends TestCase {
+    private PString str0;
 
-    private PosString str1;
+    private PString str1;
 
-    private PosString abc;
+    private PString abc;
 
-    private PosString tenletters;
+    private PString tenletters;
 
-    public TestPosString(String name) {
+    public TestPString(String name) {
         super(name);
 
         tr.Ace.setVerbose(true);
     }
 
     public void setUp() {
-        str0 = new PosString("this is a test");
-        str1 = new PosString("this too is a test", 12);
-        abc  = new PosString("abc");
-        tenletters = new PosString("tenletters");
+        str0 = new PString("this is a test");
+        str1 = new PString("this too is a test", 12);
+        abc  = new PString("abc");
+        tenletters = new PString("tenletters");
     }
 
-    public void assertPosition(int exp, PosString pstr) {
+    public void assertPosition(int exp, PString pstr) {
         String msg = "pstr: " + pstr;
         tr.Ace.log(msg);
         assertEquals(msg, exp, pstr.getPosition());
     }
 
-    public String getMessage(PosString pstr, int num) {
+    public String getMessage(PString pstr, int num) {
         return "pstr: '" + pstr + "'; num: " + num;
     }
 
-    public void assertSubstring(String exp, PosString pstr, int num) {
+    public void assertSubstring(String exp, PString pstr, int num) {
         assertEquals(getMessage(pstr, num), exp, pstr.substring(num));
     }
 
-    public void assertCurrentChar(Character exp, PosString pstr) {
+    public void assertCurrentChar(Character exp, PString pstr) {
         assertEquals(pstr.toString(), exp, pstr.currentChar());
     }
 
-    public void assertHasChar(boolean exp, PosString pstr) {
+    public void assertHasChar(boolean exp, PString pstr) {
         assertEquals(pstr.toString(), exp, pstr.hasChar());
     }   
 
-    public void assertHasNumMore(boolean exp, PosString pstr, int num) {
+    public void assertHasNumMore(boolean exp, PString pstr, int num) {
         assertEquals(getMessage(pstr, num), exp, pstr.hasNumMore(num));
     }   
 
-    public void assertIsMatch(boolean exp, String str, PosString pstr) {
+    public void assertIsMatch(boolean exp, String str, PString pstr) {
         String msg = "pstr: " + pstr + "; str: '" + str + "'";
         assertEquals(msg, exp, pstr.isMatch(str));
     }
@@ -204,7 +204,7 @@ public class TestPosString extends TestCase {
         assertCurrentChar(null, abc);
     }
 
-    protected void doAdvanceFromToTest(Character expChar, int expPos, PosString pstr, String from, String to) {
+    protected void doAdvanceFromToTest(Character expChar, int expPos, PString pstr, String from, String to) {
         pstr.advanceFromTo(from, to);
         assertCurrentChar(expChar, pstr);
         assertPosition(expPos, pstr);
