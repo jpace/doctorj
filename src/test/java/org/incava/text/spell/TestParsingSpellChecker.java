@@ -35,6 +35,8 @@ public class TestParsingSpellChecker extends TestCase {
     
     public TestParsingSpellChecker(String name) {
         super(name);
+
+        tr.Ace.setVerbose(true);
     }
 
     public void runSpellTest(String comment, int nMisspellings) {

@@ -150,11 +150,8 @@ public class ParsingSpellChecker {
     }
 
     protected void checkCurrentWord() {
-        StringBuffer word = new StringBuffer();
-        word.append(currentChar());
-        
         int startingPosition = this.pstr.getPosition();
-        boolean canCheck = true;
+        int nChars = 1;
 
         this.pstr.advancePosition();
 
@@ -168,19 +165,15 @@ public class ParsingSpellChecker {
                 break;
             }
             else if (Character.isLowerCase(ch)) {
-                word.append(ch);
+                ++nChars;
                 this.pstr.advancePosition();
             }
-            else if (Character.isUpperCase(ch)) {
-                skipThroughWord();
-                return;
-            }
-            else if (Character.isDigit(ch)) {
+            else if (Character.isUpperCase(ch) || Character.isDigit(ch)) {
                 skipThroughWord();
                 return;
             }
             else {
-                // must be punctuation, which we can check it if there's nothing
+                // must be punctuation, which we can check if there's nothing
                 // but punctuation up to the next space or end of string.
                 if (this.pstr.getPosition() + 1 == this.pstr.getLength()) {
                     // that's OK to check
@@ -192,7 +185,7 @@ public class ParsingSpellChecker {
                         // skipping through punctuation
                         this.pstr.advancePosition();
                     }
-                    if (this.pstr.getPosition() == this.pstr.getLength() || Character.isWhitespace(currentChar())) {
+                    if (!this.pstr.hasNumMore(1) || Character.isWhitespace(currentChar())) {
                         // punctuation ended the word, so we can check this
                         break;
                     }
@@ -206,7 +199,8 @@ public class ParsingSpellChecker {
         }
 
         // has to be more than one character:
-        if (canCheck && this.pstr.getPosition() - startingPosition > 1) {
+        if (nChars > 1) {
+            String word = this.pstr.substring(startingPosition, nChars);
             checkWord(word.toString(), startingPosition);
         }
     }

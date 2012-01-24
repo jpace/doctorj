@@ -19,9 +19,9 @@ public class PString {
      */
     public int position;
 
-    public PString(String str, int position) {
+    public PString(String str, int pos) {
         this.str = str;
-        this.position = position;
+        this.position = pos;
         this.length = str.length();
     }
 
@@ -37,7 +37,15 @@ public class PString {
      * Returns a substring from the current position, of <code>num</code> characters.
      */
     public String substring(int num) {
-        return this.str.substring(this.position, this.position + num);
+        return substring(this.position, num);
+    }
+
+    /**
+     * Returns a substring from the given position, of <code>num</code>
+     * characters.
+     */
+    public String substring(int pos, int num) {
+        return this.str.substring(pos, pos + num);
     }
 
     /**
@@ -50,8 +58,8 @@ public class PString {
     /**
      * Sets the current position.
      */
-    public void setPosition(int position) {
-        this.position = position;
+    public void setPosition(int pos) {
+        this.position = pos;
     }
 
     public int getLength() {

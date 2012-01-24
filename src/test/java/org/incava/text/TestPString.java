@@ -39,6 +39,11 @@ public class TestPString extends TestCase {
         assertEquals(getMessage(pstr, num), exp, pstr.substring(num));
     }
 
+    public void assertSubstring(String exp, PString pstr, int pos, int num) {
+        String msg = "pstr: '" + pstr + "'; pos: " + pos + "; num: " + num;
+        assertEquals(getMessage(pstr, num), exp, pstr.substring(pos, num));
+    }
+
     public void assertCurrentChar(Character exp, PString pstr) {
         assertEquals(pstr.toString(), exp, pstr.currentChar());
     }
@@ -86,12 +91,33 @@ public class TestPString extends TestCase {
     }
 
     public void testSubstring() {
-        assertSubstring("this", str0, 4);
-        assertSubstring("this", str0, 4);
+        assertSubstring("abc", abc, 3);
+        assertSubstring("ab",  abc, 2);
+        assertSubstring("a",   abc, 1);
 
-        assertSubstring("a ",   str1, 2);
-        assertSubstring("a ",   str1, 2);
-    }        
+        abc.advancePosition();
+
+        assertSubstring("bc", abc, 2);
+        assertSubstring("b",  abc, 1);
+    }
+
+    public void testSubstringWithPosition() {
+        assertSubstring("abc", abc, 0, 3);
+        assertSubstring("ab",  abc, 0, 2);
+        assertSubstring("a",   abc, 0, 1);
+        assertSubstring("",    abc, 0, 0);
+
+        assertSubstring("bc",  abc, 1, 2);
+        assertSubstring("c", abc, 2, 1);
+        assertSubstring("", abc, 3, 0);
+
+        abc.advancePosition();
+
+        assertSubstring("abc", abc, 0, 3);
+        assertSubstring("bc", abc, 1, 2);
+        assertSubstring("c", abc, 2, 1);
+        assertSubstring("", abc, 3, 0);
+    }
 
     public void testCurrentChar() {
         assertCurrentChar('t', str0);
