@@ -3,6 +3,8 @@ package org.incava.text.spell;
 import java.io.*;
 import java.util.*;
 import junit.framework.TestCase;
+import org.incava.ijdk.io.InputStreamExt;
+import org.incava.ijdk.lang.StringExt;
 import org.incava.ijdk.util.MultiMap;
 
 public class TestParsingSpellChecker extends TestCase {
@@ -106,5 +108,25 @@ public class TestParsingSpellChecker extends TestCase {
                      "  *</code>\n" +
                      "  */\n",
                      0);
+    }
+
+    public void testPerformance() {
+        InputStream in = getClass().getClassLoader().getResourceAsStream("wordlist.txt");
+        List<String> lines = InputStreamExt.readLines(in);
+
+        // wrap as a Javadoc comment block:
+        lines.add(0, "/** \n");
+        lines.add("*/\n");
+
+        String comment = StringExt.join(lines, "\n");
+
+        long start = System.currentTimeMillis();
+        
+        tcsc.check(comment);
+
+        long end = System.currentTimeMillis();
+
+        long duration = end - start;
+        System.err.println("# words: " + lines.size() + "; duration: " + duration);
     }
 }

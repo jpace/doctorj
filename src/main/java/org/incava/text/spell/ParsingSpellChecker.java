@@ -181,10 +181,8 @@ public class ParsingSpellChecker {
                 }
                 else {
                     this.pstr.advancePosition();
-                    while (hasMore() && !Character.isWhitespace(currentChar()) && !Character.isLetterOrDigit(currentChar())) {
-                        // skipping through punctuation
-                        this.pstr.advancePosition();
-                    }
+                    skipToWhitespaceOrLetterOrDigit();
+
                     if (!this.pstr.hasNumMore(1) || Character.isWhitespace(currentChar())) {
                         // punctuation ended the word, so we can check this
                         break;
@@ -202,6 +200,13 @@ public class ParsingSpellChecker {
         if (nChars > 1) {
             String word = this.pstr.substring(startingPosition, nChars);
             checkWord(word.toString(), startingPosition);
+        }
+    }
+
+    protected void skipToWhitespaceOrLetterOrDigit() {
+        while (hasMore() && !Character.isWhitespace(currentChar()) && !Character.isLetterOrDigit(currentChar())) {
+            // skipping through punctuation
+            this.pstr.advancePosition();
         }
     }
 
