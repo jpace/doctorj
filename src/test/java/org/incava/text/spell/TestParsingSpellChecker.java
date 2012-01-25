@@ -110,7 +110,11 @@ public class TestParsingSpellChecker extends TestCase {
                      0);
     }
 
-    public void testPerformance() {
+    /**
+     * Runs a performance test. Should not execute with the standard set of unit
+     * tests.
+     */
+    public void xxx_testPerformance() {
         InputStream in = getClass().getClassLoader().getResourceAsStream("wordlist.txt");
         List<String> lines = InputStreamExt.readLines(in);
 
