@@ -32,16 +32,20 @@ public class TestPString extends TestCase {
     }
 
     public String getMessage(PString pstr, int num) {
-        return "pstr: '" + pstr + "'; num: " + num;
+        return "pstr: " + pstr + "; num: " + num;
     }
 
     public void assertSubstring(String exp, PString pstr, int num) {
         assertEquals(getMessage(pstr, num), exp, pstr.substring(num));
     }
 
+    public void assertSubstringOrig(String exp, PString pstr, int pos, int num) {
+        String msg = "pstr: " + pstr + "; pos: " + pos + "; num: " + num;
+        assertEquals(msg, exp, pstr.substring(pos, num));
+    }
+
     public void assertSubstring(String exp, PString pstr, int pos, int num) {
-        String msg = "pstr: '" + pstr + "'; pos: " + pos + "; num: " + num;
-        assertEquals(getMessage(pstr, num), exp, pstr.substring(pos, num));
+        assertEquals(exp, pstr.substring(pos, num));
     }
 
     public void assertCurrentChar(Character exp, PString pstr) {
