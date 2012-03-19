@@ -1,7 +1,7 @@
 package org.incava.analysis;
 
 import net.sourceforge.pmd.ast.Token;
-import org.incava.text.Location;
+import org.incava.ijdk.text.Location;
 
 /**
  * Bridge between violations and reports.

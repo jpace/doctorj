@@ -1,9 +1,7 @@
 package org.incava.javadoc;
 
+import org.incava.ijdk.text.Location;
 import org.incava.text.LineMapping;
-import org.incava.text.Location;
-import org.incava.text.TextLocation;
-import org.incava.text.TextRange;
 
 /**
  * A tagged element, such as:

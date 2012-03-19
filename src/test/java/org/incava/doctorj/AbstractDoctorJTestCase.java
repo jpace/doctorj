@@ -16,9 +16,9 @@ import org.incava.analysis.Report;
 import org.incava.analysis.TerseReport;
 import org.incava.analysis.Violation;
 import org.incava.ijdk.lang.StringExt;
+import org.incava.ijdk.text.Location;
+import org.incava.ijdk.text.LocationRange;
 import org.incava.text.Lines;
-import org.incava.text.Location;
-import org.incava.text.LocationRange;
 
 public class AbstractDoctorJTestCase extends TestCase {
     public final static int WARNING_LEVEL_DEFAULT = Options.MAXIMUM_WARNING_LEVEL;

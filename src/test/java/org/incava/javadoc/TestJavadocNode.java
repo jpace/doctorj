@@ -2,7 +2,7 @@ package org.incava.javadoc;
 
 import java.util.List;
 import junit.framework.TestCase;
-import org.incava.text.Location;
+import org.incava.ijdk.text.Location;
 
 public class TestJavadocNode extends TestCase {    
     public TestJavadocNode(String name) {

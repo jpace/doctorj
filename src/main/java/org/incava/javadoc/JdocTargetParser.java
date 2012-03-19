@@ -1,7 +1,7 @@
 package org.incava.javadoc;
 
 import java.util.*;
-import org.incava.text.TextLocation;
+import org.incava.ijdk.text.TextLocation;
 import static org.incava.ijdk.util.IUtil.*;
 
 public class JdocTargetParser {
@@ -77,6 +77,4 @@ public class JdocTargetParser {
     protected boolean matchesEnd() {
         return this.jdp.atCommentEnd();
     }
-
-
 }

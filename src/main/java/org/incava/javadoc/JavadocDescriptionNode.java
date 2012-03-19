@@ -1,7 +1,7 @@
 package org.incava.javadoc;
 
-import org.incava.text.Location;
-import org.incava.text.TextRange;
+import org.incava.ijdk.text.Location;
+import org.incava.ijdk.text.TextRange;
 
 /**
  * The description section of a Javadoc comment.

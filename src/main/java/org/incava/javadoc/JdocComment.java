@@ -1,16 +1,13 @@
 package org.incava.javadoc;
 
 import java.util.*;
-import org.incava.text.TextLocation;
-
+import org.incava.ijdk.text.TextLocation;
 
 /**
  * A complete Javadoc comment.
  */
 public class JdocComment extends JdocElement {
-
     private final JdocElement description;
-
     private final List<JdocTaggedNode> taggedNodes;
 
     public JdocComment(String comment, TextLocation startLoc, TextLocation endLoc, JdocElement description, List<JdocTaggedNode> taggedNodes) {
@@ -27,5 +24,4 @@ public class JdocComment extends JdocElement {
     public List<JdocTaggedNode> getTaggedNodes() {
         return this.taggedNodes;
     }
-
 }

@@ -1,6 +1,6 @@
 package org.incava.javadoc;
 
-import org.incava.text.Location;
+import org.incava.ijdk.text.Location;
 
 /**
  * A field within a Javadoc comment.

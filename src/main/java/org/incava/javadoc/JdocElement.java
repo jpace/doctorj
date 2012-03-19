@@ -1,20 +1,16 @@
 package org.incava.javadoc;
 
-import org.incava.text.TextLocation;
-
+import org.incava.ijdk.text.TextLocation;
 
 /**
  * A field within a Javadoc comment.
  */
 public class JdocElement {
-
     /**
      * The javadoc comment (string) whence plunked this element be.
      */
     private final String comment;
-
     private final TextLocation startLoc;
-
     private final TextLocation endLoc;
 
     public JdocElement(String comment, TextLocation startLoc, TextLocation endLoc) {

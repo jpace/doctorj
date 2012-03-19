@@ -1,17 +1,17 @@
 package org.incava.doctorj;
 
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
-import java.text.MessageFormat;
 import org.incava.analysis.Analyzer;
 import org.incava.ijdk.lang.StringExt;
+import org.incava.ijdk.text.Location;
 import org.incava.ijdk.util.MultiMap;
 import org.incava.text.LineMapping;
-import org.incava.text.Location;
 import org.incava.text.spell.Dictionary;
 import org.incava.text.spell.ParsingSpellChecker;
 import org.incava.text.spell.SpellChecker;

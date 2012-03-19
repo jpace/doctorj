@@ -3,9 +3,11 @@ package org.incava.javadoc;
 import java.awt.Point;
 import java.util.*;
 import org.incava.ijdk.lang.Pair;
+import org.incava.ijdk.text.Location;
+import org.incava.ijdk.text.TextLocation;
+import org.incava.ijdk.text.TextRange;
 import org.incava.ijdk.util.ListExt;
-import org.incava.text.*;
-
+import org.incava.text.LineMapping;
 
 /**
  * Parses Javadoc into a list of points, which represent the locations of

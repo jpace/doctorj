@@ -2,11 +2,9 @@ package org.incava.javadoc;
 
 import java.util.*;
 import junit.framework.TestCase;
-import org.incava.text.TextLocation;
-
+import org.incava.ijdk.text.TextLocation;
 
 public class TestJdocElement extends TestCase {
-
     public TestJdocElement(String name) {
         super(name);
     }
@@ -23,5 +21,4 @@ public class TestJdocElement extends TestCase {
 
         assertEquals("this is a test.", jde.getText());
     }
-
 }

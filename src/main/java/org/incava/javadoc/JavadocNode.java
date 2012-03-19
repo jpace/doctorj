@@ -1,7 +1,7 @@
 package org.incava.javadoc;
 
 import java.util.List;
-import org.incava.text.TextLocation;
+import org.incava.ijdk.text.TextLocation;
 
 /**
  * Represents a Javadoc element.

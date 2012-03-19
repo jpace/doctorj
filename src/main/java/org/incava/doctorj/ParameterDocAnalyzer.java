@@ -3,16 +3,15 @@ package org.incava.doctorj;
 import java.util.*;
 import net.sourceforge.pmd.ast.*;
 import org.incava.analysis.*;
-import org.incava.javadoc.*;
 import org.incava.ijdk.lang.MathExt;
+import org.incava.ijdk.text.Location;
 import org.incava.ijdk.util.ListExt;
+import org.incava.javadoc.*;
 import org.incava.pmdx.ParameterUtil;
 import org.incava.pmdx.SimpleNodeUtil;
-import org.incava.text.Location;
 import org.incava.text.spell.SpellChecker;
 import org.incava.text.spell.Spelling;
 import static org.incava.ijdk.util.IUtil.*;
-
 
 /**
  * Checks the validity of Javadoc for a list of parameters.

@@ -3,6 +3,8 @@ package org.incava.text;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.ListIterator;
+import org.incava.ijdk.text.TextLocation;
+import org.incava.ijdk.text.TextRange;
 
 /**
  * Converts from 0-indexed string positions to line:column values. Lines and

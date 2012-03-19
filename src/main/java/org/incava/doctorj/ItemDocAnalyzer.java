@@ -5,35 +5,25 @@ import net.sourceforge.pmd.ast.JavaParserConstants;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.Token;
 import org.incava.analysis.Report;
+import org.incava.ijdk.text.Location;
 import org.incava.javadoc.*;
 import org.incava.pmdx.SimpleNodeUtil;
 import org.incava.text.LineMapping;
-import org.incava.text.Location;
-
 
 /**
  * Analyzes Javadoc and code.
  */
 public abstract class ItemDocAnalyzer extends DocAnalyzer {
-
     public final static String MSG_NO_SUMMARY_SENTENCE = "No summary sentence";
-
     public final static String MSG_SUMMARY_SENTENCE_DOES_NOT_END_WITH_PERIOD = "Summary sentence does not end with period";
-
     public final static String MSG_SUMMARY_SENTENCE_TOO_SHORT = "Summary sentence too short";
-
     public final static String MSG_SEE_WITHOUT_REFERENCE = "@see without reference";
-
     public final static String MSG_SINCE_WITHOUT_TEXT = "@since without text";
-
-    public final static String MSG_DEPRECATED_WITHOUT_TEXT = "@deprecated without text";
-    
+    public final static String MSG_DEPRECATED_WITHOUT_TEXT = "@deprecated without text";    
     public final static String MSG_TAG_IMPROPER_ORDER = "Tag in improper order";
 
     protected final static int CHKLVL_SUMMARY_SENTENCE = 1;
-
     protected final static int CHKLVL_MISORDERED_TAGS = 0;
-
     protected final static int CHKLVL_VALID_TAGS = 0;
 
     private static SpellingAnalyzer spellingAnalyzer = SpellingAnalyzer.getInstance();
@@ -42,7 +32,6 @@ public abstract class ItemDocAnalyzer extends DocAnalyzer {
     
     public ItemDocAnalyzer(Report report, SimpleNode node, int warningLevel) {
         super(report, warningLevel);
-        
         this.node = node;
     }
 

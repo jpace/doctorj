@@ -1,12 +1,12 @@
 package org.incava.doctorj;
 
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.incava.analysis.Violation;
+import org.incava.ijdk.text.Location;
+import org.incava.ijdk.text.LocationRange;
 import org.incava.text.Lines;
-import org.incava.text.Location;
-import org.incava.text.LocationRange;
 
 public class TestOptions extends AbstractDoctorJTestCase {
     

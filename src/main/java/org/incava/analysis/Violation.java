@@ -1,8 +1,8 @@
 package org.incava.analysis;
 
 import net.sourceforge.pmd.ast.Token;
-import org.incava.text.Location;
-import org.incava.text.LocationRange;
+import org.incava.ijdk.text.Location;
+import org.incava.ijdk.text.LocationRange;
 
 /**
  * An error or a warning, associated with a file by a starting and ending

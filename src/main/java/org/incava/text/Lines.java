@@ -1,8 +1,8 @@
 package org.incava.text;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import org.incava.ijdk.lang.StringExt;
 
