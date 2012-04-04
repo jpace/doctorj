@@ -106,7 +106,7 @@ public class ParameterDocAnalyzer extends DocAnalyzer {
         this.function = function;
         this.parameterList = parameterList;
         this.nodeLevel = nodeLevel;
-        this.documentedParameters = new ArrayList<Integer>();
+        documentedParameters = new ArrayList<Integer>();
     }
 
     /**
@@ -119,20 +119,20 @@ public class ParameterDocAnalyzer extends DocAnalyzer {
         //  - in order as in code
 
         int parameterIndex = 0;
-        for (JavadocTaggedNode jtn : this.javadoc.getTaggedComments()) {
+        for (JavadocTaggedNode jtn : javadoc.getTaggedComments()) {
             JavadocTag tag = jtn.getTag();
             if (tag.textMatches(JavadocTags.PARAM) && analyzeParameterNode(jtn, parameterIndex++)) {
                 break;
             }
         }
 
-        if (isNotNull(this.parameterList) && isCheckable(this.function, CHKLVL_PARAM_DOC_EXISTS)) {
+        if (isNotNull(parameterList) && isCheckable(function, CHKLVL_PARAM_DOC_EXISTS)) {
             reportUndocumentedParameters();
         }
     }
 
     protected void addParameterViolation(String msg, Location start, Location end) {
-        if (getWarningLevel() >= CHKLVL_TAG_CONTENT + this.nodeLevel) {
+        if (getWarningLevel() >= CHKLVL_TAG_CONTENT + nodeLevel) {
             addViolation(msg, start, end);
         }
     }
@@ -142,7 +142,7 @@ public class ParameterDocAnalyzer extends DocAnalyzer {
         JavadocElement tgt = jtn.getTarget();
         int warningLevel = getWarningLevel();
 
-        if (!SimpleNodeUtil.hasChildren(this.parameterList)) {
+        if (!SimpleNodeUtil.hasChildren(parameterList)) {
             addViolation(MSG_PARAMETERS_DOCUMENTED_BUT_NO_CODE_PARAMETERS, tag.start, tag.end);
             return true;
         }
@@ -177,7 +177,7 @@ public class ParameterDocAnalyzer extends DocAnalyzer {
             return;
         }
         
-        String paramType = ParameterUtil.getParameterType(this.parameterList, parameterIndex);
+        String paramType = ParameterUtil.getParameterType(parameterList, parameterIndex);
 
         if (tgtStr.equals(paramType)) {
             addViolation(MSG_PARAMETER_TYPE_USED, tgt.start, tgt.end);
@@ -189,24 +189,24 @@ public class ParameterDocAnalyzer extends DocAnalyzer {
     }
 
     protected void addDocumentedParameter(int index, Location start, Location end) {
-        if (this.documentedParameters.size() > 0 && ListExt.last(this.documentedParameters) > index) {
+        if (documentedParameters.size() > 0 && ListExt.last(documentedParameters) > index) {
             addViolation(MSG_PARAMETER_NOT_IN_CODE_ORDER, start, end);
         }
         
-        if (this.documentedParameters.contains(index)) {
+        if (documentedParameters.contains(index)) {
             addViolation(MSG_PARAMETER_REPEATED, start, end);
         }
         else {
-            this.documentedParameters.add(index);
+            documentedParameters.add(index);
         }
     }
     
     protected void reportUndocumentedParameters() {
-        ASTFormalParameter[] params = ParameterUtil.getParameters(this.parameterList);
+        List<ASTFormalParameter> params = ParameterUtil.getParameters(parameterList);
         
-        for (int ni = 0; ni < params.length; ++ni) {
-            ASTFormalParameter param = params[ni];
-            if (!this.documentedParameters.contains(ni)) {
+        for (int ni = 0; ni < params.size(); ++ni) {
+            ASTFormalParameter param = params.get(ni);
+            if (!documentedParameters.contains(ni)) {
                 Token nameTk = ParameterUtil.getParameterName(param);
                 addViolation(MSG_PARAMETER_NOT_DOCUMENTED, nameTk);
             }
@@ -217,10 +217,10 @@ public class ParameterDocAnalyzer extends DocAnalyzer {
      * Returns the first param in the list whose name matches the given string.
      */
     protected int getMatchingParameter(String str) {
-        ASTFormalParameter[] params = ParameterUtil.getParameters(this.parameterList);
+        List<ASTFormalParameter> params = ParameterUtil.getParameters(parameterList);
         
-        for (int ni = 0; ni < params.length; ++ni) {
-            ASTFormalParameter param = params[ni];
+        for (int ni = 0; ni < params.size(); ++ni) {
+            ASTFormalParameter param = params.get(ni);
             Token nameTk = ParameterUtil.getParameterName(param);
             if (nameTk.image.equals(str)) {
                 return ni;
@@ -235,16 +235,16 @@ public class ParameterDocAnalyzer extends DocAnalyzer {
      * given string.
      */
     protected int getClosestMatchingParameter(String str) {
-        if (this.parameterList == null) {
+        if (parameterList == null) {
             return -1;
         }
         
-        int                  bestDistance = -1;
-        int                  bestIndex    = -1;
-        ASTFormalParameter[] params = ParameterUtil.getParameters(this.parameterList);
+        int bestDistance = -1;
+        int bestIndex    = -1;
+        List<ASTFormalParameter> params = ParameterUtil.getParameters(parameterList);
         
-        for (int ni = 0; ni < params.length; ++ni) {
-            ASTFormalParameter param  = params[ni];
+        for (int ni = 0; ni < params.size(); ++ni) {
+            ASTFormalParameter param  = params.get(ni);
             Token              nameTk = ParameterUtil.getParameterName(param);
             int                dist   = Spelling.getEditDistance(nameTk.image, str);
 

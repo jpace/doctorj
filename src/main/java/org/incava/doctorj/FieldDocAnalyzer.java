@@ -101,10 +101,10 @@ public class FieldDocAnalyzer extends ItemDocAnalyzer {
      */
     protected void addUndocumentedViolation(String desc) {
         // reference the list of variables declared in this field.
-        ASTVariableDeclarator[] vds = FieldUtil.getVariableDeclarators(this.field);
+        List<ASTVariableDeclarator> vds = FieldUtil.getVariableDeclarators(this.field);
 
-        Token begin = vds[0].getFirstToken();
-        Token end = vds[vds.length - 1].getFirstToken();
+        Token begin = vds.get(0).getFirstToken();
+        Token end = vds.get(vds.size() - 1).getFirstToken();
 
         addViolation(desc, begin, end);
     }
