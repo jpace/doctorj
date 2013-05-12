@@ -48,7 +48,7 @@ public class MethodDocAnalyzer extends FunctionDocAnalyzer {
     }
 
     protected Token getReturnToken() {
-        ASTResultType resType = (ASTResultType)SimpleNodeUtil.findChild(this.method, ASTResultType.class);
+        ASTResultType resType = SimpleNodeUtil.findChild(this.method, ASTResultType.class);
         return resType.getFirstToken();
     }
     
